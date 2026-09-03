@@ -1,41 +1,46 @@
 """
-run.py — Запускает и бота, и сервер в одном процессе (для локальной разработки)
+run.py — один процесс: FastAPI + бот.
+Локально — polling, в облаке — webhook.
 """
 import asyncio
 import threading
+import logging
+import sys
 import uvicorn
-from config import SERVER_HOST, SERVER_PORT
+from config import SERVER_HOST, SERVER_PORT, BOT_MODE
 
+# Fix для Windows: psycopg async требует SelectorEventLoop
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-def run_server():
-    uvicorn.run(
-        "server:app",
-        host=SERVER_HOST,
-        port=SERVER_PORT,
-        reload=False,  # Cannot reload in thread mode
-        log_level="info",
-    )
+logging.basicConfig(level=logging.INFO)
 
+async def serve_api():
+    cfg = uvicorn.Config("server:app", host=SERVER_HOST, port=SERVER_PORT, log_level="info")
+    await uvicorn.Server(cfg).serve()
 
-async def run_bot():
-    from bot import dp, bot, init_db
-    from aiogram import Bot
+def thread_server():
+    asyncio.run(serve_api())
+
+async def run_polling():
+    from bot import dp, bot
+    from database import init_db
     await init_db()
     await dp.start_polling(bot, skip_updates=True)
 
+async def run_webhook():
+    from bot import setup_webhook
+    from database import init_db
+    await init_db()
+    await setup_webhook()
+    await serve_api()
 
 if __name__ == "__main__":
-    import logging
-    logging.basicConfig(level=logging.INFO)
-
-    # Start FastAPI in background thread
-    server_thread = threading.Thread(target=run_server, daemon=True)
-    server_thread.start()
-
     print("=" * 50)
-    print("  ANTIGRAVITY — Running (Bot + Server)")
-    print(f"  API / Frontend: http://localhost:{SERVER_PORT}")
+    print("  83 SCHOOL — mode:", BOT_MODE)
     print("=" * 50)
-
-    # Run bot in main event loop
-    asyncio.run(run_bot())
+    if BOT_MODE == "webhook":
+        asyncio.run(run_webhook())
+    else:
+        threading.Thread(target=thread_server, daemon=True).start()
+        asyncio.run(run_polling())

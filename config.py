@@ -1,5 +1,5 @@
 """
-config.py — Configuration loaded from .env
+config.py — Configuration loaded from .env (финальная версия)
 """
 import os
 from dotenv import load_dotenv
@@ -10,32 +10,40 @@ BOT_TOKEN: str = os.getenv("BOT_TOKEN", "")
 WEBAPP_URL: str = os.getenv("WEBAPP_URL", "http://localhost:8000")
 API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
 SERVER_HOST: str = os.getenv("SERVER_HOST", "0.0.0.0")
-SERVER_PORT: int = int(os.getenv("SERVER_PORT", "8000"))
+SERVER_PORT: int = int(os.getenv("PORT", os.getenv("SERVER_PORT", "8000")))
 
-# Admin access: set your Telegram user ID here
+# Admin access
 _admin_raw = os.getenv("ADMIN_TELEGRAM_ID", "")
 ADMIN_TELEGRAM_ID: int | None = int(_admin_raw) if _admin_raw.strip().isdigit() else None
+
+# Database: Neon/Postgres (cloud)
+DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+
+# Legacy (не используется, оставлено для совместимости)
+DATABASE_PATH: str = "antigravity.db"
 TURSO_DATABASE_URL: str = os.getenv("TURSO_DATABASE_URL", "")
 TURSO_AUTH_TOKEN: str = os.getenv("TURSO_AUTH_TOKEN", "")
 
-DATABASE_PATH: str = "antigravity.db"
+# Bot mode: "polling" (локально) или "webhook" (в облаке)
+BOT_MODE: str = os.getenv("BOT_MODE", "polling")
+WEBHOOK_SECRET: str = os.getenv("WEBHOOK_SECRET", "83school-secret")
 
 # Game balance constants
 DAILY_BONUS_AMOUNT: int = 500
 REFERRAL_BONUS_INVITER: int = 1000
 REFERRAL_BONUS_INVITED: int = 500
 
-# Anti-cheat: max taps per sync window (15 seconds)
-MAX_TAPS_PER_WINDOW: int = 150  # ~10 taps/sec * 15 sec
+# Anti-cheat
+MAX_TAPS_PER_WINDOW: int = 150
 SYNC_WINDOW_SECONDS: int = 15
 
-# Energy regen: base = 1 energy per second
+# Energy
 BASE_ENERGY_REGEN: float = 1.0
 BASE_MAX_ENERGY: int = 1000
 BASE_TAP_POWER: int = 1
-BASE_PASSIVE_INCOME: int = 0  # per hour
+BASE_PASSIVE_INCOME: int = 0
 
-# Default characters — imported into DB on first run
+# Default characters
 DEFAULT_CHARACTERS = [
     {
         "name": "Новобранец",
@@ -43,8 +51,8 @@ DEFAULT_CHARACTERS = [
         "base_tap_power": 1,
         "base_energy": 1000,
         "base_passive": 0,
-        "color": "#00d4ff",
-        "emoji": "👾",
+        "color": "#e0e0e0",
+        "emoji": "👤",
         "image": "",
     },
     {
@@ -53,7 +61,7 @@ DEFAULT_CHARACTERS = [
         "base_tap_power": 3,
         "base_energy": 1500,
         "base_passive": 100,
-        "color": "#7b2fff",
+        "color": "#cfcfcf",
         "emoji": "⚡",
         "image": "",
     },
@@ -63,7 +71,7 @@ DEFAULT_CHARACTERS = [
         "base_tap_power": 6,
         "base_energy": 2000,
         "base_passive": 300,
-        "color": "#00ff88",
+        "color": "#bdbdbd",
         "emoji": "🌀",
         "image": "",
     },
@@ -73,7 +81,7 @@ DEFAULT_CHARACTERS = [
         "base_tap_power": 12,
         "base_energy": 3000,
         "base_passive": 800,
-        "color": "#ff6b35",
+        "color": "#a8a8a8",
         "emoji": "🔥",
         "image": "",
     },
@@ -83,13 +91,13 @@ DEFAULT_CHARACTERS = [
         "base_tap_power": 25,
         "base_energy": 5000,
         "base_passive": 2000,
-        "color": "#ffd700",
+        "color": "#ffffff",
         "emoji": "🌟",
         "image": "",
     },
 ]
 
-# Default shop items — imported into DB on first run
+# Default shop items
 DEFAULT_SHOP_ITEMS = [
     {
         "name": "Сила тапа",

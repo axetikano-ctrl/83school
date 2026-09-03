@@ -1,14 +1,14 @@
 """
-database.py — SQLite/Turso database initialization and CRUD helpers
-Стиль: 83 SCHOOL. Добавлено: таблица notifications.
+database.py — Neon/Postgres (psycopg sync + threads) for 83 SCHOOL
+Работает на любом event loop (Windows/Linux).
 """
-import aiosqlite
+import asyncio
 import time
 from typing import Optional
+import psycopg
+from psycopg.rows import dict_row
 from config import (
-    DATABASE_PATH,
-    TURSO_DATABASE_URL,
-    TURSO_AUTH_TOKEN,
+    DATABASE_URL,
     BASE_MAX_ENERGY,
     BASE_TAP_POWER,
     BASE_ENERGY_REGEN,
@@ -17,10 +17,8 @@ from config import (
     DEFAULT_SHOP_ITEMS,
 )
 
-USE_TURSO = bool(TURSO_DATABASE_URL)
-
-if USE_TURSO:
-    from libsql_experimental import create_client
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is empty! Add Neon connection string to .env")
 
 # ---------------------------------------------------------------------------
 # Schema
@@ -28,64 +26,60 @@ if USE_TURSO:
 
 CREATE_USERS = """
 CREATE TABLE IF NOT EXISTS users (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    telegram_id   INTEGER UNIQUE NOT NULL,
+    id            BIGSERIAL PRIMARY KEY,
+    telegram_id   BIGINT UNIQUE NOT NULL,
     username      TEXT,
     first_name    TEXT,
-    balance       REAL    DEFAULT 0,
+    balance       DOUBLE PRECISION DEFAULT 0,
     tap_power     INTEGER DEFAULT 1,
-    energy        REAL    DEFAULT 1000,
+    energy        DOUBLE PRECISION DEFAULT 1000,
     max_energy    INTEGER DEFAULT 1000,
-    energy_regen  REAL    DEFAULT 1.0,
+    energy_regen  DOUBLE PRECISION DEFAULT 1.0,
     passive_income INTEGER DEFAULT 0,
-    last_seen     REAL    DEFAULT 0,
-    daily_claimed REAL    DEFAULT 0,
+    last_seen     DOUBLE PRECISION DEFAULT 0,
+    daily_claimed DOUBLE PRECISION DEFAULT 0,
     referrer_id   INTEGER DEFAULT NULL,
     level         INTEGER DEFAULT 1,
     total_taps    INTEGER DEFAULT 0,
-    total_earned  REAL    DEFAULT 0,
-    created_at    REAL    DEFAULT 0
+    total_earned  DOUBLE PRECISION DEFAULT 0,
+    created_at    DOUBLE PRECISION DEFAULT 0
 );
 """
 
 CREATE_USER_UPGRADES = """
 CREATE TABLE IF NOT EXISTS upgrades (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    id         BIGSERIAL PRIMARY KEY,
     user_id    INTEGER NOT NULL,
     type       TEXT    NOT NULL,
     level      INTEGER DEFAULT 0,
-    created_at REAL    DEFAULT 0,
-    UNIQUE(user_id, type),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    created_at DOUBLE PRECISION DEFAULT 0,
+    UNIQUE(user_id, type)
 );
 """
 
 CREATE_REFERRALS = """
 CREATE TABLE IF NOT EXISTS referrals (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    id            BIGSERIAL PRIMARY KEY,
     inviter_id    INTEGER NOT NULL,
     invited_id    INTEGER NOT NULL UNIQUE,
     reward_claimed INTEGER DEFAULT 0,
-    created_at    REAL    DEFAULT 0,
-    FOREIGN KEY (inviter_id) REFERENCES users(id),
-    FOREIGN KEY (invited_id) REFERENCES users(id)
+    created_at    DOUBLE PRECISION DEFAULT 0
 );
 """
 
 CREATE_TRANSACTIONS = """
 CREATE TABLE IF NOT EXISTS transactions (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    id         BIGSERIAL PRIMARY KEY,
     user_id    INTEGER NOT NULL,
-    amount     REAL    NOT NULL,
+    amount     DOUBLE PRECISION NOT NULL,
     reason     TEXT,
-    created_at REAL    DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    created_at DOUBLE PRECISION DEFAULT 0
 );
 """
 
 CREATE_CHARACTERS = """
 CREATE TABLE IF NOT EXISTS characters (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    id              BIGSERIAL PRIMARY KEY,
     name            TEXT    NOT NULL,
     description     TEXT    DEFAULT '',
     base_tap_power  INTEGER DEFAULT 1,
@@ -96,75 +90,66 @@ CREATE TABLE IF NOT EXISTS characters (
     image           TEXT    DEFAULT '',
     active          INTEGER DEFAULT 1,
     sort_order      INTEGER DEFAULT 0,
-    created_at      REAL    DEFAULT 0
+    created_at      DOUBLE PRECISION DEFAULT 0
 );
 """
 
 CREATE_SHOP_ITEMS = """
 CREATE TABLE IF NOT EXISTS shop_items (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    id               BIGSERIAL PRIMARY KEY,
     name             TEXT    NOT NULL,
     description      TEXT    DEFAULT '',
     icon             TEXT    DEFAULT '⬆️',
     effect_type      TEXT    NOT NULL,
-    effect_value     REAL    DEFAULT 1,
+    effect_value     DOUBLE PRECISION DEFAULT 1,
     base_price       INTEGER NOT NULL,
-    price_multiplier REAL    DEFAULT 3.0,
+    price_multiplier DOUBLE PRECISION DEFAULT 3.0,
     max_level        INTEGER DEFAULT 7,
     active           INTEGER DEFAULT 1,
     sort_order       INTEGER DEFAULT 0,
-    created_at       REAL    DEFAULT 0
+    created_at       DOUBLE PRECISION DEFAULT 0
 );
 """
 
 CREATE_USER_SHOP_LEVELS = """
 CREATE TABLE IF NOT EXISTS user_shop_levels (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    id          BIGSERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL,
     item_id     INTEGER NOT NULL,
     level       INTEGER DEFAULT 0,
-    created_at  REAL    DEFAULT 0,
-    UNIQUE(user_id, item_id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (item_id) REFERENCES shop_items(id)
+    created_at  DOUBLE PRECISION DEFAULT 0,
+    UNIQUE(user_id, item_id)
 );
 """
 
 CREATE_NOTIFICATIONS = """
 CREATE TABLE IF NOT EXISTS notifications (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    id         BIGSERIAL PRIMARY KEY,
     title      TEXT NOT NULL,
     message    TEXT NOT NULL,
-    created_at REAL DEFAULT 0
+    created_at DOUBLE PRECISION DEFAULT 0
 );
 """
 
 # ---------------------------------------------------------------------------
-# Universal query executor (SQLite / Turso)
+# Sync executor in threads (loop-safe)
 # ---------------------------------------------------------------------------
 
+def _sync_exec(sql, params=None, fetch_one=False, fetch_all=False):
+    with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+        conn.row_factory = dict_row
+        with conn.cursor() as cur:
+            cur.execute(sql, params or ())
+            if fetch_one:
+                return cur.fetchone()
+            if fetch_all:
+                return cur.fetchall()
+            return None
+
+
 async def execute_query(query, params=None, fetch_one=False, fetch_all=False):
-    if USE_TURSO:
-        client = create_client(TURSO_DATABASE_URL, auth_token=TURSO_AUTH_TOKEN)
-        result = await client.execute(query, list(params) if params else [])
-        if fetch_one:
-            if not result.rows:
-                return None
-            return dict(zip(result.columns, result.rows[0]))
-        if fetch_all:
-            return [dict(zip(result.columns, r)) for r in result.rows]
-        return None
-    else:
-        async with aiosqlite.connect(DATABASE_PATH) as db:
-            db.row_factory = aiosqlite.Row
-            async with db.execute(query, params or ()) as cur:
-                if fetch_one:
-                    row = await cur.fetchone()
-                    return dict(row) if row else None
-                if fetch_all:
-                    return [dict(r) for r in await cur.fetchall()]
-                await db.commit()
-                return None
+    sql = query.replace("?", "%s")
+    return await asyncio.to_thread(_sync_exec, sql, params, fetch_one, fetch_all)
 
 # ---------------------------------------------------------------------------
 # Init & Seed
@@ -176,7 +161,7 @@ async def init_db():
               CREATE_USER_SHOP_LEVELS, CREATE_NOTIFICATIONS):
         await execute_query(q)
     try:
-        await execute_query("ALTER TABLE users ADD COLUMN total_earned REAL DEFAULT 0")
+        await execute_query("ALTER TABLE users ADD COLUMN total_earned DOUBLE PRECISION DEFAULT 0")
     except Exception:
         pass
     await seed_characters()
@@ -253,9 +238,9 @@ async def update_character(char_id: int, data: dict):
                        "base_passive", "color", "emoji", "image", "active", "sort_order")}
     if not fields:
         return
-    set_clause = ", ".join(f"{k} = ?" for k in fields)
-    await execute_query(f"UPDATE characters SET {set_clause} WHERE id = ?",
-                        list(fields.values()) + [char_id])
+    set_clause = ", ".join(f"{k} = %s" for k in fields)
+    sql = "UPDATE characters SET " + set_clause + " WHERE id = %s"
+    await asyncio.to_thread(_sync_exec, sql, list(fields.values()) + [char_id])
 
 
 async def delete_character(char_id: int):
@@ -298,9 +283,9 @@ async def update_shop_item(item_id: int, data: dict):
                        "base_price", "price_multiplier", "max_level", "active", "sort_order")}
     if not fields:
         return
-    set_clause = ", ".join(f"{k} = ?" for k in fields)
-    await execute_query(f"UPDATE shop_items SET {set_clause} WHERE id = ?",
-                        list(fields.values()) + [item_id])
+    set_clause = ", ".join(f"{k} = %s" for k in fields)
+    sql = "UPDATE shop_items SET " + set_clause + " WHERE id = %s"
+    await asyncio.to_thread(_sync_exec, sql, list(fields.values()) + [item_id])
 
 
 async def delete_shop_item(item_id: int):
@@ -325,8 +310,8 @@ async def set_user_shop_level(user_id: int, item_id: int, level: int):
     await execute_query(
         """INSERT INTO user_shop_levels (user_id, item_id, level, created_at)
         VALUES (?, ?, ?, ?)
-        ON CONFLICT(user_id, item_id) DO UPDATE SET level = ?, created_at = ?""",
-        [user_id, item_id, level, now, level, now],
+        ON CONFLICT(user_id, item_id) DO UPDATE SET level = EXCLUDED.level, created_at = EXCLUDED.created_at""",
+        [user_id, item_id, level, now],
     )
 
 # ---------------------------------------------------------------------------
@@ -342,11 +327,12 @@ async def create_user(telegram_id: int, username: Optional[str] = None,
                       referrer_id: Optional[int] = None) -> dict:
     now = time.time()
     await execute_query(
-        """INSERT OR IGNORE INTO users
+        """INSERT INTO users
         (telegram_id, username, first_name, balance, tap_power, energy,
          max_energy, energy_regen, passive_income, last_seen, daily_claimed,
          referrer_id, level, total_taps, total_earned, created_at)
-        VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 0, ?, 1, 0, 0, ?)""",
+        VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 0, ?, 1, 0, 0, ?)
+        ON CONFLICT (telegram_id) DO NOTHING""",
         [telegram_id, username, first_name, BASE_TAP_POWER,
          float(BASE_MAX_ENERGY), BASE_MAX_ENERGY, BASE_ENERGY_REGEN,
          BASE_PASSIVE_INCOME, now, referrer_id, now],
@@ -357,9 +343,9 @@ async def create_user(telegram_id: int, username: Optional[str] = None,
 async def update_user(telegram_id: int, **fields):
     if not fields:
         return
-    set_clause = ", ".join(f"{k} = ?" for k in fields)
-    await execute_query(f"UPDATE users SET {set_clause} WHERE telegram_id = ?",
-                        list(fields.values()) + [telegram_id])
+    set_clause = ", ".join(f"{k} = %s" for k in fields)
+    sql = "UPDATE users SET " + set_clause + " WHERE telegram_id = %s"
+    await asyncio.to_thread(_sync_exec, sql, list(fields.values()) + [telegram_id])
 
 
 async def apply_passive_income(user: dict) -> dict:
@@ -413,8 +399,8 @@ async def set_upgrade_level(user_id: int, upg_type: str, level: int):
     await execute_query(
         """INSERT INTO upgrades (user_id, type, level, created_at)
         VALUES (?, ?, ?, ?)
-        ON CONFLICT(user_id, type) DO UPDATE SET level = ?, created_at = ?""",
-        [user_id, upg_type, level, now, level, now],
+        ON CONFLICT(user_id, type) DO UPDATE SET level = EXCLUDED.level, created_at = EXCLUDED.created_at""",
+        [user_id, upg_type, level, now],
     )
 
 # ---------------------------------------------------------------------------
@@ -435,8 +421,9 @@ async def get_referrals(inviter_telegram_id: int) -> list:
 async def create_referral(inviter_id: int, invited_id: int):
     now = time.time()
     await execute_query(
-        """INSERT OR IGNORE INTO referrals (inviter_id, invited_id, reward_claimed, created_at)
-        VALUES (?, ?, 0, ?)""",
+        """INSERT INTO referrals (inviter_id, invited_id, reward_claimed, created_at)
+        VALUES (?, ?, 0, ?)
+        ON CONFLICT (invited_id) DO NOTHING""",
         [inviter_id, invited_id, now],
     )
 
