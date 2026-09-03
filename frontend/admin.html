@@ -1,0 +1,375 @@
+ 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<title>83 SCHOOL — Админ</title>
+<style>
+:root{
+  --bg:#0a0a0a; --surface:#161616; --surface2:#1e1e1e;
+  --border:#2a2a2a; --text:#f2f2f2; --muted:#8a8a8a; --accent:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);z-index:10;
+}
+.logo{font-weight:700;letter-spacing:2px;font-size:15px}
+.logo span{color:var(--muted);font-weight:400}
+main{max-width:720px;margin:0 auto;padding:16px 16px 60px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{
+  background:var(--surface);border:1px solid var(--border);color:var(--muted);
+  border-radius:6px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600;
+}
+.tabs button.active{background:#fff;color:#000;border-color:#fff}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+h2{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:600}
+label{display:block;font-size:11px;color:var(--muted);margin:8px 0 4px}
+input,select,textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);padding:9px 10px;font-size:14px;
+  font-family:inherit;
+}
+textarea{resize:vertical;min-height:70px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{
+  background:var(--accent);color:#000;border:none;border-radius:6px;
+  padding:10px 16px;font-weight:600;font-size:13px;cursor:pointer;margin-top:12px;
+}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn.danger{background:transparent;color:#fff;border:1px solid #444}
+.btn.small{padding:6px 10px;font-size:12px;margin-top:0}
+.item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:12px;margin-bottom:10px;
+}
+.item .ic{font-size:24px;width:36px;text-align:center;filter:grayscale(1)}
+.item .info{flex:1}
+.item .info b{font-size:14px;display:block}
+.item .info span{font-size:11px;color:var(--muted)}
+.off{opacity:.45}
+.row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row span{color:var(--muted)}
+.toast{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);
+  background:#fff;color:#000;font-weight:600;font-size:13px;
+  border-radius:8px;padding:10px 18px;z-index:99;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.toast.show{opacity:1}
+.login{max-width:340px;margin:80px auto;text-align:center}
+.muted{color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">83 <span>SCHOOL · АДМИН</span></div>
+  <button class="btn ghost small" id="logout" style="display:none">Выйти</button>
+</header>
+
+<!-- LOGIN -->
+<main id="loginView" class="login" style="display:none">
+  <div class="card">
+    <h2>Вход в админку</h2>
+    <label>Твой Telegram ID</label>
+    <input type="number" id="loginId" placeholder="Например: 123456789">
+    <button class="btn" id="loginBtn" style="width:100%">Войти</button>
+    <p class="muted" style="margin-top:10px">ID должен совпадать с ADMIN_TELEGRAM_ID в .env</p>
+  </div>
+</main>
+
+<!-- ADMIN -->
+<main id="adminView" style="display:none">
+  <div class="tabs">
+    <button data-tab="chars" class="active">Бойцы</button>
+    <button data-tab="shop">Магазин</button>
+    <button data-tab="users">Игроки</button>
+    <button data-tab="notif">Оповещения</button>
+  </div>
+
+  <!-- БОЙЦЫ -->
+  <section id="tab-chars">
+    <div class="card">
+      <h2>Добавить бойца</h2>
+      <div class="grid2">
+        <div><label>Имя</label><input id="chName" placeholder="Например: Директор"></div>
+        <div><label>Эмодзи</label><input id="chEmoji" placeholder="👤" value="👤"></div>
+      </div>
+      <label>Описание</label><input id="chDesc" placeholder="Короткое описание">
+      <div class="grid2">
+        <div><label>Сила тапа</label><input type="number" id="chTap" value="1"></div>
+        <div><label>Энергия</label><input type="number" id="chEnergy" value="1000"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Пассив / час</label><input type="number" id="chPassive" value="0"></div>
+        <div><label>Картинка (необязательно)</label><input type="file" id="chImage" accept="image/*"></div>
+      </div>
+      <button class="btn" id="chAdd">Добавить бойца</button>
+    </div>
+    <h2>Список бойцов</h2>
+    <div id="charList"></div>
+  </section>
+
+  <!-- МАГАЗИН -->
+  <section id="tab-shop" style="display:none">
+    <div class="card">
+      <h2>Добавить товар</h2>
+      <div class="grid2">
+        <div><label>Название</label><input id="shName" placeholder="Например: Перчатка"></div>
+        <div><label>Иконка</label><input id="shIcon" placeholder="🥊" value="🥊"></div>
+      </div>
+      <label>Описание</label><input id="shDesc" placeholder="Что даёт товар">
+      <div class="grid2">
+        <div><label>Тип эффекта</label>
+          <select id="shType">
+            <option value="tap_power">tap_power — сила тапа</option>
+            <option value="max_energy">max_energy — макс. энергия</option>
+            <option value="energy_regen">energy_regen — реген энергии</option>
+            <option value="passive_income">passive_income — пассив</option>
+          </select>
+        </div>
+        <div><label>Значение эффекта</label><input type="number" id="shValue" value="1"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Базовая цена</label><input type="number" id="shPrice" value="500"></div>
+        <div><label>Множитель цены</label><input type="number" step="0.1" id="shMult" value="3.0"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Макс. уровень</label><input type="number" id="shMax" value="7"></div>
+      </div>
+      <button class="btn" id="shAdd">Добавить товар</button>
+    </div>
+    <h2>Список товаров</h2>
+    <div id="shopList"></div>
+  </section>
+
+  <!-- ИГРОКИ -->
+  <section id="tab-users" style="display:none">
+    <div class="card">
+      <h2>Выдать / забрать поинты</h2>
+      <div class="grid2">
+        <div><label>Telegram ID игрока</label><input type="number" id="grId" placeholder="123456789"></div>
+        <div><label>Кол-во (минус = забрать)</label><input type="number" id="grAmount" value="1000"></div>
+      </div>
+      <button class="btn" id="grBtn">Выполнить</button>
+    </div>
+    <h2>Топ игроков</h2>
+    <div class="card" id="userList"></div>
+  </section>
+
+  <!-- ОПОВЕЩЕНИЯ -->
+  <section id="tab-notif" style="display:none">
+    <div class="card">
+      <h2>Отправить оповещение всем</h2>
+      <label>Заголовок</label><input id="ntTitle" placeholder="Например: Обновление!">
+      <label>Текст сообщения</label><textarea id="ntMsg" placeholder="Текст оповещения для всех игроков..."></textarea>
+      <button class="btn" id="ntSend" style="width:100%">📨 Отправить всем</button>
+    </div>
+    <h2>Отправленные</h2>
+    <div id="notifList"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => Math.floor(n).toLocaleString("ru-RU");
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+async function api(path, opts){
+  const r = await fetch(path, opts);
+  const d = await r.json().catch(()=>({ok:false}));
+  if(!r.ok) throw new Error(d.detail || "Ошибка");
+  return d;
+}
+const get = p => api(p);
+const post = (p, body) => api(p, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+const put = (p, body) => api(p, {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+const del = p => api(p, {method:"DELETE"});
+
+let ADMIN_ID = new URLSearchParams(location.search).get("user_id") || localStorage.getItem("admin_id");
+
+// ---------- login ----------
+function showLogin(){ $("loginView").style.display = "block"; $("adminView").style.display = "none"; }
+function showAdmin(){ $("loginView").style.display = "none"; $("adminView").style.display = "block"; $("logout").style.display = "block"; loadAll(); }
+
+$("loginBtn").onclick = ()=>{
+  const v = parseInt($("loginId").value);
+  if(!v){ toast("Введи ID"); return; }
+  ADMIN_ID = v; localStorage.setItem("admin_id", String(v));
+  boot();
+};
+$("logout").onclick = ()=>{ localStorage.removeItem("admin_id"); location.href = "/admin"; };
+
+async function boot(){
+  if(!ADMIN_ID){ showLogin(); return; }
+  try{
+    await get("/api/admin/users?admin_id=" + ADMIN_ID);
+    showAdmin();
+  }catch(e){ showLogin(); }
+}
+
+// ---------- tabs ----------
+document.querySelectorAll(".tabs button").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+    ["chars","shop","users","notif"].forEach(t=> $("tab-"+t).style.display = "none");
+    b.classList.add("active");
+    $("tab-" + b.dataset.tab).style.display = "block";
+  };
+});
+
+// ---------- characters ----------
+async function loadChars(){
+  const d = await get("/api/admin/characters?admin_id=" + ADMIN_ID);
+  const box = $("charList"); box.innerHTML = "";
+  d.characters.forEach(ch=>{
+    const div = document.createElement("div");
+    div.className = "item" + (ch.active ? "" : " off");
+    div.innerHTML =
+      '<div class="ic">' + (ch.image ? '<img src="'+ch.image+'" style="width:32px;height:32px;object-fit:contain;filter:grayscale(.4)">' : ch.emoji) + '</div>' +
+      '<div class="info"><b>' + ch.name + '</b><span>тап ' + ch.base_tap_power + ' · энергия ' + ch.base_energy + ' · пассив ' + ch.base_passive + '/ч</span></div>';
+    const tog = document.createElement("button");
+    tog.className = "btn ghost small";
+    tog.textContent = ch.active ? "Выкл" : "Вкл";
+    tog.onclick = async ()=>{ await put("/api/admin/characters/" + ch.id + "?admin_id=" + ADMIN_ID, {active: ch.active ? 0 : 1}); loadChars(); };
+    const delb = document.createElement("button");
+    delb.className = "btn danger small";
+    delb.textContent = "✕";
+    delb.onclick = async ()=>{ if(confirm("Удалить бойца " + ch.name + "?")){ await del("/api/admin/characters/" + ch.id + "?admin_id=" + ADMIN_ID); loadChars(); } };
+    div.appendChild(tog); div.appendChild(delb);
+    box.appendChild(div);
+  });
+}
+
+$("chAdd").onclick = async ()=>{
+  const name = $("chName").value.trim();
+  if(!name){ toast("Введи имя"); return; }
+  let image = "";
+  const f = $("chImage").files[0];
+  if(f){
+    try{
+      const fd = new FormData(); fd.append("file", f);
+      const up = await api("/api/admin/upload-image?admin_id=" + ADMIN_ID, {method:"POST", body:fd});
+      image = up.url;
+    }catch(e){ toast("Ошибка загрузки картинки"); }
+  }
+  await post("/api/admin/characters?admin_id=" + ADMIN_ID, {
+    name,
+    description: $("chDesc").value.trim(),
+    base_tap_power: parseInt($("chTap").value) || 1,
+    base_energy: parseInt($("chEnergy").value) || 1000,
+    base_passive: parseInt($("chPassive").value) || 0,
+    color: "#e0e0e0",
+    emoji: $("chEmoji").value || "👤",
+    image,
+  });
+  $("chName").value = ""; $("chDesc").value = "";
+  toast("Боец добавлен");
+  loadChars();
+};
+
+// ---------- shop ----------
+async function loadShop(){
+  const d = await get("/api/admin/shop?admin_id=" + ADMIN_ID);
+  const box = $("shopList"); box.innerHTML = "";
+  d.items.forEach(it=>{
+    const div = document.createElement("div");
+    div.className = "item" + (it.active ? "" : " off");
+    div.innerHTML =
+      '<div class="ic">' + it.icon + '</div>' +
+      '<div class="info"><b>' + it.name + '</b><span>' + it.effect_type + ' +' + it.effect_value + ' · цена ' + fmt(it.base_price) + ' · макс ' + it.max_level + '</span></div>';
+    const tog = document.createElement("button");
+    tog.className = "btn ghost small";
+    tog.textContent = it.active ? "Выкл" : "Вкл";
+    tog.onclick = async ()=>{ await put("/api/admin/shop/" + it.id + "?admin_id=" + ADMIN_ID, {active: it.active ? 0 : 1}); loadShop(); };
+    const delb = document.createElement("button");
+    delb.className = "btn danger small";
+    delb.textContent = "✕";
+    delb.onclick = async ()=>{ if(confirm("Удалить товар " + it.name + "?")){ await del("/api/admin/shop/" + it.id + "?admin_id=" + ADMIN_ID); loadShop(); } };
+    div.appendChild(tog); div.appendChild(delb);
+    box.appendChild(div);
+  });
+}
+
+$("shAdd").onclick = async ()=>{
+  const name = $("shName").value.trim();
+  if(!name){ toast("Введи название"); return; }
+  await post("/api/admin/shop?admin_id=" + ADMIN_ID, {
+    name,
+    description: $("shDesc").value.trim(),
+    icon: $("shIcon").value || "⬆️",
+    effect_type: $("shType").value,
+    effect_value: parseFloat($("shValue").value) || 1,
+    base_price: parseInt($("shPrice").value) || 500,
+    price_multiplier: parseFloat($("shMult").value) || 3.0,
+    max_level: parseInt($("shMax").value) || 7,
+  });
+  $("shName").value = ""; $("shDesc").value = "";
+  toast("Товар добавлен");
+  loadShop();
+};
+
+// ---------- users ----------
+async function loadUsers(){
+  const d = await get("/api/admin/users?admin_id=" + ADMIN_ID);
+  const box = $("userList"); box.innerHTML = "";
+  d.users.forEach((u, i)=>{
+    const div = document.createElement("div");
+    div.className = "row";
+    div.innerHTML = "<span>" + (i+1) + ". " + (u.first_name || u.username || u.telegram_id) +
+      " <span style='color:#555'>id:" + u.telegram_id + "</span></span><b>" + fmt(u.total_earned) + "</b>";
+    box.appendChild(div);
+  });
+}
+
+$("grBtn").onclick = async ()=>{
+  const id = parseInt($("grId").value);
+  const amount = parseFloat($("grAmount").value);
+  if(!id || isNaN(amount)){ toast("Заполни оба поля"); return; }
+  try{
+    const d = await post("/api/admin/grant", {admin_id: ADMIN_ID, target_telegram_id: id, amount, reason: "admin_grant"});
+    toast(d.message); loadUsers();
+  }catch(e){ toast(e.message); }
+};
+
+// ---------- notifications ----------
+async function loadNotif(){
+  const d = await get("/api/admin/notifications?admin_id=" + ADMIN_ID);
+  const box = $("notifList"); box.innerHTML = "";
+  if(!d.notifications.length) box.innerHTML = '<div class="muted">Ещё не отправлял</div>';
+  d.notifications.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = '<div class="info"><b>' + n.title + '</b><span>' + n.message + '</span>' +
+      '<div class="muted" style="margin-top:4px">' + new Date(n.created_at*1000).toLocaleString("ru-RU") + '</div></div>';
+    box.appendChild(div);
+  });
+}
+
+$("ntSend").onclick = async ()=>{
+  const title = $("ntTitle").value.trim();
+  const msg = $("ntMsg").value.trim();
+  if(!title || !msg){ toast("Заполни заголовок и текст"); return; }
+  await post("/api/admin/notifications?admin_id=" + ADMIN_ID, {title, message: msg});
+  $("ntTitle").value = ""; $("ntMsg").value = "";
+  toast("Оповещение отправлено всем!");
+  loadNotif();
+};
+
+function loadAll(){ loadChars(); loadShop(); loadUsers(); loadNotif(); }
+boot();
+</script>
+</body>
+</html>
