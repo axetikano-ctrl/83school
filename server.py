@@ -20,6 +20,7 @@ from pydantic import BaseModel
 from config import (
     DAILY_BONUS_AMOUNT,
     MAX_TAPS_PER_WINDOW,
+    WEBHOOK_SECRET,
     REFERRAL_BONUS_INVITER,
     REFERRAL_BONUS_INVITED,
     ADMIN_TELEGRAM_ID,
@@ -188,6 +189,16 @@ async def serve_frontend():
 
 
 @app.get("/admin")
+from bot import bot as tg_bot, dp as tg_dp
+from aiogram.types import Update as TgUpdate
+
+@app.post("/api/telegram/webhook")
+async def telegram_webhook(request: Request):
+    if request.headers.get("x-telegram-bot-api-secret-token", "") != WEBHOOK_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid secret")
+    data = await request.json()
+    await tg_dp.feed_update(tg_bot, TgUpdate(**data))
+    return {"ok": True}
 async def serve_admin():
     return FileResponse("frontend/admin.html")
 

@@ -10,7 +10,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.markdown import hbold
 
-from config import BOT_TOKEN, WEBAPP_URL, REFERRAL_BONUS_INVITER, REFERRAL_BONUS_INVITED
+from config import BOT_TOKEN, WEBAPP_URL, REFERRAL_BONUS_INVITER, REFERRAL_BONUS_INVITED, WEBHOOK_SECRET
 from database import init_db, get_user, create_user, update_user, create_referral, add_transaction
 
 logging.basicConfig(
@@ -145,6 +145,10 @@ async def referral_callback(callback: types.CallbackQuery):
 
 
 async def main():
+  async def setup_webhook():
+    url = WEBAPP_URL.rstrip("/") + "/api/telegram/webhook"
+    await bot.set_webhook(url, secret_token=WEBHOOK_SECRET)
+    logger.info(f"Webhook set: {url}")  
     await init_db()
     logger.info("Database initialized.")
     logger.info("Starting Antigravity Bot...")
