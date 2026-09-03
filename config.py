@@ -5,10 +5,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
-BOT_TOKEN: str = os.getenv("BOT_TOKEN", "")
-WEBAPP_URL: str = os.getenv("WEBAPP_URL", "http://localhost:8000")
-API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000")
+BOT_TOKEN: str = os.getenv("BOT_TOKEN", "").strip()
+WEBAPP_URL: str = os.getenv("WEBAPP_URL", "http://localhost:8000").strip().rstrip("/")
+API_BASE_URL: str = os.getenv("API_BASE_URL", "http://localhost:8000").strip().rstrip("/")
 SERVER_HOST: str = os.getenv("SERVER_HOST", "0.0.0.0")
 SERVER_PORT: int = int(os.getenv("PORT", os.getenv("SERVER_PORT", "8000")))
 
@@ -17,7 +16,7 @@ _admin_raw = os.getenv("ADMIN_TELEGRAM_ID", "")
 ADMIN_TELEGRAM_ID: int | None = int(_admin_raw) if _admin_raw.strip().isdigit() else None
 
 # Database: Neon/Postgres (cloud)
-DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+DATABASE_URL: str = os.getenv("DATABASE_URL", "").strip()
 
 # Legacy (не используется, оставлено для совместимости)
 DATABASE_PATH: str = "antigravity.db"
