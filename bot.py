@@ -1,4 +1,4 @@
- """
+"""
 bot.py — Telegram Bot (aiogram 3.x) for 83 SCHOOL
 Работает локально через polling и в Render через webhook.
 """

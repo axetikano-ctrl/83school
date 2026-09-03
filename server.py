@@ -1,65 +1,43 @@
- 
 """
 server.py — FastAPI HTTP server for 83 SCHOOL game API
-Includes game API + admin API (/api/admin/*) + notifications.
+Includes game API + admin API + notifications + telegram webhook.
 """
 import os
-import math
 import time
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Request, UploadFile, File, Form, Depends
+from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
+
+from aiogram.types import Update as TgUpdate
+from bot import bot as tg_bot, dp as tg_dp
 
 from config import (
     DAILY_BONUS_AMOUNT,
     MAX_TAPS_PER_WINDOW,
-    WEBHOOK_SECRET,
     REFERRAL_BONUS_INVITER,
     REFERRAL_BONUS_INVITED,
     ADMIN_TELEGRAM_ID,
+    WEBHOOK_SECRET,
 )
 from database import (
-    init_db,
-    get_user,
-    create_user,
-    update_user,
-    apply_passive_income,
-    apply_energy_regen,
-    get_user_upgrades,
-    set_upgrade_level,
-    get_referrals,
-    create_referral,
-    mark_referral_reward,
-    add_transaction,
-    get_characters,
-    get_character,
-    create_character,
-    update_character,
-    delete_character,
-    get_shop_items,
-    get_shop_item,
-    create_shop_item,
-    update_shop_item,
-    delete_shop_item,
-    get_user_shop_levels,
-    set_user_shop_level,
-    compute_item_price,
-    get_top_users,
-    get_notifications,
-    create_notification,
+    init_db, get_user, create_user, update_user,
+    apply_passive_income, apply_energy_regen,
+    get_user_upgrades, set_upgrade_level,
+    get_referrals, create_referral, mark_referral_reward, add_transaction,
+    get_characters, get_character, create_character, update_character, delete_character,
+    get_shop_items, get_shop_item, create_shop_item, update_shop_item, delete_shop_item,
+    get_user_shop_levels, set_user_shop_level, compute_item_price,
+    get_top_users, get_notifications, create_notification,
 )
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 CHARACTERS_UPLOAD_DIR = Path("frontend/assets/characters")
@@ -67,7 +45,7 @@ CHARACTERS_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ---------------------------------------------------------------------------
-# Pydantic models — game
+# Pydantic models
 # ---------------------------------------------------------------------------
 
 class InitRequest(BaseModel):
@@ -92,10 +70,6 @@ class BuyShopItemRequest(BaseModel):
 class ClaimDailyRequest(BaseModel):
     telegram_id: int
 
-
-# ---------------------------------------------------------------------------
-# Pydantic models — admin
-# ---------------------------------------------------------------------------
 
 class AdminCharacterCreate(BaseModel):
     name: str
@@ -189,8 +163,13 @@ async def serve_frontend():
 
 
 @app.get("/admin")
-from bot import bot as tg_bot, dp as tg_dp
-from aiogram.types import Update as TgUpdate
+async def serve_admin():
+    return FileResponse("frontend/admin.html")
+
+
+# ---------------------------------------------------------------------------
+# Telegram webhook (для облака)
+# ---------------------------------------------------------------------------
 
 @app.post("/api/telegram/webhook")
 async def telegram_webhook(request: Request):
@@ -199,8 +178,6 @@ async def telegram_webhook(request: Request):
     data = await request.json()
     await tg_dp.feed_update(tg_bot, TgUpdate(**data))
     return {"ok": True}
-async def serve_admin():
-    return FileResponse("frontend/admin.html")
 
 
 # ---------------------------------------------------------------------------
@@ -701,9 +678,3 @@ async def admin_create_notification(admin_id: int, data: AdminNotificationCreate
     check_admin(admin_id)
     note = await create_notification(data.title, data.message)
     return {"ok": True, "notification": note}
-
-
-if __name__ == "__main__":
-    import uvicorn
-    from config import SERVER_HOST, SERVER_PORT
-    uvicorn.run("server:app", host=SERVER_HOST, port=SERVER_PORT, reload=True)
