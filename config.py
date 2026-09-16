@@ -24,7 +24,7 @@ TURSO_DATABASE_URL: str = os.getenv("TURSO_DATABASE_URL", "")
 TURSO_AUTH_TOKEN: str = os.getenv("TURSO_AUTH_TOKEN", "")
 
 # Bot mode: "polling" (локально) или "webhook" (в облаке)
-BOT_MODE: str = os.getenv("BOT_MODE", "polling")
+BOT_MODE: str = os.getenv("BOT_MODE", "polling").strip()
 WEBHOOK_SECRET: str = os.getenv("WEBHOOK_SECRET", "83school-secret")
 
 # Game balance constants
