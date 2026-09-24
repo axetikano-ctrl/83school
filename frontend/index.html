@@ -1,500 +1,675 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0a0a0a">
-<title>83 SCHOOL</title>
+<meta name="theme-color" content="#0b1220">
+<title>CampusPay</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{
-  --bg:#0a0a0a; --surface:#161616; --surface2:#1e1e1e;
-  --border:#2a2a2a; --text:#f2f2f2; --muted:#8a8a8a; --accent:#ffffff;
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0b1220;
+  --card: #151e2b;
+  --card2: #1d2836;
+  --accent: #1e88e5;
+  --text: #f2f2f2;
+  --muted: #8a8a8a;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  background:var(--bg); color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  min-height:100vh; overflow-x:hidden; user-select:none;
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 80px;
+  user-select: none;
 }
-.ico{filter:grayscale(1);opacity:.9}
-/* ---------- header ---------- */
-header{
-  position:sticky;top:0;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--border);
+.container { max-width: 560px; margin: 0 auto; padding: 16px; }
+
+/* Screens */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Header */
+h1 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
-.logo{font-weight:700;letter-spacing:2px;font-size:15px}
-.logo span{color:var(--muted);font-weight:400}
-.hright{display:flex;align-items:center;gap:12px}
-.balance{font-weight:700;font-size:16px}
-.balance small{color:var(--muted);font-weight:400;font-size:11px;margin-left:4px}
-.bell{position:relative;font-size:20px;background:none;border:none;cursor:pointer;padding:4px}
-.bell .dot{
-  position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;
-  background:#fff;display:none;
+.card-title { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.card-value { font-size: 32px; font-weight: 700; }
+
+/* Balance card */
+.balance-card {
+  background: linear-gradient(135deg, var(--accent), #1565c0);
+  padding: 24px;
+  margin-bottom: 20px;
 }
-/* ---------- layout ---------- */
-main{padding:16px 16px 96px;max-width:560px;margin:0 auto}
-.tab{display:none}
-.tab.active{display:block}
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:14px;margin-bottom:12px;
+.balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
+.balance-amount { font-size: 42px; font-weight: 700; }
+
+/* Payment cards */
+.payment-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
-.muted{color:var(--muted);font-size:12px}
-h2{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:600}
-/* ---------- tap tab ---------- */
-.rankline{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.rank{font-size:13px;font-weight:600;border:1px solid var(--border);border-radius:6px;padding:4px 10px;background:var(--surface2)}
-.prog{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:16px}
-.prog i{display:block;height:100%;background:var(--accent);width:0%}
-.orbwrap{display:flex;justify-content:center;padding:12px 0 20px;position:relative}
-.orb{
-  width:220px;height:220px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%, #3a3a3a, #1a1a1a 70%);
-  border:1px solid #3a3a3a;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:transform .08s ease;
-  position:relative;overflow:hidden;
+.payment-card:active { background: var(--card2); }
+.card-info { flex: 1; }
+.card-number { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.card-system { font-size: 13px; color: var(--muted); }
+.card-balance { font-size: 20px; font-weight: 700; }
+
+/* Transaction list */
+.transaction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--card2);
 }
-.orb:active{transform:scale(.96)}
-.orb img{width:70%;height:70%;object-fit:contain;pointer-events:none}
-.orb .emoji{font-size:84px;pointer-events:none;filter:grayscale(.6)}
-.float{
-  position:absolute;font-weight:700;font-size:18px;color:#fff;
-  pointer-events:none;animation:fly .8s ease-out forwards;
+.transaction:last-child { border-bottom: none; }
+.tx-info { flex: 1; }
+.tx-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.tx-date { font-size: 12px; color: var(--muted); }
+.tx-amount { font-size: 16px; font-weight: 700; }
+.tx-amount.income { color: #4caf50; }
+.tx-amount.expense { color: #f44336; }
+
+/* Form elements */
+input, select {
+  width: 100%;
+  background: var(--card2);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 12px;
 }
-@keyframes fly{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-70px)}}
-.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-.stat b{display:block;font-size:16px}
-.stat span{font-size:11px;color:var(--muted)}
-.energybar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:6px}
-.energybar i{display:block;height:100%;background:#cfcfcf;width:100%}
-/* ---------- shop / chars ---------- */
-.item{
-  display:flex;align-items:center;gap:12px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:12px;margin-bottom:10px;
+input:focus, select:focus { outline: 2px solid var(--accent); }
+
+button {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
-.item .ic{font-size:26px;width:40px;text-align:center;filter:grayscale(1)}
-.item .info{flex:1}
-.item .info b{font-size:14px;display:block}
-.item .info span{font-size:11px;color:var(--muted)}
-.lvl{font-size:11px;color:var(--muted);margin-top:2px}
-.btn{
-  background:var(--accent);color:#000;border:none;border-radius:6px;
-  padding:9px 14px;font-weight:600;font-size:13px;cursor:pointer;
+button:active { opacity: 0.8; }
+button:disabled { background: var(--card2); color: var(--muted); cursor: default; }
+
+/* Checkbox */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 16px 0;
 }
-.btn:disabled{background:var(--surface2);color:var(--muted);cursor:default}
-.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
-.char.current{border-color:#fff}
-.lock{font-size:11px;color:var(--muted)}
-/* ---------- nav ---------- */
-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:10;
-  display:flex;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);
-  border-top:1px solid var(--border);
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  margin-top: 4px;
 }
-nav button{
-  flex:1;background:none;border:none;color:var(--muted);
-  padding:10px 0 12px;font-size:10px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
+.checkbox-group label {
+  font-size: 14px;
+  line-height: 1.5;
 }
-nav button .nico{font-size:18px;filter:grayscale(1)}
-nav button.active{color:#fff}
-/* ---------- modal / toast ---------- */
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;
-  display:none;align-items:flex-end;justify-content:center;
+
+/* Navigation */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  display: flex;
+  border-top: 1px solid var(--card2);
+  z-index: 100;
 }
-.modal.open{display:flex}
-.sheet{
-  width:100%;max-width:560px;max-height:75vh;overflow-y:auto;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px 14px 0 0;padding:18px 16px 26px;
+nav button {
+  flex: 1;
+  background: none;
+  color: var(--muted);
+  border-radius: 0;
+  padding: 12px 0;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
-.sheet h3{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.note{border-bottom:1px solid var(--border);padding:10px 0}
-.note b{font-size:13px;display:block;margin-bottom:3px}
-.note p{font-size:13px;color:#cfcfcf}
-.note time{font-size:10px;color:var(--muted)}
-.toast{
-  position:fixed;top:70px;left:50%;transform:translateX(-50%);
-  background:#fff;color:#000;font-weight:600;font-size:13px;
-  border-radius:8px;padding:10px 18px;z-index:99;
-  opacity:0;pointer-events:none;transition:opacity .25s;
+nav button .icon { font-size: 24px; }
+nav button.active { color: var(--accent); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
 }
-.toast.show{opacity:1}
-.refbox{
-  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
-  padding:10px;font-size:12px;word-break:break-all;color:#cfcfcf;margin:10px 0;
+.toast.show { opacity: 1; }
+
+/* Agreement screen */
+#agreementScreen {
+  padding-top: 40px;
 }
-.row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)}
-.row:last-child{border-bottom:none}
-.row span{color:var(--muted)}
+.agreement-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+.agreement-text ol {
+  padding-left: 20px;
+}
+.agreement-text li {
+  margin-bottom: 8px;
+}
+
+/* PIN screen */
+#pinScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+}
+.pin-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.pin-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* Profile */
+.profile-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--card2);
+}
+.profile-field:last-child { border-bottom: none; }
+.field-label { color: var(--muted); font-size: 14px; }
+.field-value { font-size: 16px; font-weight: 600; }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+}
+.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.modal-text { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 12px; }
+.modal-actions button { flex: 1; }
+.btn-secondary { background: var(--card2); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">83 <span>SCHOOL</span></div>
-  <div class="hright">
-    <div class="balance"><span id="balance">0</span><small>поинтов</small></div>
-    <button class="bell" id="bellBtn"><span class="ico">🔔</span><span class="dot" id="bellDot"></span></button>
+<div class="container">
+  <!-- Agreement Screen -->
+  <div id="agreementScreen" class="screen">
+    <h1>🏛 CampusPay</h1>
+    <div class="card">
+      <h2>Пользовательское соглашение</h2>
+      <div class="agreement-text">
+        <p style="margin-bottom: 12px;">Это учебный демонстрационный проект. Пожалуйста, ознакомьтесь с условиями:</p>
+        <ol>
+          <li>Это учебный тестовый проект, все данные демонстрационные</li>
+          <li>Пользователю есть 18 лет</li>
+          <li>Запрещено использовать для обмана людей и мошенничества</li>
+          <li>Создатель не принимает участия в действиях пользователя и не несёт ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам</li>
+          <li>Данные хранятся локально и никуда не передаются</li>
+        </ol>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="agreeCheckbox">
+        <label for="agreeCheckbox">Мне есть 18 лет, я принимаю условия и буду использовать приложение только для тестирования</label>
+      </div>
+      <button id="acceptBtn" disabled>Принять и продолжить</button>
+    </div>
   </div>
-</header>
 
-<main>
-  <!-- ТАП -->
-  <section class="tab active" id="tab-tap">
-    <div class="rankline">
-      <div class="rank" id="rankLabel">Ранг 1</div>
-      <div class="muted" id="charName">—</div>
+  <!-- PIN Screen -->
+  <div id="pinScreen" class="screen">
+    <div class="pin-title">Введите PIN</div>
+    <div class="pin-subtitle">Демо-PIN: 1234</div>
+    <input type="password" id="pinInput" placeholder="••••" maxlength="4" style="text-align: center; font-size: 24px;">
+    <button id="pinSubmitBtn">Войти</button>
+  </div>
+
+  <!-- Home Screen -->
+  <div id="homeScreen" class="screen">
+    <h1>Главный</h1>
+    <div class="balance-card">
+      <div class="balance-label">Общий баланс</div>
+      <div class="balance-amount" id="totalBalance">0 ₽</div>
     </div>
-    <div class="prog"><i id="rankProg"></i></div>
-    <div class="orbwrap" id="orbwrap">
-      <div class="orb" id="orb"><span class="emoji" id="orbEmoji">👤</span></div>
+    <h2>Мои карты</h2>
+    <div id="cardsList"></div>
+  </div>
+
+  <!-- Transfers Screen -->
+  <div id="transfersScreen" class="screen">
+    <h1>Переводы</h1>
+    <div class="card">
+      <h2>Новый перевод</h2>
+      <select id="fromCard">
+        <option value="">Выберите карту</option>
+      </select>
+      <select id="toContact">
+        <option value="">Выберите получателя</option>
+      </select>
+      <input type="number" id="transferAmount" placeholder="Сумма перевода" min="1">
+      <div id="transferFee" style="font-size: 14px; color: var(--muted); margin-bottom: 12px;"></div>
+      <button id="transferBtn">Перевести</button>
     </div>
-    <div class="statgrid">
-      <div class="stat"><b id="tapPower">1</b><span>сила тапа</span></div>
-      <div class="stat"><b id="passive">0</b><span>доход / час</span></div>
-      <div class="stat" style="grid-column:1/-1">
-        <b id="energyText">1000 / 1000</b><span>энергия</span>
-        <div class="energybar"><i id="energyFill"></i></div>
+  </div>
+
+  <!-- Reports Screen -->
+  <div id="reportsScreen" class="screen">
+    <h1>Отчёты</h1>
+    <div class="card">
+      <div class="card-title">Всего расходов</div>
+      <div class="card-value" id="totalExpenses">0 ₽</div>
+    </div>
+    <h2>История транзакций</h2>
+    <div class="card">
+      <div id="transactionsList"></div>
+    </div>
+  </div>
+
+  <!-- Profile Screen -->
+  <div id="profileScreen" class="screen">
+    <h1>Профиль</h1>
+    <div class="card">
+      <div class="profile-field">
+        <span class="field-label">Имя</span>
+        <span class="field-value" id="profileName"></span>
+      </div>
+      <div class="profile-field">
+        <span class="field-label">Телефон</span>
+        <span class="field-value" id="profilePhone"></span>
       </div>
     </div>
-  </section>
-
-  <!-- МАГАЗИН -->
-  <section class="tab" id="tab-shop">
-    <h2>Магазин</h2>
-    <div id="shopList"></div>
-  </section>
-
-  <!-- БОЙЦЫ -->
-  <section class="tab" id="tab-chars">
-    <h2>Бойцы</h2>
-    <div class="muted" style="margin-bottom:12px">Боец улучшается каждые 10 000 поинтов</div>
-    <div id="charList"></div>
-  </section>
-
-  <!-- ДРУЗЬЯ -->
-  <section class="tab" id="tab-friends">
-    <h2>Друзья</h2>
+    <button id="editNameBtn" style="margin-bottom: 12px;">Редактировать имя</button>
+    <button id="resetTransfersBtn" class="btn-secondary" style="margin-bottom: 20px;">Сбросить переводы</button>
     <div class="card">
-      <b style="font-size:14px">Приглашай — получай поинты</b>
-      <p class="muted" style="margin-top:6px" id="refInfo">+1000 тебе и +500 другу за каждого</p>
-      <div class="refbox" id="refLink">…</div>
-      <button class="btn" id="copyRef">Скопировать ссылку</button>
+      <div style="font-size: 12px; color: var(--muted); line-height: 1.5;">
+        ⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. 
+        Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя.
+      </div>
     </div>
-    <h2 style="margin-top:16px">Приглашено: <span id="refCount">0</span></h2>
-    <div id="refList"></div>
-  </section>
+  </div>
+</div>
 
-  <!-- ПРОФИЛЬ -->
-  <section class="tab" id="tab-profile">
-    <h2>Профиль</h2>
-    <div class="card">
-      <div class="row"><span>Игрок</span><b id="pName">—</b></div>
-      <div class="row"><span>Всего тапов</span><b id="pTaps">0</b></div>
-      <div class="row"><span>Всего заработано</span><b id="pEarned">0</b></div>
-      <div class="row"><span>Ранг</span><b id="pLevel">1</b></div>
+<!-- Edit Name Modal -->
+<div id="editNameModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-title">Редактировать имя</div>
+    <input type="text" id="newNameInput" placeholder="Введите имя">
+    <div class="modal-actions">
+      <button id="cancelEditBtn" class="btn-secondary">Отмена</button>
+      <button id="saveNameBtn">Сохранить</button>
     </div>
-    <button class="btn" id="dailyBtn" style="width:100%;margin-bottom:12px">Ежедневный бонус</button>
-    <h2>Топ игроков</h2>
-    <div class="card" id="leaderList"></div>
-    <a id="adminBtn" class="btn ghost" style="display:none;width:100%;text-align:center;text-decoration:none;margin-top:12px" href="#">Админ-панель</a>
-  </section>
-</main>
+  </div>
+</div>
 
-<nav>
-  <button data-tab="tap" class="active"><span class="nico">👆</span>Тап</button>
-  <button data-tab="shop"><span class="nico">🛒</span>Магазин</button>
-  <button data-tab="chars"><span class="nico">🥊</span>Бойцы</button>
-  <button data-tab="friends"><span class="nico">👥</span>Друзья</button>
-  <button data-tab="profile"><span class="nico">👤</span>Профиль</button>
-</nav>
-
-<!-- Уведомления -->
-<div class="modal" id="notifModal">
-  <div class="sheet">
-    <h3>Оповещения</h3>
-    <div id="notifList"></div>
-    <button class="btn ghost" style="width:100%;margin-top:14px" id="closeNotif">Закрыть</button>
+<!-- Transfer Confirm Modal -->
+<div id="transferModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-title">Подтверждение перевода</div>
+    <div id="transferDetails" class="modal-text"></div>
+    <div class="modal-actions">
+      <button id="cancelTransferBtn" class="btn-secondary">Отмена</button>
+      <button id="confirmTransferBtn">Подтвердить</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<nav>
+  <button data-tab="home" class="active"><span class="icon">🏠</span>Главный</button>
+  <button data-tab="transfers"><span class="icon">💸</span>Переводы</button>
+  <button data-tab="reports"><span class="icon">📊</span>Отчёты</button>
+  <button data-tab="profile"><span class="icon">👤</span>Профиль</button>
+</nav>
+
 <script>
-const API = ""; // same origin
-let S = null;           // profile
-let pendingTaps = 0;
-let botUsername = "";
-let characters = [];
+// ===== State Management =====
+const STORAGE_KEY = 'campuspay_data';
+let state = null;
 
-const $ = id => document.getElementById(id);
-const fmt = n => Math.floor(n).toLocaleString("ru-RU");
-
-function toast(msg){
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 2200);
+function generateRandomName() {
+  const names = ['Александр', 'Мария', 'Дмитрий', 'Анна', 'Иван', 'Елена', 'Сергей', 'Ольга', 'Михаил', 'Наталья'];
+  const surnames = ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Михайлов', 'Новикова', 'Фёдоров', 'Морозова', 'Волков', 'Алексеева'];
+  return `${names[Math.floor(Math.random() * names.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`;
 }
 
-async function api(path, opts){
-  const r = await fetch(API + path, opts);
-  const data = await r.json().catch(()=>({ok:false}));
-  if(!r.ok) throw new Error(data.detail || "Ошибка");
-  return data;
+function generateRandomPhone() {
+  return `+7 (${Math.floor(Math.random() * 900) + 100}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 90) + 10}`;
 }
-const post = (path, body) => api(path, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
 
-// ---------- identity ----------
-let tgUser = null, refParam = null;
-try{
-  const tg = window.Telegram && window.Telegram.WebApp;
-  if(tg){ tg.ready(); tg.expand(); }
-  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user) tgUser = tg.initDataUnsafe.user;
-  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) refParam = tg.initDataUnsafe.start_param;
-}catch(e){}
-const urlId = new URLSearchParams(location.search).get("user_id");
-const USER_ID = (tgUser && tgUser.id) || (urlId ? parseInt(urlId) : null);
+function generateCardNumber() {
+  return `${Math.floor(Math.random() * 9000) + 1000}`;
+}
 
-// ---------- init ----------
-async function init(){
-  if(!USER_ID){ toast("Открой в Telegram или добавь ?user_id="); return; }
-  const data = await post("/api/init", {
-    telegram_id: USER_ID,
-    username: tgUser ? tgUser.username : "browser",
-    first_name: tgUser ? tgUser.first_name : "Игрок",
-    ref: refParam || null,
+function initState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    state = JSON.parse(saved);
+  } else {
+    state = {
+      agreementAccepted: false,
+      pinVerified: false,
+      profile: {
+        name: generateRandomName(),
+        phone: generateRandomPhone()
+      },
+      cards: [
+        { number: generateCardNumber(), system: 'Visa', balance: 50000 },
+        { number: generateCardNumber(), system: 'Mastercard', balance: 30000 }
+      ],
+      transactions: []
+    };
+    saveState();
+  }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ===== UI Helpers =====
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function formatMoney(amount) {
+  return `${amount.toLocaleString('ru-RU')} ₽`;
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+// ===== Agreement Screen =====
+document.getElementById('agreeCheckbox').addEventListener('change', (e) => {
+  document.getElementById('acceptBtn').disabled = !e.target.checked;
+});
+
+document.getElementById('acceptBtn').addEventListener('click', () => {
+  state.agreementAccepted = true;
+  saveState();
+  showScreen('pinScreen');
+});
+
+// ===== PIN Screen =====
+document.getElementById('pinSubmitBtn').addEventListener('click', () => {
+  const pin = document.getElementById('pinInput').value;
+  if (pin === '1234') {
+    state.pinVerified = true;
+    saveState();
+    showScreen('homeScreen');
+    renderAll();
+  } else {
+    showToast('Неверный PIN');
+    document.getElementById('pinInput').value = '';
+  }
+});
+
+// ===== Navigation =====
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showScreen(`${btn.dataset.tab}Screen`);
+    renderAll();
   });
-  S = data.user;
-  const info = await api("/api/info");
-  botUsername = info.bot_username || "";
-  characters = (await api("/api/characters")).characters || [];
+});
+
+// ===== Home Screen =====
+function renderHome() {
+  const totalBalance = state.cards.reduce((sum, card) => sum + card.balance, 0);
+  document.getElementById('totalBalance').textContent = formatMoney(totalBalance);
+
+  const cardsList = document.getElementById('cardsList');
+  cardsList.innerHTML = '';
+  state.cards.forEach((card, idx) => {
+    const div = document.createElement('div');
+    div.className = 'card payment-card';
+    div.innerHTML = `
+      <div class="card-info">
+        <div class="card-number">•••• ${card.number}</div>
+        <div class="card-system">${card.system}</div>
+      </div>
+      <div class="card-balance">${formatMoney(card.balance)}</div>
+    `;
+    cardsList.appendChild(div);
+  });
+}
+
+// ===== Transfers Screen =====
+function renderTransfers() {
+  const fromCard = document.getElementById('fromCard');
+  fromCard.innerHTML = '<option value="">Выберите карту</option>';
+  state.cards.forEach((card, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `•••• ${card.number} (${card.system}) — ${formatMoney(card.balance)}`;
+    fromCard.appendChild(opt);
+  });
+
+  const contacts = ['Иван Петров', 'Мария Сидорова', 'Дмитрий Козлов', 'Анна Михайлова', 'Сергей Новиков'];
+  const toContact = document.getElementById('toContact');
+  toContact.innerHTML = '<option value="">Выберите получателя</option>';
+  contacts.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    toContact.appendChild(opt);
+  });
+}
+
+document.getElementById('transferAmount').addEventListener('input', (e) => {
+  const amount = parseFloat(e.target.value) || 0;
+  const fee = Math.round(amount * 0.01);
+  document.getElementById('transferFee').textContent = amount > 0 ? `Комиссия 1%: ${formatMoney(fee)}. Итого: ${formatMoney(amount + fee)}` : '';
+});
+
+document.getElementById('transferBtn').addEventListener('click', () => {
+  const fromIdx = document.getElementById('fromCard').value;
+  const toContact = document.getElementById('toContact').value;
+  const amount = parseFloat(document.getElementById('transferAmount').value);
+
+  if (!fromIdx) { showToast('Выберите карту'); return; }
+  if (!toContact) { showToast('Выберите получателя'); return; }
+  if (!amount || amount <= 0) { showToast('Введите сумму'); return; }
+
+  const card = state.cards[fromIdx];
+  const fee = Math.round(amount * 0.01);
+  const total = amount + fee;
+
+  if (card.balance < total) {
+    showToast('Недостаточно средств');
+    return;
+  }
+
+  document.getElementById('transferDetails').innerHTML = `
+    <p><b>С карты:</b> •••• ${card.number}</p>
+    <p><b>Получатель:</b> ${toContact}</p>
+    <p><b>Сумма:</b> ${formatMoney(amount)}</p>
+    <p><b>Комиссия (1%):</b> ${formatMoney(fee)}</p>
+    <p><b>Итого к списанию:</b> ${formatMoney(total)}</p>
+  `;
+  document.getElementById('transferModal').classList.add('show');
+});
+
+document.getElementById('confirmTransferBtn').addEventListener('click', () => {
+  const fromIdx = parseInt(document.getElementById('fromCard').value);
+  const toContact = document.getElementById('toContact').value;
+  const amount = parseFloat(document.getElementById('transferAmount').value);
+  const fee = Math.round(amount * 0.01);
+  const total = amount + fee;
+
+  state.cards[fromIdx].balance -= total;
+  state.transactions.unshift({
+    type: 'transfer',
+    to: toContact,
+    amount: amount,
+    fee: fee,
+    date: new Date().toISOString()
+  });
+  saveState();
+
+  document.getElementById('transferModal').classList.remove('show');
+  document.getElementById('transferAmount').value = '';
+  showToast('Перевод выполнен ✓');
   renderAll();
-  checkNotifDot();
-  setInterval(sync, 10000);
-  setInterval(localRegen, 1000);
-}
+});
 
-function localRegen(){
-  if(!S) return;
-  if(S.energy < S.max_energy){
-    S.energy = Math.min(S.max_energy, S.energy + S.energy_regen);
-    renderStats();
+document.getElementById('cancelTransferBtn').addEventListener('click', () => {
+  document.getElementById('transferModal').classList.remove('show');
+});
+
+// ===== Reports Screen =====
+function renderReports() {
+  const totalExpenses = state.transactions.reduce((sum, tx) => sum + tx.amount + tx.fee, 0);
+  document.getElementById('totalExpenses').textContent = formatMoney(totalExpenses);
+
+  const list = document.getElementById('transactionsList');
+  if (state.transactions.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div>Нет транзакций</div>';
+    return;
   }
-}
 
-// ---------- sync ----------
-async function sync(){
-  if(!S) return;
-  if(pendingTaps > 0){
-    const taps = pendingTaps;
-    pendingTaps = 0;
-    try{
-      const oldLevel = S.level;
-      const data = await post("/api/sync", {
-        telegram_id: USER_ID, taps, energy_spent: taps, client_ts: Date.now()/1000
-      });
-      S = data.user;
-      if(S.level > oldLevel) toast("🥊 РАНГ ПОВЫШЕН: " + S.level);
-      renderAll();
-    }catch(e){ pendingTaps += taps; }
-  }
-}
-document.addEventListener("visibilitychange", ()=>{ if(document.hidden) sync(); });
-window.addEventListener("pagehide", sync);
-
-// ---------- render ----------
-function renderAll(){
-  renderStats(); renderShop(); renderChars(); renderFriends(); renderProfile();
-}
-
-function renderStats(){
-  $("balance").textContent = fmt(S.balance);
-  $("tapPower").textContent = fmt(S.tap_power);
-  $("passive").textContent = fmt(S.passive_income);
-  $("energyText").textContent = fmt(S.energy) + " / " + fmt(S.max_energy);
-  $("energyFill").style.width = Math.max(0, Math.min(100, S.energy / S.max_energy * 100)) + "%";
-  $("rankLabel").textContent = "Ранг " + S.level;
-  $("rankProg").style.width = ((S.total_earned % 10000) / 100) + "%";
-  const ch = S.character || {};
-  $("charName").textContent = ch.name || "";
-  if(ch.image){
-    $("orb").innerHTML = '<img src="' + ch.image + '" alt="">';
-  }else{
-    $("orb").innerHTML = '<span class="emoji">' + (ch.emoji || "👤") + '</span>';
-  }
-}
-
-function renderShop(){
-  const list = $("shopList");
-  list.innerHTML = "";
-  (S.shop || []).forEach(it=>{
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML =
-      '<div class="ic">' + it.icon + '</div>' +
-      '<div class="info"><b>' + it.name + '</b><span>' + it.description + '</span>' +
-      '<div class="lvl">ур. ' + it.current_level + ' / ' + it.max_level + '</div></div>';
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    if(it.is_max){ btn.textContent = "MAX"; btn.disabled = true; }
-    else{
-      btn.textContent = fmt(it.next_price);
-      btn.disabled = !it.can_afford;
-      btn.onclick = async ()=>{
-        try{
-          const d = await post("/api/buy-shop-item", {telegram_id: USER_ID, item_id: it.id});
-          S = d.user; toast(d.message); renderAll();
-        }catch(e){ toast(e.message); }
-      };
-    }
-    div.appendChild(btn);
+  list.innerHTML = '';
+  state.transactions.forEach(tx => {
+    const div = document.createElement('div');
+    div.className = 'transaction';
+    const date = new Date(tx.date);
+    const dateStr = date.toLocaleDateString('ru-RU') + ' ' + date.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+    div.innerHTML = `
+      <div class="tx-info">
+        <div class="tx-name">Перевод → ${tx.to}</div>
+        <div class="tx-date">${dateStr}</div>
+      </div>
+      <div class="tx-amount expense">-${formatMoney(tx.amount + tx.fee)}</div>
+    `;
     list.appendChild(div);
   });
 }
 
-function renderChars(){
-  const list = $("charList");
-  list.innerHTML = "";
-  characters.forEach((ch, i)=>{
-    const cur = (i === Math.min(S.level - 1, characters.length - 1));
-    const locked = i > S.level - 1;
-    const div = document.createElement("div");
-    div.className = "item char" + (cur ? " current" : "");
-    div.innerHTML =
-      '<div class="ic">' + (ch.image ? '<img src="'+ch.image+'" style="width:36px;height:36px;object-fit:contain;filter:grayscale(.4)">' : ch.emoji) + '</div>' +
-      '<div class="info"><b>' + ch.name + '</b><span>' + (ch.description||"") + '</span>' +
-      '<div class="lvl">тап ' + ch.base_tap_power + ' · энергия ' + ch.base_energy + ' · пассив ' + ch.base_passive + '/ч</div>' +
-      (cur ? '<div class="lvl" style="color:#fff">ТЕКУЩИЙ БОЕЦ</div>' : '') +
-      (locked ? '<div class="lock">🔒 Откроется на ранге ' + (i+1) + '</div>' : '') +
-      '</div>';
-    list.appendChild(div);
-  });
+// ===== Profile Screen =====
+function renderProfile() {
+  document.getElementById('profileName').textContent = state.profile.name;
+  document.getElementById('profilePhone').textContent = state.profile.phone;
 }
 
-async function renderFriends(){
-  const link = botUsername
-    ? "https://t.me/" + botUsername + "?start=ref_" + USER_ID
-    : "Бот не настроен (BOT_USERNAME в .env)";
-  $("refLink").textContent = link;
-  try{
-    const d = await api("/api/referrals?telegram_id=" + USER_ID);
-    $("refCount").textContent = d.count;
-    const list = $("refList");
-    list.innerHTML = "";
-    d.referrals.forEach(r=>{
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = '<div class="ic">👤</div><div class="info"><b>' +
-        (r.first_name || r.username || "Игрок") + '</b><span>приглашён</span></div>';
-      list.appendChild(div);
-    });
-  }catch(e){}
-}
+document.getElementById('editNameBtn').addEventListener('click', () => {
+  document.getElementById('newNameInput').value = state.profile.name;
+  document.getElementById('editNameModal').classList.add('show');
+});
 
-function renderProfile(){
-  $("pName").textContent = S.first_name || S.username || "Игрок";
-  $("pTaps").textContent = fmt(S.total_taps);
-  $("pEarned").textContent = fmt(S.total_earned);
-  $("pLevel").textContent = S.level;
-  if(S.is_admin){
-    $("adminBtn").style.display = "block";
-    $("adminBtn").href = "/admin?user_id=" + S.telegram_id;
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+  document.getElementById('editNameModal').classList.remove('show');
+});
+
+document.getElementById('saveNameBtn').addEventListener('click', () => {
+  const newName = document.getElementById('newNameInput').value.trim();
+  if (newName) {
+    state.profile.name = newName;
+    saveState();
+    document.getElementById('editNameModal').classList.remove('show');
+    renderProfile();
+    showToast('Имя обновлено ✓');
   }
-  api("/api/leaderboard").then(d=>{
-    const box = $("leaderList");
-    box.innerHTML = "";
-    d.leaderboard.forEach((u, i)=>{
-      const div = document.createElement("div");
-      div.className = "row";
-      div.innerHTML = "<span>" + (i+1) + ". " + (u.first_name || u.username || "Игрок") + "</span><b>" + fmt(u.total_earned) + "</b>";
-      box.appendChild(div);
-    });
-  }).catch(()=>{});
-}
-
-// ---------- taps ----------
-$("orb").addEventListener("pointerdown", e=>{
-  if(!S) return;
-  if(S.energy < 1){ toast("Нет энергии"); return; }
-  S.energy -= 1;
-  S.balance += S.tap_power;
-  S.total_earned += S.tap_power;
-  pendingTaps += 1;
-  const f = document.createElement("div");
-  f.className = "float";
-  f.textContent = "+" + fmt(S.tap_power);
-  const wrap = $("orbwrap").getBoundingClientRect();
-  f.style.left = (e.clientX - wrap.left) + "px";
-  f.style.top = (e.clientY - wrap.top) + "px";
-  $("orbwrap").appendChild(f);
-  setTimeout(()=>f.remove(), 800);
-  renderStats();
 });
 
-// ---------- nav ----------
-document.querySelectorAll("nav button").forEach(b=>{
-  b.onclick = ()=>{
-    document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    $("tab-" + b.dataset.tab).classList.add("active");
-  };
+document.getElementById('resetTransfersBtn').addEventListener('click', () => {
+  if (confirm('Сбросить все переводы? Это действие нельзя отменить.')) {
+    state.transactions = [];
+    state.cards.forEach(card => card.balance = 50000);
+    saveState();
+    renderAll();
+    showToast('Переводы сброшены ✓');
+  }
 });
 
-// ---------- daily ----------
-$("dailyBtn").onclick = async ()=>{
-  try{
-    const d = await post("/api/claim-daily", {telegram_id: USER_ID});
-    S = d.user; toast(d.message); renderAll();
-  }catch(e){ toast(e.message); }
-};
-
-// ---------- referrals copy ----------
-$("copyRef").onclick = ()=>{
-  const txt = $("refLink").textContent;
-  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(()=>toast("Скопировано"));
-  else toast(txt);
-};
-
-// ---------- notifications ----------
-async function checkNotifDot(){
-  try{
-    const d = await api("/api/notifications");
-    const seen = parseFloat(localStorage.getItem("notif_seen") || "0");
-    const unread = d.notifications.some(n=>n.created_at > seen);
-    $("bellDot").style.display = unread ? "block" : "none";
-  }catch(e){}
+// ===== Render All =====
+function renderAll() {
+  renderHome();
+  renderTransfers();
+  renderReports();
+  renderProfile();
 }
-$("bellBtn").onclick = async ()=>{
-  const d = await api("/api/notifications");
-  const box = $("notifList");
-  box.innerHTML = "";
-  if(!d.notifications.length) box.innerHTML = '<div class="muted">Пока нет оповещений</div>';
-  d.notifications.forEach(n=>{
-    const div = document.createElement("div");
-    div.className = "note";
-    div.innerHTML = "<b>" + n.title + "</b><p>" + n.message + "</p><time>" +
-      new Date(n.created_at*1000).toLocaleString("ru-RU") + "</time>";
-    box.appendChild(div);
-  });
-  localStorage.setItem("notif_seen", String(Date.now()/1000));
-  $("bellDot").style.display = "none";
-  $("notifModal").classList.add("open");
-};
-$("closeNotif").onclick = ()=> $("notifModal").classList.remove("open");
-$("notifModal").addEventListener("click", e=>{ if(e.target.id==="notifModal") $("notifModal").classList.remove("open"); });
 
-init();
+// ===== Init =====
+initState();
+if (!state.agreementAccepted) {
+  showScreen('agreementScreen');
+} else if (!state.pinVerified) {
+  showScreen('pinScreen');
+} else {
+  showScreen('homeScreen');
+  renderAll();
+}
 </script>
 </body>
 </html>
