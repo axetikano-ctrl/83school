@@ -47,7 +47,7 @@ async def cmd_help(message: types.Message):
 async def main():
     logger.info("Bot starting...")
     await bot.delete_webhook(drop_pending_updates=True)
-    await bot.set_menu_button(MenuButtonWebApp(text="📱 Открыть CampusPay", web_app=WebAppInfo(url=WEBAPP_URL)))
+    await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(text="📱 Открыть CampusPay", web_app=WebAppInfo(url=WEBAPP_URL)))
     await dp.start_polling(bot, skip_updates=True)
 
 
