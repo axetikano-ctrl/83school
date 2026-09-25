@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -7,669 +7,568 @@
 <title>CampusPay</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-:root {
-  --bg: #0b1220;
-  --card: #151e2b;
-  --card2: #1d2836;
-  --accent: #1e88e5;
-  --text: #f2f2f2;
-  --muted: #8a8a8a;
-}
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  min-height: 100vh;
-  padding-bottom: 80px;
-  user-select: none;
-}
-.container { max-width: 560px; margin: 0 auto; padding: 16px; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0b1220;--card:#151e2b;--card2:#1d2836;--accent:#1e88e5;--text:#f2f2f2;--muted:#8a94a3}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:86px;user-select:none}
+.container{max-width:560px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.active{display:block}
+h1{font-size:26px;font-weight:800;margin-bottom:16px}
+h2{font-size:18px;font-weight:700;margin:16px 0 10px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px}
+.muted{color:var(--muted)}
+button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
+input,select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:14px;font-size:16px;color:var(--text);margin-bottom:12px;font-family:inherit}
+input:focus,select:focus{outline:2px solid var(--accent)}
+.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700}
+.btn:active{opacity:.85}
+.btn:disabled{background:var(--card2);color:var(--muted)}
+.btn.secondary{background:var(--card2)}
+svg{display:block}
 
-/* Screens */
-.screen { display: none; }
-.screen.active { display: block; }
+/* header */
+.header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer}
+.avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px}
+.search{flex:1;background:var(--card);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}
+.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.iconbtn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff9800}
 
-/* Header */
-h1 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
-h2 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+/* balance */
+.bal-label{font-size:14px;color:var(--muted);margin-bottom:6px}
+.bal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.bal-amount{font-size:40px;font-weight:800;letter-spacing:-1px}
+.wallet-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.wallet-left{display:flex;flex-direction:column;gap:6px}
+.wallet-left .t{font-size:14px;color:var(--muted)}
+.wallet-left .v{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700}
+.subs-btn{background:linear-gradient(90deg,#42a5f5,#1e88e5);border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;flex-shrink:0}
 
-/* Cards */
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-}
-.card-title { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
-.card-value { font-size: 32px; font-weight: 700; }
+/* quick actions */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.quick button{background:var(--card);border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3;color:var(--text)}
+.quick svg{color:var(--accent)}
 
-/* Balance card */
-.balance-card {
-  background: linear-gradient(135deg, var(--accent), #1565c0);
-  padding: 24px;
-  margin-bottom: 20px;
-}
-.balance-label { font-size: 14px; opacity: 0.9; margin-bottom: 8px; }
-.balance-amount { font-size: 42px; font-weight: 700; }
+/* event card */
+.event-card{display:flex;align-items:center;gap:12px;cursor:pointer}
+.event-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#64b5f6,#1e88e5);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.event-card .t{font-size:16px;font-weight:700}
+.event-card .s{font-size:13px;color:var(--muted);margin-top:2px}
+.chev{margin-left:auto;color:var(--muted)}
 
-/* Payment cards */
-.payment-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.payment-card:active { background: var(--card2); }
-.card-info { flex: 1; }
-.card-number { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-.card-system { font-size: 13px; color: var(--muted); }
-.card-balance { font-size: 20px; font-weight: 700; }
+/* carousel */
+.carousel{overflow:hidden;border-radius:16px;margin-bottom:10px}
+.car-track{display:flex;transition:transform .45s ease}
+.slide{min-width:100%;border-radius:16px;padding:24px;display:flex;align-items:center;gap:14px;min-height:120px}
+.slide .ic{font-size:30px}
+.slide .t{font-size:22px;font-weight:800;margin-bottom:6px}
+.slide .s{font-size:14px;opacity:.85}
+.slide .chev{font-size:20px}
+.s1{background:linear-gradient(100deg,#6a1b9a,#8e24aa)}
+.s2{background:linear-gradient(100deg,#00695c,#00897b)}
+.s3{background:linear-gradient(100deg,#1565c0,#1e88e5)}
+.dots{display:flex;justify-content:center;gap:6px;margin-bottom:18px}
+.dots button{width:8px;height:8px;border-radius:999px;background:var(--card2)}
+.dots button.on{width:22px;background:var(--accent)}
 
-/* Transaction list */
-.transaction {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid var(--card2);
-}
-.transaction:last-child { border-bottom: none; }
-.tx-info { flex: 1; }
-.tx-name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-.tx-date { font-size: 12px; color: var(--muted); }
-.tx-amount { font-size: 16px; font-weight: 700; }
-.tx-amount.income { color: #4caf50; }
-.tx-amount.expense { color: #f44336; }
+/* mini apps */
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px}
+.sec-head .t{font-size:22px;font-weight:800}
+.sec-head a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
+.minirow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.minirow::-webkit-scrollbar{display:none}
+.mini{min-width:110px;height:96px;border-radius:16px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-weight:700;font-size:13px;color:#fff}
 
-/* Form elements */
-input, select {
-  width: 100%;
-  background: var(--card2);
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 16px;
-  color: var(--text);
-  margin-bottom: 12px;
-}
-input:focus, select:focus { outline: 2px solid var(--accent); }
+/* pay services */
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.svc button{background:var(--card);border-radius:16px;padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
+.svc .em{font-size:26px}
 
-button {
-  width: 100%;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-button:active { opacity: 0.8; }
-button:disabled { background: var(--card2); color: var(--muted); cursor: default; }
+/* transactions */
+.tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2)}
+.tx:last-child{border-bottom:none}
+.tx .ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tx .n{font-size:15px;font-weight:600}
+.tx .d{font-size:12px;color:var(--muted);margin-top:2px}
+.tx .a{margin-left:auto;font-size:15px;font-weight:700;color:#ef5350}
+.empty{text-align:center;padding:36px 0;color:var(--muted)}
+.empty .e{font-size:44px;margin-bottom:10px}
 
-/* Checkbox */
-.checkbox-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 16px 0;
-}
-.checkbox-group input[type="checkbox"] {
-  width: auto;
-  margin-top: 4px;
-}
-.checkbox-group label {
-  font-size: 14px;
-  line-height: 1.5;
-}
+/* profile */
+.p-head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.p-head .avatar{width:56px;height:56px;font-size:20px}
+.p-head .n{font-size:19px;font-weight:800}
+.p-head .p{font-size:14px;color:var(--muted);margin-top:2px}
+.level{display:flex;align-items:center;gap:12px}
+.level .sh{font-size:22px}
+.level .t{font-size:13px;color:var(--muted)}
+.level .v{font-size:17px;font-weight:800}
+.disc{font-size:12px;color:var(--muted);line-height:1.55}
 
-/* Navigation */
-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--card);
-  display: flex;
-  border-top: 1px solid var(--card2);
-  z-index: 100;
-}
-nav button {
-  flex: 1;
-  background: none;
-  color: var(--muted);
-  border-radius: 0;
-  padding: 12px 0;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-nav button .icon { font-size: 24px; }
-nav button.active { color: var(--accent); }
+/* drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:#0d1420;z-index:210;transform:translateX(-105%);transition:transform .28s ease;padding:24px 18px;overflow-y:auto}
+.drawer.show{transform:none}
+.dr-head{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:16px}
+.dr-head .avatar{width:56px;height:56px;font-size:19px}
+.dr-head .n{font-size:17px;font-weight:800}
+.dr-head .p{font-size:13px;color:var(--muted);margin-top:3px}
+.dr-item{display:flex;align-items:center;gap:14px;padding:14px 4px;font-size:16px;font-weight:600;cursor:pointer}
+.dr-item .em{font-size:20px;width:26px;text-align:center}
+.dr-sub{background:linear-gradient(120deg,#00695c,#00838f);border-radius:16px;padding:20px;margin:14px 0}
+.dr-sub .t{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.dr-sub .s{font-size:14px;opacity:.9;margin-bottom:12px}
+.dr-sub a{color:#81d4fa;font-weight:700;font-size:14px;text-decoration:none}
+.dr-share{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:14px;font-weight:600;cursor:pointer}
+.dr-share .c{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px}
 
-/* Toast */
-.toast {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  z-index: 1000;
-}
-.toast.show { opacity: 1; }
+/* pin */
+#pinScreen{min-height:calc(100vh - 40px);display:none;flex-direction:column;align-items:center;justify-content:center}
+#pinScreen.active{display:flex}
+.lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(30,136,229,.45);margin-bottom:28px}
+.pin-t{font-size:26px;font-weight:800;margin-bottom:8px}
+.pin-s{font-size:15px;color:var(--muted);margin-bottom:26px}
+.pin-dots{display:flex;gap:22px;margin-bottom:34px}
+.pin-dots span{width:14px;height:14px;border-radius:50%;background:var(--card2)}
+.pin-dots span.on{background:var(--accent)}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:300px;width:100%}
+.keypad button{height:78px;border-radius:50%;background:var(--card);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.keypad button:active{background:var(--card2)}
+.keypad .empty-k{background:none;pointer-events:none}
+.pin-hint{margin-top:26px;background:var(--card);border-radius:999px;padding:10px 20px;font-size:14px;color:var(--muted)}
 
-/* Agreement screen */
-#agreementScreen {
-  padding-top: 40px;
-}
-.agreement-text {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  color: var(--muted);
-}
-.agreement-text ol {
-  padding-left: 20px;
-}
-.agreement-text li {
-  margin-bottom: 8px;
-}
+/* agreement */
+#agreementScreen{padding-top:48px}
+.ag-ic{margin-bottom:22px}
+.ag-t{font-size:26px;font-weight:800;margin-bottom:22px}
+.ag-text{font-size:15.5px;line-height:1.55;margin-bottom:18px}
+.ag-check{display:flex;gap:14px;align-items:flex-start;margin:26px 0 16px}
+.ag-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--accent)}
+.ag-check label{font-size:15.5px;line-height:1.5}
 
-/* PIN screen */
-#pinScreen {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: calc(100vh - 100px);
-}
-.pin-title {
-  font-size: 24px;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.pin-subtitle {
-  font-size: 14px;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 32px;
-}
+/* nav */
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,18,28,.96);backdrop-filter:blur(10px);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:11px;color:var(--muted);position:relative}
+nav button.active{color:var(--accent)}
+nav .newb{position:absolute;top:4px;right:calc(50% - 26px);background:#ff9800;color:#000;font-size:9px;font-weight:800;border-radius:999px;padding:2px 6px}
+body.noauth nav{display:none}
 
-/* Profile */
-.profile-field {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--card2);
-}
-.profile-field:last-child { border-bottom: none; }
-.field-label { color: var(--muted); font-size: 14px; }
-.field-value { font-size: 16px; font-weight: 600; }
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--muted);
-}
-.empty-icon { font-size: 48px; margin-bottom: 12px; }
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal.show { display: flex; }
-.modal-content {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 400px;
-  width: 100%;
-}
-.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
-.modal-text { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
-.modal-actions { display: flex; gap: 12px; }
-.modal-actions button { flex: 1; }
-.btn-secondary { background: var(--card2); }
+/* modal & toast */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%}
+.modal-t{font-size:19px;font-weight:800;margin-bottom:10px}
+.modal-x{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.modal-a{display:flex;gap:10px}
+.modal-a button{flex:1}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s;z-index:400;max-width:90%}
+.toast.show{opacity:1}
 </style>
 </head>
-<body>
+<body class="noauth">
+
+<!-- DRAWER -->
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="dr-head" id="drProfile">
+    <div class="avatar" id="drAvatar">••<span class="badge">✓</span></div>
+    <div><div class="n" id="drName"></div><div class="p" id="drPhone"></div></div>
+  </div>
+  <div class="card level"><span class="sh">🛡️</span><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div><span class="chev" style="margin-left:auto">›</span></div>
+  <div class="dr-item" data-toast="Демо-раздел: Подписки"><span class="em">📺</span>Подписки</div>
+  <div class="dr-item" data-toast="Демо-раздел: Безопасность"><span class="em">🛡️</span>Безопасность</div>
+  <div class="dr-item" data-toast="Демо-раздел: Настройки"><span class="em">⚙️</span>Настройки</div>
+  <div class="dr-item" data-toast="Демо-раздел: Поддержка"><span class="em">🎧</span>Служба поддержки</div>
+  <div class="dr-item" id="drAbout"><span class="em">ℹ️</span>О программе</div>
+  <div class="dr-sub">
+    <div class="t">CampusPay Подписка</div>
+    <div class="s">0% комиссии, кешбэк и другие бонусы</div>
+    <a href="#" id="drSubConnect">Подключить ›</a>
+  </div>
+  <div class="dr-share" id="drShare"><span class="c">⬆</span>Поделиться приложением</div>
+</div>
 
 <div class="container">
-  <!-- Agreement Screen -->
+
+  <!-- AGREEMENT -->
   <div id="agreementScreen" class="screen">
-    <h1>🏛 CampusPay</h1>
-    <div class="card">
-      <h2>Пользовательское соглашение</h2>
-      <div class="agreement-text">
-        <p style="margin-bottom: 12px;">Это учебный демонстрационный проект. Пожалуйста, ознакомьтесь с условиями:</p>
-        <ol>
-          <li>Это учебный тестовый проект, все данные демонстрационные</li>
-          <li>Пользователю есть 18 лет</li>
-          <li>Запрещено использовать для обмана людей и мошенничества</li>
-          <li>Создатель не принимает участия в действиях пользователя и не несёт ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам</li>
-          <li>Данные хранятся локально и никуда не передаются</li>
-        </ol>
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="agreeCheckbox">
-        <label for="agreeCheckbox">Мне есть 18 лет, я принимаю условия и буду использовать приложение только для тестирования</label>
-      </div>
-      <button id="acceptBtn" disabled>Принять и продолжить</button>
+    <div class="ag-ic">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1e88e5" stroke-width="2.2" stroke-linecap="round"><path d="M14 4l6 6"/><path d="M12 6l6 6"/><path d="M13 5l-8.5 8.5a2.1 2.1 0 0 0 3 3L16 8"/><path d="M3 21h9"/></svg>
     </div>
+    <div class="ag-t">Пользовательское соглашение</div>
+    <div class="ag-text">1. CampusPay — учебный тестовый проект. Все карты, балансы и переводы в нём ненастоящие и созданы исключительно для демонстрации и тестирования приложения.</div>
+    <div class="ag-text">2. Пользователь подтверждает, что ему исполнилось 18 лет.</div>
+    <div class="ag-text">3. Пользователь обязуется не использовать приложение для обмана людей, мошенничества и любых иных противоправных действий.</div>
+    <div class="ag-text">4. Создатель приложения не принимает участия в действиях пользователя и не несёт никакой ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам с использованием или упоминанием приложения.</div>
+    <div class="ag-text">5. Все данные хранятся локально на устройстве пользователя и никуда не передаются.</div>
+    <div class="ag-check">
+      <input type="checkbox" id="agreeCheckbox">
+      <label for="agreeCheckbox">Мне есть 18 лет, я принимаю условия и буду использовать приложение только для тестирования</label>
+    </div>
+    <button class="btn" id="acceptBtn" disabled>Принять и продолжить</button>
   </div>
 
-  <!-- PIN Screen -->
+  <!-- PIN -->
   <div id="pinScreen" class="screen">
-    <div class="pin-title">Введите PIN</div>
-    <div class="pin-subtitle">Демо-PIN: 1234</div>
-    <input type="password" id="pinInput" placeholder="••••" maxlength="4" style="text-align: center; font-size: 24px;">
-    <button id="pinSubmitBtn">Войти</button>
-  </div>
-
-  <!-- Home Screen -->
-  <div id="homeScreen" class="screen">
-    <h1>Главный</h1>
-    <div class="balance-card">
-      <div class="balance-label">Общий баланс</div>
-      <div class="balance-amount" id="totalBalance">0 ₽</div>
+    <div class="lock"><svg width="44" height="44" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg></div>
+    <div class="pin-t">Добро пожаловать</div>
+    <div class="pin-s">Введите PIN для входа</div>
+    <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
+    <div class="keypad" id="keypad">
+      <button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button>
+      <button data-d="4">4</button><button data-d="5">5</button><button data-d="6">6</button>
+      <button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button>
+      <button class="empty-k"></button><button data-d="0">0</button><button data-d="del"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8a94a3" stroke-width="2"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9L3 12l6-7z"/><path d="M12 10l4 4M16 10l-4 4"/></svg></button>
     </div>
-    <h2>Мои карты</h2>
-    <div id="cardsList"></div>
+    <div class="pin-hint">Демо-PIN: 1234</div>
   </div>
 
-  <!-- Transfers Screen -->
+  <!-- HOME -->
+  <div id="homeScreen" class="screen">
+    <div class="header">
+      <div class="avatar" id="hAvatar">••<span class="badge">✓</span></div>
+      <div class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</div>
+      <div class="iconbtn" id="menuBtn"><svg width="22" height="22" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></div>
+      <div class="iconbtn" id="bellBtn"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot"></span></div>
+    </div>
+    <div class="bal-label">Общий баланс</div>
+    <div class="bal-row">
+      <div class="bal-amount" id="totalBalance">0 сум</div>
+      <div class="iconbtn" id="eyeBtn"><svg id="eyeIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8a94a3" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    </div>
+    <div class="wallet-row">
+      <div class="wallet-left">
+        <span class="t">Мой кошелёк</span>
+        <span class="v"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1e88e5"><path d="M21 7H5a2 2 0 0 1 0-4h14v2H5a0 0 0 0 0 0 0h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a3 3 0 0 1 3-3"/><circle cx="17" cy="13" r="1.6" fill="#0b1220"/></svg><span id="walletBalance">0 сум</span></span>
+      </div>
+      <button class="subs-btn" id="subsBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6l5 3 1-1.7-4-2.3z"/></svg>Мониторинг по подписке</button>
+    </div>
+    <div class="quick">
+      <button data-toast="Демо: Campus Pass"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M9 3L7 21M17 3l-2 18M4 8h16M3 16h16"/></svg>Campus Pass</button>
+      <button data-toast="Демо: Campus Boom"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><rect x="6" y="3" width="10" height="18" rx="2"/><path d="M19 9a5 5 0 0 1 0 6"/></svg>Campus Boom</button>
+      <button data-toast="Демо: Карты и кошелёк"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Карты и кошелёк</button>
+      <button data-toast="Демо: QR сканер"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></svg>QR сканер</button>
+    </div>
+    <div class="card event-card" id="eventCard">
+      <div class="event-icon">✨</div>
+      <div><div class="t">Мой CampusPay</div><div class="s">Посмотрите важные события</div></div>
+      <span class="chev" style="margin-left:auto">›</span>
+    </div>
+    <div class="carousel"><div class="car-track" id="carTrack">
+      <div class="slide s1"><span class="ic">🏷️</span><div><div class="t">Campus Pass −50%</div><div class="s">Студентам до 31 декабря</div></div><span class="chev" style="margin-left:auto">›</span></div>
+      <div class="slide s2"><span class="ic">💎</span><div><div class="t">CampusPay Подписка</div><div class="s">0% комиссии и кешбэк</div></div><span class="chev" style="margin-left:auto">›</span></div>
+      <div class="slide s3"><span class="ic">⚡</span><div><div class="t">Campus Boom</div><div class="s">Переводы друзьям в один тап</div></div><span class="chev" style="margin-left:auto">›</span></div>
+    </div></div>
+    <div class="dots" id="carDots"></div>
+    <div class="sec-head"><span class="t">Mini Apps</span><a href="#" id="miniAll">Смотреть все</a></div>
+    <div class="minirow">
+      <div class="mini" style="background:#f57c00" data-toast="Демо Mini App">Campus Eat</div>
+      <div class="mini" style="background:#8e24aa" data-toast="Демо Mini App">Campus Sport</div>
+      <div class="mini" style="background:#d81b60" data-toast="Демо Mini App">Campus Print</div>
+      <div class="mini" style="background:#00897b" data-toast="Демо Mini App">Campus Lib</div>
+    </div>
+  </div>
+
+  <!-- PAY -->
+  <div id="payScreen" class="screen">
+    <h1>Оплата</h1>
+    <div class="svc">
+      <button data-svc="Мобильная связь" data-em="📱"><span class="em">📱</span>Мобильная связь</button>
+      <button data-svc="Столовая" data-em="🍽️"><span class="em">🍽️</span>Столовая</button>
+      <button data-svc="Печать" data-em="🖨️"><span class="em">🖨️</span>Печать</button>
+      <button data-svc="Спортзал" data-em="🏋️"><span class="em">🏋️</span>Спортзал</button>
+      <button data-svc="Библиотека" data-em="📚"><span class="em">📚</span>Библиотека</button>
+      <button data-svc="Транспорт" data-em="🚌"><span class="em">🚌</span>Транспорт</button>
+    </div>
+  </div>
+
+  <!-- TRANSFERS -->
   <div id="transfersScreen" class="screen">
     <h1>Переводы</h1>
     <div class="card">
-      <h2>Новый перевод</h2>
-      <select id="fromCard">
-        <option value="">Выберите карту</option>
-      </select>
-      <select id="toContact">
-        <option value="">Выберите получателя</option>
-      </select>
+      <select id="fromCard"><option value="">С карты</option></select>
+      <select id="toContact"><option value="">Получатель</option></select>
       <input type="number" id="transferAmount" placeholder="Сумма перевода" min="1">
-      <div id="transferFee" style="font-size: 14px; color: var(--muted); margin-bottom: 12px;"></div>
-      <button id="transferBtn">Перевести</button>
+      <div id="transferFee" class="muted" style="font-size:13px;margin-bottom:12px"></div>
+      <button class="btn" id="transferBtn">Перевести</button>
     </div>
   </div>
 
-  <!-- Reports Screen -->
+  <!-- REPORTS -->
   <div id="reportsScreen" class="screen">
     <h1>Отчёты</h1>
-    <div class="card">
-      <div class="card-title">Всего расходов</div>
-      <div class="card-value" id="totalExpenses">0 ₽</div>
-    </div>
-    <h2>История транзакций</h2>
-    <div class="card">
-      <div id="transactionsList"></div>
+    <div class="card"><div class="bal-label">Всего расходов</div><div class="bal-amount" style="font-size:30px" id="totalExpenses">0 сум</div></div>
+    <div class="card" id="txList"></div>
+  </div>
+
+  <!-- MINI APPS TAB -->
+  <div id="miniScreen" class="screen">
+    <h1>Mini Apps</h1>
+    <div class="minirow" style="flex-wrap:wrap">
+      <div class="mini" style="background:#f57c00" data-toast="Демо Mini App">Campus Eat</div>
+      <div class="mini" style="background:#8e24aa" data-toast="Демо Mini App">Campus Sport</div>
+      <div class="mini" style="background:#d81b60" data-toast="Демо Mini App">Campus Print</div>
+      <div class="mini" style="background:#00897b" data-toast="Демо Mini App">Campus Lib</div>
+      <div class="mini" style="background:#5d4037" data-toast="Демо Mini App">Campus Cafe</div>
+      <div class="mini" style="background:#37474f" data-toast="Демо Mini App">Campus Taxi</div>
     </div>
   </div>
 
-  <!-- Profile Screen -->
+  <!-- PROFILE -->
   <div id="profileScreen" class="screen">
     <h1>Профиль</h1>
     <div class="card">
-      <div class="profile-field">
-        <span class="field-label">Имя</span>
-        <span class="field-value" id="profileName"></span>
-      </div>
-      <div class="profile-field">
-        <span class="field-label">Телефон</span>
-        <span class="field-value" id="profilePhone"></span>
+      <div class="p-head">
+        <div class="avatar" id="pAvatar">••<span class="badge">✓</span></div>
+        <div><div class="n" id="profileName"></div><div class="p" id="profilePhone"></div></div>
       </div>
     </div>
-    <button id="editNameBtn" style="margin-bottom: 12px;">Редактировать имя</button>
-    <button id="resetTransfersBtn" class="btn-secondary" style="margin-bottom: 20px;">Сбросить переводы</button>
-    <div class="card">
-      <div style="font-size: 12px; color: var(--muted); line-height: 1.5;">
-        ⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. 
-        Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя.
-      </div>
-    </div>
+    <div class="card level" style="margin-bottom:12px"><span class="sh">🛡️</span><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div></div>
+    <button class="btn" id="editNameBtn" style="margin-bottom:10px">Редактировать имя</button>
+    <button class="btn secondary" id="resetTransfersBtn" style="margin-bottom:14px">Сбросить переводы</button>
+    <div class="card"><div class="disc">⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя. 18+</div></div>
   </div>
 </div>
 
-<!-- Edit Name Modal -->
-<div id="editNameModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-title">Редактировать имя</div>
-    <input type="text" id="newNameInput" placeholder="Введите имя">
-    <div class="modal-actions">
-      <button id="cancelEditBtn" class="btn-secondary">Отмена</button>
-      <button id="saveNameBtn">Сохранить</button>
-    </div>
-  </div>
-</div>
+<!-- MODALS -->
+<div class="modal" id="editNameModal"><div class="modal-c">
+  <div class="modal-t">Редактировать имя</div>
+  <input type="text" id="newNameInput" placeholder="Введите имя">
+  <div class="modal-a"><button class="btn secondary" id="cancelEditBtn">Отмена</button><button class="btn" id="saveNameBtn">Сохранить</button></div>
+</div></div>
 
-<!-- Transfer Confirm Modal -->
-<div id="transferModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-title">Подтверждение перевода</div>
-    <div id="transferDetails" class="modal-text"></div>
-    <div class="modal-actions">
-      <button id="cancelTransferBtn" class="btn-secondary">Отмена</button>
-      <button id="confirmTransferBtn">Подтвердить</button>
-    </div>
-  </div>
-</div>
+<div class="modal" id="transferModal"><div class="modal-c">
+  <div class="modal-t">Подтверждение перевода</div>
+  <div class="modal-x" id="transferDetails"></div>
+  <div class="modal-a"><button class="btn secondary" id="cancelTransferBtn">Отмена</button><button class="btn" id="confirmTransferBtn">Подтвердить</button></div>
+</div></div>
+
+<div class="modal" id="payModal"><div class="modal-c">
+  <div class="modal-t" id="payTitle">Оплата</div>
+  <select id="payCard"><option value="">С карты</option></select>
+  <input type="number" id="payAmount" placeholder="Сумма" min="1">
+  <div class="modal-a"><button class="btn secondary" id="cancelPayBtn">Отмена</button><button class="btn" id="confirmPayBtn">Оплатить</button></div>
+</div></div>
+
+<div class="modal" id="aboutModal"><div class="modal-c">
+  <div class="modal-t">О программе</div>
+  <div class="modal-x">CampusPay — учебный тестовый прототип кампусного супер-аппа. Все карты, балансы и переводы ненастоящие, платежи не проводятся, данные хранятся локально на устройстве. 18+. Создатель не несёт ответственности за действия пользователя.</div>
+  <div class="modal-a"><button class="btn" id="closeAboutBtn">Понятно</button></div>
+</div></div>
 
 <div class="toast" id="toast"></div>
 
-<nav>
-  <button data-tab="home" class="active"><span class="icon">🏠</span>Главный</button>
-  <button data-tab="transfers"><span class="icon">💸</span>Переводы</button>
-  <button data-tab="reports"><span class="icon">📊</span>Отчёты</button>
-  <button data-tab="profile"><span class="icon">👤</span>Профиль</button>
+<nav id="nav">
+  <button data-tab="home" class="active"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg>Главный</button>
+  <button data-tab="pay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>Оплата</button>
+  <button data-tab="transfers"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 4v13m0 0l-3-3m3 3l3-3M17 20V7m0 0l-3 3m3-3l3 3"/></svg>Переводы</button>
+  <button data-tab="reports"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M14 2a9 9 0 0 1 8 8h-8z"/></svg>Отчёты</button>
+  <button data-tab="mini"><span class="newb">New</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Mini Apps</button>
 </nav>
 
 <script>
-// ===== State Management =====
-const STORAGE_KEY = 'campuspay_data';
-let state = null;
+const STORAGE_KEY='campuspay_data';
+let state=null, pinBuffer='', carIdx=0, carTimer=null, curSvc=null;
 
-function generateRandomName() {
-  const names = ['Александр', 'Мария', 'Дмитрий', 'Анна', 'Иван', 'Елена', 'Сергей', 'Ольга', 'Михаил', 'Наталья'];
-  const surnames = ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Михайлов', 'Новикова', 'Фёдоров', 'Морозова', 'Волков', 'Алексеева'];
-  return `${names[Math.floor(Math.random() * names.length)]} ${surnames[Math.floor(Math.random() * surnames.length)]}`;
-}
+const NAMES=['Bekzod','Malika','Aziz','Dilnoza','Jasur','Nigora','Sardor','Zilola','Александр','Мария','Дмитрий','Анна'];
+const SURNAMES=['Rahimova','Karimov','Tursunova','Yusupov','Ergasheva','Mirzayev','Козлова','Михайлов','Новикова','Волков'];
+const CONTACTS=['Иван Петров','Мария Сидорова','Дмитрий Козлов','Анна Михайлова','Сергей Новиков','Malika Karimova'];
 
-function generateRandomPhone() {
-  return `+7 (${Math.floor(Math.random() * 900) + 100}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 90) + 10}`;
-}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function genName(){return rnd(NAMES)+' '+rnd(SURNAMES)}
+function genPhone(){return `+998 ${90+Math.floor(Math.random()*9)} ${100+Math.floor(Math.random()*900)} ${10+Math.floor(Math.random()*90)} ${10+Math.floor(Math.random()*90)}`}
+function genCard(){return String(1000+Math.floor(Math.random()*9000))}
 
-function generateCardNumber() {
-  return `${Math.floor(Math.random() * 9000) + 1000}`;
-}
-
-function initState() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    state = JSON.parse(saved);
-  } else {
-    state = {
-      agreementAccepted: false,
-      pinVerified: false,
-      profile: {
-        name: generateRandomName(),
-        phone: generateRandomPhone()
-      },
-      cards: [
-        { number: generateCardNumber(), system: 'Visa', balance: 50000 },
-        { number: generateCardNumber(), system: 'Mastercard', balance: 30000 }
-      ],
-      transactions: []
-    };
+function initState(){
+  const saved=localStorage.getItem(STORAGE_KEY);
+  if(saved){state=JSON.parse(saved);}
+  else{
+    state={agreementAccepted:false,pinVerified:false,balanceHidden:false,
+      profile:{name:genName(),phone:genPhone()},
+      cards:[{number:genCard(),system:'Visa',balance:50000},{number:genCard(),system:'Mastercard',balance:30000}],
+      wallet:727,transactions:[]};
     saveState();
   }
+  if(state.wallet===undefined)state.wallet=727;
+  if(state.balanceHidden===undefined)state.balanceHidden=false;
+}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+
+const $=id=>document.getElementById(id);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function fmt(n){return state.balanceHidden?'••••••':Math.round(n).toLocaleString('ru-RU')+' сум'}
+function initials(n){const p=n.split(' ');return ((p[0]||'')[0]||'•')+((p[1]||'')[0]||'•').toUpperCase()}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id+'Screen').classList.add('active');
+  const authed=(id!=='agreement'&&id!=='pin');
+  document.body.classList.toggle('noauth',!authed);
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
 }
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+/* ---- agreement ---- */
+$('agreeCheckbox').addEventListener('change',e=>$('acceptBtn').disabled=!e.target.checked);
+$('acceptBtn').addEventListener('click',()=>{state.agreementAccepted=true;saveState();showScreen('pin')});
 
-// ===== UI Helpers =====
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function formatMoney(amount) {
-  return `${amount.toLocaleString('ru-RU')} ₽`;
-}
-
-function showScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-}
-
-// ===== Agreement Screen =====
-document.getElementById('agreeCheckbox').addEventListener('change', (e) => {
-  document.getElementById('acceptBtn').disabled = !e.target.checked;
-});
-
-document.getElementById('acceptBtn').addEventListener('click', () => {
-  state.agreementAccepted = true;
-  saveState();
-  showScreen('pinScreen');
-});
-
-// ===== PIN Screen =====
-document.getElementById('pinSubmitBtn').addEventListener('click', () => {
-  const pin = document.getElementById('pinInput').value;
-  if (pin === '1234') {
-    state.pinVerified = true;
-    saveState();
-    showScreen('homeScreen');
-    renderAll();
-  } else {
-    showToast('Неверный PIN');
-    document.getElementById('pinInput').value = '';
+/* ---- pin ---- */
+function renderPinDots(){document.querySelectorAll('#pinDots span').forEach((s,i)=>s.classList.toggle('on',i<pinBuffer.length))}
+$('keypad').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const d=b.dataset.d;if(!d)return;
+  if(d==='del')pinBuffer=pinBuffer.slice(0,-1);
+  else if(pinBuffer.length<4)pinBuffer+=d;
+  renderPinDots();
+  if(pinBuffer.length===4){
+    setTimeout(()=>{
+      if(pinBuffer==='1234'){state.pinVerified=true;saveState();enterApp();}
+      else{toast('Неверный PIN');pinBuffer='';renderPinDots();}
+    },150);
   }
 });
 
-// ===== Navigation =====
-document.querySelectorAll('nav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    showScreen(`${btn.dataset.tab}Screen`);
-    renderAll();
-  });
+/* ---- nav ---- */
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{showScreen(b.dataset.tab);renderAll()}));
+
+/* ---- drawer ---- */
+function openDr(){$('drawer').classList.add('show');$('overlay').classList.add('show')}
+function closeDr(){$('drawer').classList.remove('show');$('overlay').classList.remove('show')}
+$('menuBtn').addEventListener('click',openDr);
+$('overlay').addEventListener('click',closeDr);
+$('drProfile').addEventListener('click',()=>{closeDr();showScreen('profile');renderAll()});
+$('hAvatar').addEventListener('click',()=>{showScreen('profile');renderAll()});
+document.querySelectorAll('.dr-item[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
+$('drAbout').addEventListener('click',()=>{closeDr();$('aboutModal').classList.add('show')});
+$('closeAboutBtn').addEventListener('click',()=>$('aboutModal').classList.remove('show'));
+$('drSubConnect').addEventListener('click',e=>{e.preventDefault();toast('Демо: подписка подключена ✓')});
+$('drShare').addEventListener('click',()=>{if(navigator.share)navigator.share({title:'CampusPay',text:'Посмотри CampusPay!',url:location.href}).catch(()=>{});else toast('Ссылка скопирована (демо)')});
+
+/* ---- home ---- */
+$('bellBtn').addEventListener('click',()=>toast('Нет новых уведомлений'));
+$('subsBtn').addEventListener('click',()=>toast('Демо: мониторинг по подписке'));
+$('eventCard').addEventListener('click',()=>{showScreen('reports');renderAll()});
+$('eyeBtn').addEventListener('click',()=>{state.balanceHidden=!state.balanceHidden;saveState();renderHome()});
+$('miniAll').addEventListener('click',e=>{e.preventDefault();showScreen('mini')});
+document.querySelectorAll('[data-toast]').forEach(el=>{
+  if(el.closest('.dr-item')||el.closest('.mini'))return;
+  el.addEventListener('click',()=>toast(el.dataset.toast));
 });
+document.querySelectorAll('.mini').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
 
-// ===== Home Screen =====
-function renderHome() {
-  const totalBalance = state.cards.reduce((sum, card) => sum + card.balance, 0);
-  document.getElementById('totalBalance').textContent = formatMoney(totalBalance);
+function initCarousel(){
+  const dots=$('carDots');dots.innerHTML='';
+  for(let i=0;i<3;i++){const b=document.createElement('button');b.addEventListener('click',()=>goCar(i));dots.appendChild(b)}
+  goCar(0);
+  if(carTimer)clearInterval(carTimer);
+  carTimer=setInterval(()=>goCar((carIdx+1)%3),4500);
+}
+function goCar(i){carIdx=i;$('carTrack').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('#carDots button').forEach((d,j)=>d.classList.toggle('on',j===i))}
 
-  const cardsList = document.getElementById('cardsList');
-  cardsList.innerHTML = '';
-  state.cards.forEach((card, idx) => {
-    const div = document.createElement('div');
-    div.className = 'card payment-card';
-    div.innerHTML = `
-      <div class="card-info">
-        <div class="card-number">•••• ${card.number}</div>
-        <div class="card-system">${card.system}</div>
-      </div>
-      <div class="card-balance">${formatMoney(card.balance)}</div>
-    `;
-    cardsList.appendChild(div);
-  });
+function renderHome(){
+  const total=state.cards.reduce((s,c)=>s+c.balance,0);
+  $('totalBalance').textContent=fmt(total);
+  $('walletBalance').textContent=fmt(state.wallet);
+  const ini=initials(state.profile.name);
+  $('hAvatar').firstChild.textContent=ini;
+  $('drAvatar').firstChild.textContent=ini;
+  $('pAvatar').firstChild.textContent=ini;
+  $('drName').textContent=state.profile.name;
+  $('drPhone').textContent=state.profile.phone;
 }
 
-// ===== Transfers Screen =====
-function renderTransfers() {
-  const fromCard = document.getElementById('fromCard');
-  fromCard.innerHTML = '<option value="">Выберите карту</option>';
-  state.cards.forEach((card, idx) => {
-    const opt = document.createElement('option');
-    opt.value = idx;
-    opt.textContent = `•••• ${card.number} (${card.system}) — ${formatMoney(card.balance)}`;
-    fromCard.appendChild(opt);
-  });
-
-  const contacts = ['Иван Петров', 'Мария Сидорова', 'Дмитрий Козлов', 'Анна Михайлова', 'Сергей Новиков'];
-  const toContact = document.getElementById('toContact');
-  toContact.innerHTML = '<option value="">Выберите получателя</option>';
-  contacts.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = name;
-    toContact.appendChild(opt);
-  });
+/* ---- transfers ---- */
+function fillCardSelect(sel){
+  sel.innerHTML='<option value="">С карты</option>';
+  state.cards.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`•••• ${c.number} (${c.system}) — ${Math.round(c.balance).toLocaleString('ru-RU')} сум`;sel.appendChild(o)});
 }
-
-document.getElementById('transferAmount').addEventListener('input', (e) => {
-  const amount = parseFloat(e.target.value) || 0;
-  const fee = Math.round(amount * 0.01);
-  document.getElementById('transferFee').textContent = amount > 0 ? `Комиссия 1%: ${formatMoney(fee)}. Итого: ${formatMoney(amount + fee)}` : '';
+function renderTransfers(){
+  fillCardSelect($('fromCard'));
+  const tc=$('toContact');tc.innerHTML='<option value="">Получатель</option>';
+  CONTACTS.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;tc.appendChild(o)});
+}
+$('transferAmount').addEventListener('input',e=>{
+  const a=parseFloat(e.target.value)||0;
+  $('transferFee').textContent=a>0?`Комиссия 1%: ${Math.round(a*0.01).toLocaleString('ru-RU')} сум. Итого: ${Math.round(a*1.01).toLocaleString('ru-RU')} сум`:'';
+});
+$('transferBtn').addEventListener('click',()=>{
+  const fi=$('fromCard').value,to=$('toContact').value,a=parseFloat($('transferAmount').value);
+  if(fi==='')return toast('Выберите карту');
+  if(!to)return toast('Выберите получателя');
+  if(!a||a<=0)return toast('Введите сумму');
+  const card=state.cards[fi],fee=Math.round(a*0.01),total=a+fee;
+  if(card.balance<total)return toast('Недостаточно средств');
+  $('transferDetails').innerHTML=`<p><b>С карты:</b> •••• ${card.number}</p><p><b>Получатель:</b> ${to}</p><p><b>Сумма:</b> ${Math.round(a).toLocaleString('ru-RU')} сум</p><p><b>Комиссия 1%:</b> ${fee.toLocaleString('ru-RU')} сум</p><p><b>Итого:</b> ${Math.round(total).toLocaleString('ru-RU')} сум</p>`;
+  $('transferModal').classList.add('show');
+});
+$('cancelTransferBtn').addEventListener('click',()=>$('transferModal').classList.remove('show'));
+$('confirmTransferBtn').addEventListener('click',()=>{
+  const fi=+$('fromCard').value,to=$('toContact').value,a=parseFloat($('transferAmount').value);
+  const fee=Math.round(a*0.01),total=a+fee;
+  state.cards[fi].balance-=total;
+  state.transactions.unshift({type:'transfer',icon:'💸',to,amount:a,fee,date:new Date().toISOString()});
+  saveState();$('transferModal').classList.remove('show');$('transferAmount').value='';$('transferFee').textContent='';
+  toast('Перевод выполнен ✓');renderAll();
 });
 
-document.getElementById('transferBtn').addEventListener('click', () => {
-  const fromIdx = document.getElementById('fromCard').value;
-  const toContact = document.getElementById('toContact').value;
-  const amount = parseFloat(document.getElementById('transferAmount').value);
-
-  if (!fromIdx) { showToast('Выберите карту'); return; }
-  if (!toContact) { showToast('Выберите получателя'); return; }
-  if (!amount || amount <= 0) { showToast('Введите сумму'); return; }
-
-  const card = state.cards[fromIdx];
-  const fee = Math.round(amount * 0.01);
-  const total = amount + fee;
-
-  if (card.balance < total) {
-    showToast('Недостаточно средств');
-    return;
-  }
-
-  document.getElementById('transferDetails').innerHTML = `
-    <p><b>С карты:</b> •••• ${card.number}</p>
-    <p><b>Получатель:</b> ${toContact}</p>
-    <p><b>Сумма:</b> ${formatMoney(amount)}</p>
-    <p><b>Комиссия (1%):</b> ${formatMoney(fee)}</p>
-    <p><b>Итого к списанию:</b> ${formatMoney(total)}</p>
-  `;
-  document.getElementById('transferModal').classList.add('show');
+/* ---- payments ---- */
+document.querySelectorAll('.svc button').forEach(b=>b.addEventListener('click',()=>{
+  curSvc={name:b.dataset.svc,em:b.dataset.em};
+  $('payTitle').textContent=`Оплата: ${curSvc.name}`;
+  fillCardSelect($('payCard'));$('payAmount').value='';
+  $('payModal').classList.add('show');
+}));
+$('cancelPayBtn').addEventListener('click',()=>$('payModal').classList.remove('show'));
+$('confirmPayBtn').addEventListener('click',()=>{
+  const fi=$('payCard').value,a=parseFloat($('payAmount').value);
+  if(fi==='')return toast('Выберите карту');
+  if(!a||a<=0)return toast('Введите сумму');
+  if(state.cards[fi].balance<a)return toast('Недостаточно средств');
+  state.cards[fi].balance-=a;
+  state.transactions.unshift({type:'payment',icon:curSvc.em,to:curSvc.name,amount:a,fee:0,date:new Date().toISOString()});
+  saveState();$('payModal').classList.remove('show');
+  toast(`Оплачено: ${curSvc.name} ✓`);renderAll();
 });
 
-document.getElementById('confirmTransferBtn').addEventListener('click', () => {
-  const fromIdx = parseInt(document.getElementById('fromCard').value);
-  const toContact = document.getElementById('toContact').value;
-  const amount = parseFloat(document.getElementById('transferAmount').value);
-  const fee = Math.round(amount * 0.01);
-  const total = amount + fee;
-
-  state.cards[fromIdx].balance -= total;
-  state.transactions.unshift({
-    type: 'transfer',
-    to: toContact,
-    amount: amount,
-    fee: fee,
-    date: new Date().toISOString()
-  });
-  saveState();
-
-  document.getElementById('transferModal').classList.remove('show');
-  document.getElementById('transferAmount').value = '';
-  showToast('Перевод выполнен ✓');
-  renderAll();
-});
-
-document.getElementById('cancelTransferBtn').addEventListener('click', () => {
-  document.getElementById('transferModal').classList.remove('show');
-});
-
-// ===== Reports Screen =====
-function renderReports() {
-  const totalExpenses = state.transactions.reduce((sum, tx) => sum + tx.amount + tx.fee, 0);
-  document.getElementById('totalExpenses').textContent = formatMoney(totalExpenses);
-
-  const list = document.getElementById('transactionsList');
-  if (state.transactions.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div>Нет транзакций</div>';
-    return;
-  }
-
-  list.innerHTML = '';
-  state.transactions.forEach(tx => {
-    const div = document.createElement('div');
-    div.className = 'transaction';
-    const date = new Date(tx.date);
-    const dateStr = date.toLocaleDateString('ru-RU') + ' ' + date.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
-    div.innerHTML = `
-      <div class="tx-info">
-        <div class="tx-name">Перевод → ${tx.to}</div>
-        <div class="tx-date">${dateStr}</div>
-      </div>
-      <div class="tx-amount expense">-${formatMoney(tx.amount + tx.fee)}</div>
-    `;
+/* ---- reports ---- */
+function renderReports(){
+  const total=state.transactions.reduce((s,t)=>s+t.amount+t.fee,0);
+  $('totalExpenses').textContent=Math.round(total).toLocaleString('ru-RU')+' сум';
+  const list=$('txList');
+  if(!state.transactions.length){list.innerHTML='<div class="empty"><div class="e">📭</div>Нет транзакций</div>';return}
+  list.innerHTML='';
+  state.transactions.forEach(t=>{
+    const d=new Date(t.date);
+    const div=document.createElement('div');div.className='tx';
+    div.innerHTML=`<div class="ic">${t.icon}</div><div><div class="n">${t.type==='transfer'?'Перевод → '+t.to:t.to}</div><div class="d">${d.toLocaleDateString('ru-RU')} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="a">−${Math.round(t.amount+t.fee).toLocaleString('ru-RU')} сум</div>`;
     list.appendChild(div);
   });
 }
 
-// ===== Profile Screen =====
-function renderProfile() {
-  document.getElementById('profileName').textContent = state.profile.name;
-  document.getElementById('profilePhone').textContent = state.profile.phone;
-}
-
-document.getElementById('editNameBtn').addEventListener('click', () => {
-  document.getElementById('newNameInput').value = state.profile.name;
-  document.getElementById('editNameModal').classList.add('show');
+/* ---- profile ---- */
+function renderProfile(){$('profileName').textContent=state.profile.name;$('profilePhone').textContent=state.profile.phone}
+$('editNameBtn').addEventListener('click',()=>{$('newNameInput').value=state.profile.name;$('editNameModal').classList.add('show')});
+$('cancelEditBtn').addEventListener('click',()=>$('editNameModal').classList.remove('show'));
+$('saveNameBtn').addEventListener('click',()=>{
+  const n=$('newNameInput').value.trim();
+  if(!n)return toast('Введите имя');
+  state.profile.name=n;saveState();$('editNameModal').classList.remove('show');renderAll();toast('Имя обновлено ✓');
 });
-
-document.getElementById('cancelEditBtn').addEventListener('click', () => {
-  document.getElementById('editNameModal').classList.remove('show');
-});
-
-document.getElementById('saveNameBtn').addEventListener('click', () => {
-  const newName = document.getElementById('newNameInput').value.trim();
-  if (newName) {
-    state.profile.name = newName;
-    saveState();
-    document.getElementById('editNameModal').classList.remove('show');
-    renderProfile();
-    showToast('Имя обновлено ✓');
+$('resetTransfersBtn').addEventListener('click',()=>{
+  if(confirm('Сбросить все переводы и платежи?')){
+    state.transactions=[];state.cards.forEach(c=>c.balance=50000);state.wallet=727;saveState();renderAll();toast('Сброшено ✓');
   }
 });
 
-document.getElementById('resetTransfersBtn').addEventListener('click', () => {
-  if (confirm('Сбросить все переводы? Это действие нельзя отменить.')) {
-    state.transactions = [];
-    state.cards.forEach(card => card.balance = 50000);
-    saveState();
-    renderAll();
-    showToast('Переводы сброшены ✓');
-  }
-});
+/* ---- render all ---- */
+function renderAll(){renderHome();renderTransfers();renderReports();renderProfile()}
+function enterApp(){showScreen('home');renderAll();initCarousel()}
 
-// ===== Render All =====
-function renderAll() {
-  renderHome();
-  renderTransfers();
-  renderReports();
-  renderProfile();
-}
+if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
 
-// ===== Init =====
 initState();
-if (!state.agreementAccepted) {
-  showScreen('agreementScreen');
-} else if (!state.pinVerified) {
-  showScreen('pinScreen');
-} else {
-  showScreen('homeScreen');
-  renderAll();
-}
+if(!state.agreementAccepted)showScreen('agreement');
+else if(!state.pinVerified)showScreen('pin');
+else enterApp();
 </script>
 </body>
 </html>
