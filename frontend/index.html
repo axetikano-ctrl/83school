@@ -9,65 +9,76 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0b1220;--card:#151e2b;--card2:#1d2836;--accent:#1e88e5;--text:#f2f2f2;--muted:#8a94a3}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:86px;user-select:none}
+body[data-theme="amoled"]{--bg:#000;--card:#0a0a0a;--card2:#171717}
+body[data-theme="night"]{--bg:#05080f;--card:#0d1220;--card2:#141b2c;--accent:#5c6bc0}
+body[data-theme="winter"]{--bg:#0a1624;--card:#12202f;--card2:#1b2c3d;--accent:#4fc3f7}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:88px;user-select:none;transition:background-color .35s}
+body,.card,nav,.drawer,.sheet,.quick button,.svc button,.fav,.txic,.chip{transition:background-color .3s}
 .container{max-width:560px;margin:0 auto;padding:16px}
-.screen{display:none}.screen.active{display:block}
+.screen{display:none}.screen.active{display:block;animation:fadeUp .32s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 h1{font-size:26px;font-weight:800;margin-bottom:16px}
+h1.center{text-align:center}
 h2{font-size:18px;font-weight:700;margin:16px 0 10px}
 .card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px}
 .muted{color:var(--muted)}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
+button:active{transform:scale(.97)}
 input,select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:14px;font-size:16px;color:var(--text);margin-bottom:12px;font-family:inherit}
 input:focus,select:focus{outline:2px solid var(--accent)}
-.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700}
-.btn:active{opacity:.85}
+.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700;transition:opacity .2s,transform .1s}
 .btn:disabled{background:var(--card2);color:var(--muted)}
 .btn.secondary{background:var(--card2)}
-svg{display:block}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icf{width:24px;height:24px;fill:currentColor;stroke:none}
+.stagger>*{animation:slideIn .4s both}
 
 /* header */
 .header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer}
-.avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer;color:#fff}
+.avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
+.avatar .badge svg{width:9px;height:9px;stroke:#fff;stroke-width:3;fill:none}
 .search{flex:1;background:var(--card);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}
-.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
-.iconbtn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff9800}
+.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;color:var(--text)}
+.iconbtn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff9800;animation:pop .3s}
 
 /* balance */
 .bal-label{font-size:14px;color:var(--muted);margin-bottom:6px}
 .bal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .bal-amount{font-size:40px;font-weight:800;letter-spacing:-1px}
 .wallet-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.wallet-left{display:flex;flex-direction:column;gap:6px}
-.wallet-left .t{font-size:14px;color:var(--muted)}
+.wallet-left .t{font-size:14px;color:var(--muted);display:block;margin-bottom:6px}
 .wallet-left .v{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700}
-.subs-btn{background:linear-gradient(90deg,#42a5f5,#1e88e5);border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;flex-shrink:0}
+.wallet-left .v svg{color:var(--accent)}
+.subs-btn{background:linear-gradient(90deg,#42a5f5,var(--accent));border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;flex-shrink:0;color:#fff}
 
-/* quick actions */
+/* quick */
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.quick button{background:var(--card);border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3;color:var(--text)}
-.quick svg{color:var(--accent)}
+.quick button{background:var(--card);border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3;transition:transform .12s,background .3s}
+.quick button:active{background:var(--card2)}
+.quick .ic{color:var(--accent);width:26px;height:26px}
 
-/* event card */
+/* event */
 .event-card{display:flex;align-items:center;gap:12px;cursor:pointer}
-.event-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#64b5f6,#1e88e5);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.event-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#64b5f6,var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .event-card .t{font-size:16px;font-weight:700}
 .event-card .s{font-size:13px;color:var(--muted);margin-top:2px}
 .chev{margin-left:auto;color:var(--muted)}
 
 /* carousel */
 .carousel{overflow:hidden;border-radius:16px;margin-bottom:10px}
-.car-track{display:flex;transition:transform .45s ease}
-.slide{min-width:100%;border-radius:16px;padding:24px;display:flex;align-items:center;gap:14px;min-height:120px}
-.slide .ic{font-size:30px}
+.car-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.slide{min-width:100%;border-radius:16px;padding:24px;display:flex;align-items:center;gap:14px;min-height:120px;color:#fff}
+.slide .ic{width:30px;height:30px}
 .slide .t{font-size:22px;font-weight:800;margin-bottom:6px}
 .slide .s{font-size:14px;opacity:.85}
-.slide .chev{font-size:20px}
 .s1{background:linear-gradient(100deg,#6a1b9a,#8e24aa)}
 .s2{background:linear-gradient(100deg,#00695c,#00897b)}
 .s3{background:linear-gradient(100deg,#1565c0,#1e88e5)}
 .dots{display:flex;justify-content:center;gap:6px;margin-bottom:18px}
-.dots button{width:8px;height:8px;border-radius:999px;background:var(--card2)}
+.dots button{width:8px;height:8px;border-radius:999px;background:var(--card2);transition:all .3s}
 .dots button.on{width:22px;background:var(--accent)}
 
 /* mini apps */
@@ -76,79 +87,127 @@ svg{display:block}
 .sec-head a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
 .minirow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
 .minirow::-webkit-scrollbar{display:none}
-.mini{min-width:110px;height:96px;border-radius:16px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-weight:700;font-size:13px;color:#fff}
+.mini{min-width:110px;height:96px;border-radius:16px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-weight:700;font-size:13px;color:#fff;cursor:pointer;transition:transform .15s}
+.mini:active{transform:scale(.95)}
 
-/* pay services */
+/* pay */
 .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .svc button{background:var(--card);border-radius:16px;padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
-.svc .em{font-size:26px}
+.svc .ic{width:28px;height:28px;color:var(--accent)}
 
-/* transactions */
-.tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2)}
+/* transfers */
+.tsearch{display:flex;background:var(--card);border-radius:14px;padding:6px;align-items:center;margin-bottom:16px}
+.tsearch input{flex:1;background:none;margin:0;padding:10px 12px;font-size:15px}
+.tsearch .pbtn{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;margin-left:4px;flex-shrink:0}
+.tsearch .qbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+.phone-row{display:flex;align-items:center;gap:14px;cursor:pointer}
+.phone-row .pi{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.phone-row .t{font-size:17px;font-weight:700}
+.fav{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer}
+.fav .av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
+.fav .info{flex:1;min-width:0}
+.fav .n{font-size:17px;font-weight:800;display:flex;align-items:center;gap:6px}
+.vbadge{width:18px;height:18px;background:var(--accent);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.vbadge svg{width:10px;height:10px;stroke:#fff;stroke-width:3.4;fill:none}
+.fav .c{color:var(--muted);font-size:15px;margin-top:3px}
+.fav .right{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.fav .star{color:var(--muted)}
+.fav .star.on{color:var(--text)}
+
+/* reports */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:16px;padding:12px}
+.stat .t{font-size:11px;color:var(--muted)}
+.stat .v{font-size:15px;font-weight:800;margin-top:4px}
+.tx{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--card2)}
 .tx:last-child{border-bottom:none}
-.tx .ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.tx .n{font-size:15px;font-weight:600}
-.tx .d{font-size:12px;color:var(--muted);margin-top:2px}
-.tx .a{margin-left:auto;font-size:15px;font-weight:700;color:#ef5350}
+.txic{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
+.tx .info{flex:1;min-width:0}
+.tx .n{font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx .d{font-size:13px;color:var(--muted);margin-top:3px}
+.tx .a{font-size:16px;font-weight:700;white-space:nowrap;margin-left:8px}
 .empty{text-align:center;padding:36px 0;color:var(--muted)}
 .empty .e{font-size:44px;margin-bottom:10px}
 
 /* profile */
-.p-head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.p-head{display:flex;align-items:center;gap:14px}
 .p-head .avatar{width:56px;height:56px;font-size:20px}
 .p-head .n{font-size:19px;font-weight:800}
 .p-head .p{font-size:14px;color:var(--muted);margin-top:2px}
 .level{display:flex;align-items:center;gap:12px}
-.level .sh{font-size:22px}
+.level .sh{color:#43a047}
 .level .t{font-size:13px;color:var(--muted)}
 .level .v{font-size:17px;font-weight:800}
+.colors{display:flex;gap:12px;flex-wrap:wrap}
+.colors button{width:34px;height:34px;border-radius:50%;border:3px solid transparent}
+.colors button.on{border-color:var(--text)}
 .disc{font-size:12px;color:var(--muted);line-height:1.55}
 
 /* drawer */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
 .overlay.show{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:#0d1420;z-index:210;transform:translateX(-105%);transition:transform .28s ease;padding:24px 18px;overflow-y:auto}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:var(--bg);z-index:210;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1);padding:24px 18px;overflow-y:auto}
 .drawer.show{transform:none}
 .dr-head{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:16px}
 .dr-head .avatar{width:56px;height:56px;font-size:19px}
 .dr-head .n{font-size:17px;font-weight:800}
 .dr-head .p{font-size:13px;color:var(--muted);margin-top:3px}
-.dr-item{display:flex;align-items:center;gap:14px;padding:14px 4px;font-size:16px;font-weight:600;cursor:pointer}
-.dr-item .em{font-size:20px;width:26px;text-align:center}
-.dr-sub{background:linear-gradient(120deg,#00695c,#00838f);border-radius:16px;padding:20px;margin:14px 0}
+.dr-item{display:flex;align-items:center;gap:16px;padding:15px 4px;font-size:16px;font-weight:600;cursor:pointer}
+.dr-item .ic{color:var(--accent);width:26px;height:26px}
+.dr-sub{background:linear-gradient(120deg,#00695c,#00838f);border-radius:16px;padding:20px;margin:14px 0;color:#fff}
 .dr-sub .t{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:10px}
 .dr-sub .s{font-size:14px;opacity:.9;margin-bottom:12px}
 .dr-sub a{color:#81d4fa;font-weight:700;font-size:14px;text-decoration:none}
 .dr-share{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:14px;font-weight:600;cursor:pointer}
-.dr-share .c{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px}
+.dr-share .c{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff}
+
+/* sheets */
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;z-index:260;padding:26px 20px calc(26px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:80vh;overflow-y:auto}
+.sheet.show{transform:none}
+.sheet h2{margin:0 0 18px;font-size:22px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.chip{background:var(--card2);border-radius:999px;padding:13px 24px;font-size:15px;font-weight:700;display:flex;gap:8px;align-items:center}
+.chip.on{background:rgba(30,136,229,.16);color:var(--accent)}
+.chip .ic{width:16px;height:16px;stroke-width:2.6}
+.sheet-row{display:flex;align-items:center;gap:16px;padding:16px 4px;font-size:16px;font-weight:600;cursor:pointer}
+.sheet-row .ic{color:var(--accent);width:26px;height:26px}
+.cardrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2)}
+.cardrow:last-of-type{border-bottom:none}
+.cardrow .info{flex:1}
+.cardrow .n{font-weight:700}
+.cardrow .s{font-size:13px;color:var(--muted);margin-top:2px}
+.cardrow .del{color:#ef5350;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
 
 /* pin */
 #pinScreen{min-height:calc(100vh - 40px);display:none;flex-direction:column;align-items:center;justify-content:center}
 #pinScreen.active{display:flex}
-.lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(30,136,229,.45);margin-bottom:28px}
+.lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 70px rgba(30,136,229,.5);margin-bottom:28px;color:#fff;animation:pop .4s}
 .pin-t{font-size:26px;font-weight:800;margin-bottom:8px}
 .pin-s{font-size:15px;color:var(--muted);margin-bottom:26px}
 .pin-dots{display:flex;gap:22px;margin-bottom:34px}
 .pin-dots span{width:14px;height:14px;border-radius:50%;background:var(--card2)}
-.pin-dots span.on{background:var(--accent)}
+.pin-dots span.on{background:var(--accent);animation:pop .2s}
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:300px;width:100%}
-.keypad button{height:78px;border-radius:50%;background:var(--card);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.keypad button:active{background:var(--card2)}
+.keypad button{height:78px;border-radius:50%;background:var(--card);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .1s,background .2s}
+.keypad button:active{background:var(--card2);transform:scale(.92)}
 .keypad .empty-k{background:none;pointer-events:none}
 .pin-hint{margin-top:26px;background:var(--card);border-radius:999px;padding:10px 20px;font-size:14px;color:var(--muted)}
 
 /* agreement */
 #agreementScreen{padding-top:48px}
-.ag-ic{margin-bottom:22px}
+.ag-ic{margin-bottom:22px;color:var(--accent);animation:fadeUp .5s}
+.ag-ic .ic{width:52px;height:52px;stroke-width:2.2}
 .ag-t{font-size:26px;font-weight:800;margin-bottom:22px}
-.ag-text{font-size:15.5px;line-height:1.55;margin-bottom:18px}
+.ag-text{font-size:15.5px;line-height:1.55;margin-bottom:18px;animation:slideIn .5s both}
 .ag-check{display:flex;gap:14px;align-items:flex-start;margin:26px 0 16px}
 .ag-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--accent)}
 .ag-check label{font-size:15.5px;line-height:1.5}
 
 /* nav */
-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,18,28,.96);backdrop-filter:blur(10px);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:11px;color:var(--muted);position:relative}
+nav button .ic{transition:transform .15s}
+nav button:active .ic{transform:scale(.85)}
 nav button.active{color:var(--accent)}
 nav .newb{position:absolute;top:4px;right:calc(50% - 26px);background:#ff9800;color:#000;font-size:9px;font-weight:800;border-radius:999px;padding:2px 6px}
 body.noauth nav{display:none}
@@ -156,51 +215,106 @@ body.noauth nav{display:none}
 /* modal & toast */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
-.modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%}
+.modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%;animation:pop .25s}
 .modal-t{font-size:19px;font-weight:800;margin-bottom:10px}
-.modal-x{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.modal-x{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px}
 .modal-a{display:flex;gap:10px}
 .modal-a button{flex:1}
-.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s;z-index:400;max-width:90%}
-.toast.show{opacity:1}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:400;max-width:90%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
-<body class="noauth">
+<body class="noauth" data-theme="classic">
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10 5.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6A16.7 16.7 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 0 1 0-4h13v3"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><circle cx="16.5" cy="13.5" r="1.4"/></symbol>
+<symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 3L7 21M17 3l-2 18M4 8h16M3 16h16"/></symbol>
+<symbol id="i-contact" viewBox="0 0 24 24"><rect x="5" y="3" width="10" height="18" rx="2"/><path d="M18 9a5 5 0 0 1 0 6M20.5 7a8 8 0 0 1 0 10"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1-5.6-3-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4v13m0 0l-3-3m3 3l3-3M17 20V7m0 0l-3 3m3-3l3 3"/></symbol>
+<symbol id="i-invoice" viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6z"/><path d="M14 2v5h5"/><path d="M12 11v6M9.5 12.5h5M9.5 15.5h5"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M4 21v-1a7 7 0 0 1 5-6.7M20 21v-1a7 7 0 0 0-5-6.7"/><path d="M9 17h6"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+<symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></symbol>
+<symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7v.5"/></symbol>
+<symbol id="i-subs" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M8 3l4 3 4-3"/><path d="M10 10v6l5-3z"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V5m0 0l-4 4m4-4l4 4"/><path d="M5 20h14"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></symbol>
+<symbol id="i-gavel" viewBox="0 0 24 24"><path d="M14 4l6 6"/><path d="M12 6l6 6"/><path d="M13 5l-8.5 8.5a2.1 2.1 0 0 0 3 3L16 8"/><path d="M3 21h9"/></symbol>
+<symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M14 2a9 9 0 0 1 8 8h-8z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol>
+<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M7 14h10v7H7z"/></symbol>
+<symbol id="i-food" viewBox="0 0 24 24"><path d="M5 3v8a3 3 0 0 0 6 0V3M8 3v18"/><path d="M17 3c-2 3-2 7 0 9v9"/></symbol>
+<symbol id="i-gym" viewBox="0 0 24 24"><path d="M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4a2 2 0 0 1 2-2h14v18H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 1 2-2h14"/></symbol>
+<symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 10h16M8 21l1-4M16 21l-1-4"/><path d="M8 14h.5M15.5 14h.5"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 3h8l10 10-8 8L3 11z"/><circle cx="8" cy="8" r="1.6"/></symbol>
+</svg>
 
 <!-- DRAWER -->
 <div class="overlay" id="overlay"></div>
 <div class="drawer" id="drawer">
   <div class="dr-head" id="drProfile">
-    <div class="avatar" id="drAvatar">••<span class="badge">✓</span></div>
+    <div class="avatar" id="drAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
     <div><div class="n" id="drName"></div><div class="p" id="drPhone"></div></div>
   </div>
-  <div class="card level"><span class="sh">🛡️</span><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div><span class="chev" style="margin-left:auto">›</span></div>
-  <div class="dr-item" data-toast="Демо-раздел: Подписки"><span class="em">📺</span>Подписки</div>
-  <div class="dr-item" data-toast="Демо-раздел: Безопасность"><span class="em">🛡️</span>Безопасность</div>
-  <div class="dr-item" data-toast="Демо-раздел: Настройки"><span class="em">⚙️</span>Настройки</div>
-  <div class="dr-item" data-toast="Демо-раздел: Поддержка"><span class="em">🎧</span>Служба поддержки</div>
-  <div class="dr-item" id="drAbout"><span class="em">ℹ️</span>О программе</div>
+  <div class="card level"><svg class="icf sh" style="width:26px;height:26px"><use href="#i-shield"/></svg><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div><svg class="ic chev" style="margin-left:auto"><use href="#i-chev"/></svg></div>
+  <div class="dr-item" data-toast="Демо-раздел: Подписки"><svg class="ic"><use href="#i-subs"/></svg>Подписки</div>
+  <div class="dr-item" data-toast="Демо-раздел: Безопасность"><svg class="ic"><use href="#i-shield"/></svg>Безопасность</div>
+  <div class="dr-item" id="drSettings"><svg class="ic"><use href="#i-gear"/></svg>Настройки</div>
+  <div class="dr-item" data-toast="Демо-раздел: Поддержка"><svg class="ic"><use href="#i-headset"/></svg>Служба поддержки</div>
+  <div class="dr-item" id="drAbout"><svg class="ic"><use href="#i-info"/></svg>О программе</div>
   <div class="dr-sub">
     <div class="t">CampusPay Подписка</div>
     <div class="s">0% комиссии, кешбэк и другие бонусы</div>
     <a href="#" id="drSubConnect">Подключить ›</a>
   </div>
-  <div class="dr-share" id="drShare"><span class="c">⬆</span>Поделиться приложением</div>
+  <div class="dr-share" id="drShare"><span class="c"><svg class="ic" style="width:18px;height:18px"><use href="#i-up"/></svg></span>Поделиться приложением</div>
+</div>
+
+<!-- SETTINGS SHEET -->
+<div class="sheet" id="settingsSheet">
+  <h2>Настройки</h2>
+  <div class="chips" id="themeChips"></div>
+  <div class="sheet-row" id="setProfile"><svg class="ic"><use href="#i-person"/></svg>Профиль: имя, телефон, цвет аватара</div>
+  <div class="sheet-row" id="setCards"><svg class="ic"><use href="#i-card"/></svg>Карты: добавить и настроить</div>
+</div>
+
+<!-- CARDS SHEET -->
+<div class="sheet" id="cardsSheet">
+  <h2>Мои карты</h2>
+  <div id="cardsList"></div>
+  <button class="btn" id="addCardBtn" style="margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px"><svg class="ic" style="width:18px;height:18px;stroke:#fff"><use href="#i-plus"/></svg>Добавить карту</button>
 </div>
 
 <div class="container">
 
   <!-- AGREEMENT -->
   <div id="agreementScreen" class="screen">
-    <div class="ag-ic">
-      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1e88e5" stroke-width="2.2" stroke-linecap="round"><path d="M14 4l6 6"/><path d="M12 6l6 6"/><path d="M13 5l-8.5 8.5a2.1 2.1 0 0 0 3 3L16 8"/><path d="M3 21h9"/></svg>
-    </div>
+    <div class="ag-ic"><svg class="ic"><use href="#i-gavel"/></svg></div>
     <div class="ag-t">Пользовательское соглашение</div>
-    <div class="ag-text">1. CampusPay — учебный тестовый проект. Все карты, балансы и переводы в нём ненастоящие и созданы исключительно для демонстрации и тестирования приложения.</div>
-    <div class="ag-text">2. Пользователь подтверждает, что ему исполнилось 18 лет.</div>
-    <div class="ag-text">3. Пользователь обязуется не использовать приложение для обмана людей, мошенничества и любых иных противоправных действий.</div>
-    <div class="ag-text">4. Создатель приложения не принимает участия в действиях пользователя и не несёт никакой ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам с использованием или упоминанием приложения.</div>
-    <div class="ag-text">5. Все данные хранятся локально на устройстве пользователя и никуда не передаются.</div>
+    <div class="ag-text" style="animation-delay:.05s">1. CampusPay — учебный тестовый проект. Все карты, балансы и переводы в нём ненастоящие и созданы исключительно для демонстрации и тестирования приложения.</div>
+    <div class="ag-text" style="animation-delay:.1s">2. Пользователь подтверждает, что ему исполнилось 18 лет.</div>
+    <div class="ag-text" style="animation-delay:.15s">3. Пользователь обязуется не использовать приложение для обмана людей, мошенничества и любых иных противоправных действий.</div>
+    <div class="ag-text" style="animation-delay:.2s">4. Создатель приложения не принимает участия в действиях пользователя и не несёт никакой ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам с использованием или упоминанием приложения.</div>
+    <div class="ag-text" style="animation-delay:.25s">5. Все данные хранятся локально на устройстве пользователя и никуда не передаются.</div>
     <div class="ag-check">
       <input type="checkbox" id="agreeCheckbox">
       <label for="agreeCheckbox">Мне есть 18 лет, я принимаю условия и буду использовать приложение только для тестирования</label>
@@ -210,7 +324,7 @@ body.noauth nav{display:none}
 
   <!-- PIN -->
   <div id="pinScreen" class="screen">
-    <div class="lock"><svg width="44" height="44" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></svg></div>
+    <div class="lock"><svg class="icf" style="width:44px;height:44px"><use href="#i-lock"/></svg></div>
     <div class="pin-t">Добро пожаловать</div>
     <div class="pin-s">Введите PIN для входа</div>
     <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
@@ -218,7 +332,7 @@ body.noauth nav{display:none}
       <button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button>
       <button data-d="4">4</button><button data-d="5">5</button><button data-d="6">6</button>
       <button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button>
-      <button class="empty-k"></button><button data-d="0">0</button><button data-d="del"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8a94a3" stroke-width="2"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9L3 12l6-7z"/><path d="M12 10l4 4M16 10l-4 4"/></svg></button>
+      <button class="empty-k"></button><button data-d="0">0</button><button data-d="del"><svg class="ic" style="color:var(--muted)"><use href="#i-x"/></svg></button>
     </div>
     <div class="pin-hint">Демо-PIN: 1234</div>
   </div>
@@ -226,38 +340,38 @@ body.noauth nav{display:none}
   <!-- HOME -->
   <div id="homeScreen" class="screen">
     <div class="header">
-      <div class="avatar" id="hAvatar">••<span class="badge">✓</span></div>
-      <div class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Поиск</div>
-      <div class="iconbtn" id="menuBtn"><svg width="22" height="22" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></div>
-      <div class="iconbtn" id="bellBtn"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot"></span></div>
+      <div class="avatar" id="hAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
+      <div class="search"><svg class="ic" style="width:17px;height:17px"><use href="#i-search"/></svg>Поиск</div>
+      <div class="iconbtn" id="menuBtn"><svg class="ic"><use href="#i-menu"/></svg></div>
+      <div class="iconbtn" id="bellBtn"><svg class="ic"><use href="#i-bell"/></svg><span class="dot"></span></div>
     </div>
     <div class="bal-label">Общий баланс</div>
     <div class="bal-row">
       <div class="bal-amount" id="totalBalance">0 сум</div>
-      <div class="iconbtn" id="eyeBtn"><svg id="eyeIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8a94a3" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="iconbtn" id="eyeBtn"><svg class="ic" id="eyeIcon" style="color:var(--muted)"><use href="#i-eye"/></svg></div>
     </div>
     <div class="wallet-row">
       <div class="wallet-left">
         <span class="t">Мой кошелёк</span>
-        <span class="v"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1e88e5"><path d="M21 7H5a2 2 0 0 1 0-4h14v2H5a0 0 0 0 0 0 0h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a3 3 0 0 1 3-3"/><circle cx="17" cy="13" r="1.6" fill="#0b1220"/></svg><span id="walletBalance">0 сум</span></span>
+        <span class="v"><svg class="icf" style="width:20px;height:20px"><use href="#i-wallet"/></svg><span id="walletBalance">0 сум</span></span>
       </div>
-      <button class="subs-btn" id="subsBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6l5 3 1-1.7-4-2.3z"/></svg>Мониторинг по подписке</button>
+      <button class="subs-btn" id="subsBtn"><svg class="icf" style="width:22px;height:22px"><use href="#i-clock"/></svg>Мониторинг по подписке</button>
     </div>
     <div class="quick">
-      <button data-toast="Демо: Campus Pass"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M9 3L7 21M17 3l-2 18M4 8h16M3 16h16"/></svg>Campus Pass</button>
-      <button data-toast="Демо: Campus Boom"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><rect x="6" y="3" width="10" height="18" rx="2"/><path d="M19 9a5 5 0 0 1 0 6"/></svg>Campus Boom</button>
-      <button data-toast="Демо: Карты и кошелёк"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>Карты и кошелёк</button>
-      <button data-toast="Демо: QR сканер"><svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></svg>QR сканер</button>
+      <button data-toast="Демо: Campus Pass"><svg class="ic"><use href="#i-hash"/></svg>Campus Pass</button>
+      <button data-toast="Демо: Campus Boom"><svg class="ic"><use href="#i-contact"/></svg>Campus Boom</button>
+      <button id="qCards"><svg class="ic"><use href="#i-card"/></svg>Карты и кошелёк</button>
+      <button data-toast="Демо: QR сканер"><svg class="ic"><use href="#i-qr"/></svg>QR сканер</button>
     </div>
     <div class="card event-card" id="eventCard">
-      <div class="event-icon">✨</div>
+      <div class="event-icon"><svg class="icf" style="width:22px;height:22px"><use href="#i-sparkle"/></svg></div>
       <div><div class="t">Мой CampusPay</div><div class="s">Посмотрите важные события</div></div>
-      <span class="chev" style="margin-left:auto">›</span>
+      <svg class="ic chev"><use href="#i-chev"/></svg>
     </div>
     <div class="carousel"><div class="car-track" id="carTrack">
-      <div class="slide s1"><span class="ic">🏷️</span><div><div class="t">Campus Pass −50%</div><div class="s">Студентам до 31 декабря</div></div><span class="chev" style="margin-left:auto">›</span></div>
-      <div class="slide s2"><span class="ic">💎</span><div><div class="t">CampusPay Подписка</div><div class="s">0% комиссии и кешбэк</div></div><span class="chev" style="margin-left:auto">›</span></div>
-      <div class="slide s3"><span class="ic">⚡</span><div><div class="t">Campus Boom</div><div class="s">Переводы друзьям в один тап</div></div><span class="chev" style="margin-left:auto">›</span></div>
+      <div class="slide s1"><svg class="icf"><use href="#i-tag"/></svg><div><div class="t">Campus Pass −50%</div><div class="s">Студентам до 31 декабря</div></div><svg class="ic chev" style="margin-left:auto"><use href="#i-chev"/></svg></div>
+      <div class="slide s2"><svg class="icf"><use href="#i-sparkle"/></svg><div><div class="t">CampusPay Подписка</div><div class="s">0% комиссии и кешбэк</div></div><svg class="ic chev" style="margin-left:auto"><use href="#i-chev"/></svg></div>
+      <div class="slide s3"><svg class="icf"><use href="#i-swap"/></svg><div><div class="t">Campus Boom</div><div class="s">Переводы друзьям в один тап</div></div><svg class="ic chev" style="margin-left:auto"><use href="#i-chev"/></svg></div>
     </div></div>
     <div class="dots" id="carDots"></div>
     <div class="sec-head"><span class="t">Mini Apps</span><a href="#" id="miniAll">Смотреть все</a></div>
@@ -272,36 +386,52 @@ body.noauth nav{display:none}
   <!-- PAY -->
   <div id="payScreen" class="screen">
     <h1>Оплата</h1>
-    <div class="svc">
-      <button data-svc="Мобильная связь" data-em="📱"><span class="em">📱</span>Мобильная связь</button>
-      <button data-svc="Столовая" data-em="🍽️"><span class="em">🍽️</span>Столовая</button>
-      <button data-svc="Печать" data-em="🖨️"><span class="em">🖨️</span>Печать</button>
-      <button data-svc="Спортзал" data-em="🏋️"><span class="em">🏋️</span>Спортзал</button>
-      <button data-svc="Библиотека" data-em="📚"><span class="em">📚</span>Библиотека</button>
-      <button data-svc="Транспорт" data-em="🚌"><span class="em">🚌</span>Транспорт</button>
+    <div class="svc stagger">
+      <button data-svc="Мобильная связь" data-ic="i-phone"><svg class="ic"><use href="#i-phone"/></svg>Мобильная связь</button>
+      <button data-svc="Столовая" data-ic="i-food"><svg class="ic"><use href="#i-food"/></svg>Столовая</button>
+      <button data-svc="Печать" data-ic="i-print"><svg class="ic"><use href="#i-print"/></svg>Печать</button>
+      <button data-svc="Спортзал" data-ic="i-gym"><svg class="ic"><use href="#i-gym"/></svg>Спортзал</button>
+      <button data-svc="Библиотека" data-ic="i-book"><svg class="ic"><use href="#i-book"/></svg>Библиотека</button>
+      <button data-svc="Транспорт" data-ic="i-bus"><svg class="ic"><use href="#i-bus"/></svg>Транспорт</button>
     </div>
   </div>
 
   <!-- TRANSFERS -->
   <div id="transfersScreen" class="screen">
-    <h1>Переводы</h1>
-    <div class="card">
-      <select id="fromCard"><option value="">С карты</option></select>
-      <select id="toContact"><option value="">Получатель</option></select>
-      <input type="number" id="transferAmount" placeholder="Сумма перевода" min="1">
-      <div id="transferFee" class="muted" style="font-size:13px;margin-bottom:12px"></div>
-      <button class="btn" id="transferBtn">Перевести</button>
+    <h1 class="center">Переводы</h1>
+    <div class="tsearch">
+      <input id="favSearch" placeholder="Номер карты, кошелька или тел…">
+      <button class="pbtn" data-toast="Демо: выбор контакта"><svg class="icf" style="width:20px;height:20px"><use href="#i-person"/></svg></button>
+      <button class="qbtn" data-toast="Демо: QR сканер"><svg class="ic"><use href="#i-qr"/></svg></button>
     </div>
+    <div class="quick stagger">
+      <button id="ownBtn"><svg class="ic"><use href="#i-swap"/></svg>Между своими</button>
+      <button data-toast="Демо: Запрос средств"><svg class="ic"><use href="#i-invoice"/></svg>Запрос средств</button>
+      <button data-toast="Демо: Дать в долг"><svg class="ic"><use href="#i-hand"/></svg>Дать в долг</button>
+      <button data-toast="Демо: Click Boom"><svg class="ic"><use href="#i-phone"/></svg>Click Boom</button>
+    </div>
+    <div class="card phone-row" id="phoneRow">
+      <div class="pi"><svg class="icf" style="width:22px;height:22px"><use href="#i-phone"/></svg></div>
+      <div class="t">По номеру телефона</div>
+      <svg class="ic chev"><use href="#i-chev"/></svg>
+    </div>
+    <h2>Избранные</h2>
+    <div id="favList" class="stagger"></div>
   </div>
 
   <!-- REPORTS -->
   <div id="reportsScreen" class="screen">
-    <h1>Отчёты</h1>
-    <div class="card"><div class="bal-label">Всего расходов</div><div class="bal-amount" style="font-size:30px" id="totalExpenses">0 сум</div></div>
-    <div class="card" id="txList"></div>
+    <h1>Аналитика</h1>
+    <div class="stats stagger">
+      <div class="stat"><div class="t">Расходы</div><div class="v" id="stTotal">0</div></div>
+      <div class="stat"><div class="t">Комиссии</div><div class="v" id="stFees">0</div></div>
+      <div class="stat"><div class="t">Операций</div><div class="v" id="stCount">0</div></div>
+    </div>
+    <h2>История</h2>
+    <div id="txList" class="stagger"></div>
   </div>
 
-  <!-- MINI APPS TAB -->
+  <!-- MINI -->
   <div id="miniScreen" class="screen">
     <h1>Mini Apps</h1>
     <div class="minirow" style="flex-wrap:wrap">
@@ -319,11 +449,12 @@ body.noauth nav{display:none}
     <h1>Профиль</h1>
     <div class="card">
       <div class="p-head">
-        <div class="avatar" id="pAvatar">••<span class="badge">✓</span></div>
+        <div class="avatar" id="pAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
         <div><div class="n" id="profileName"></div><div class="p" id="profilePhone"></div></div>
       </div>
     </div>
-    <div class="card level" style="margin-bottom:12px"><span class="sh">🛡️</span><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div></div>
+    <div class="card level" style="margin-bottom:12px"><svg class="icf sh" style="width:26px;height:26px"><use href="#i-shield"/></svg><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div></div>
+    <div class="card"><div class="bal-label">Цвет аватара</div><div class="colors" id="colorRow"></div></div>
     <button class="btn" id="editNameBtn" style="margin-bottom:10px">Редактировать имя</button>
     <button class="btn secondary" id="resetTransfersBtn" style="margin-bottom:14px">Сбросить переводы</button>
     <div class="card"><div class="disc">⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя. 18+</div></div>
@@ -338,9 +469,27 @@ body.noauth nav{display:none}
 </div></div>
 
 <div class="modal" id="transferModal"><div class="modal-c">
-  <div class="modal-t">Подтверждение перевода</div>
-  <div class="modal-x" id="transferDetails"></div>
+  <div class="modal-t" id="transferTitle">Перевод</div>
+  <select id="fromCard"><option value="">С карты</option></select>
+  <input type="number" id="transferAmount" placeholder="Сумма перевода" min="1">
+  <div id="transferFee" class="muted" style="font-size:13px;margin-bottom:12px"></div>
   <div class="modal-a"><button class="btn secondary" id="cancelTransferBtn">Отмена</button><button class="btn" id="confirmTransferBtn">Подтвердить</button></div>
+</div></div>
+
+<div class="modal" id="ownModal"><div class="modal-c">
+  <div class="modal-t">Между своими картами</div>
+  <select id="ownFrom"><option value="">Откуда</option></select>
+  <select id="ownTo"><option value="">Куда</option></select>
+  <input type="number" id="ownAmount" placeholder="Сумма" min="1">
+  <div class="modal-a"><button class="btn secondary" id="cancelOwnBtn">Отмена</button><button class="btn" id="confirmOwnBtn">Перевести</button></div>
+</div></div>
+
+<div class="modal" id="phoneModal"><div class="modal-c">
+  <div class="modal-t">По номеру телефона</div>
+  <input type="tel" id="phoneInput" placeholder="+998 __ ___ __ __">
+  <select id="phoneCard"><option value="">С карты</option></select>
+  <input type="number" id="phoneAmount" placeholder="Сумма" min="1">
+  <div class="modal-a"><button class="btn secondary" id="cancelPhoneBtn">Отмена</button><button class="btn" id="confirmPhoneBtn">Перевести</button></div>
 </div></div>
 
 <div class="modal" id="payModal"><div class="modal-c">
@@ -359,161 +508,250 @@ body.noauth nav{display:none}
 <div class="toast" id="toast"></div>
 
 <nav id="nav">
-  <button data-tab="home" class="active"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg>Главный</button>
-  <button data-tab="pay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>Оплата</button>
-  <button data-tab="transfers"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 4v13m0 0l-3-3m3 3l3-3M17 20V7m0 0l-3 3m3-3l3 3"/></svg>Переводы</button>
-  <button data-tab="reports"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M14 2a9 9 0 0 1 8 8h-8z"/></svg>Отчёты</button>
-  <button data-tab="mini"><span class="newb">New</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Mini Apps</button>
+  <button data-tab="home" class="active"><svg class="ic"><use href="#i-home"/></svg>Главный</button>
+  <button data-tab="pay"><svg class="ic"><use href="#i-card"/></svg>Оплата</button>
+  <button data-tab="transfers"><svg class="ic"><use href="#i-swap"/></svg>Переводы</button>
+  <button data-tab="reports"><svg class="ic"><use href="#i-pie"/></svg>Отчёты</button>
+  <button data-tab="mini"><span class="newb">New</span><svg class="ic"><use href="#i-grid"/></svg>Mini Apps</button>
 </nav>
 
 <script>
 const STORAGE_KEY='campuspay_data';
-let state=null, pinBuffer='', carIdx=0, carTimer=null, curSvc=null;
+let state=null,pinBuffer='',carIdx=0,carTimer=null,curSvc=null,curRecipient=null;
 
-const NAMES=['Bekzod','Malika','Aziz','Dilnoza','Jasur','Nigora','Sardor','Zilola','Александр','Мария','Дмитрий','Анна'];
-const SURNAMES=['Rahimova','Karimov','Tursunova','Yusupov','Ergasheva','Mirzayev','Козлова','Михайлов','Новикова','Волков'];
-const CONTACTS=['Иван Петров','Мария Сидорова','Дмитрий Козлов','Анна Михайлова','Сергей Новиков','Malika Karimova'];
+const NAMES=['Bekzod','Malika','Aziz','Dilnoza','Jasur','Nigora','Sardor','Zilola','Александр','Мария'];
+const SURNAMES=['Rahimova','Karimov','Tursunova','Yusupov','Ergasheva','Mirzayev','Козлова','Михайлов'];
+const SYSTEMS=['Visa','Mastercard','HumoCard','UzCard'];
+const COLORS=['#1e88e5','#8e24aa','#43a047','#f57c00','#d81b60','#00897b','#455a64'];
+const THEMES=[{id:'classic',name:'Классика'},{id:'amoled',name:'AMOLED'},{id:'night',name:'Ночь'},{id:'winter',name:'Зима'}];
+const FAVS=[
+  {id:1,name:'Zamira R.',color:'#8e24aa',system:'HumoCard',last4:'2241',time:'00:39'},
+  {id:2,name:'Otabek S.',color:'#455a64',system:'UzCard',last4:'9359',time:'00:15'},
+  {id:3,name:'Nuralibek L.',color:'#1e88e5',system:'UzCard',last4:'8096',time:'24 сент.'},
+  {id:4,name:'Dilnoza A.',color:'#43a047',system:'HumoCard',last4:'6688',time:'24 сент.'}
+];
 
-function rnd(a){return a[Math.floor(Math.random()*a.length)]}
-function genName(){return rnd(NAMES)+' '+rnd(SURNAMES)}
-function genPhone(){return `+998 ${90+Math.floor(Math.random()*9)} ${100+Math.floor(Math.random()*900)} ${10+Math.floor(Math.random()*90)} ${10+Math.floor(Math.random()*90)}`}
-function genCard(){return String(1000+Math.floor(Math.random()*9000))}
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const genName=()=>rnd(NAMES)+' '+rnd(SURNAMES);
+const genPhone=()=>`+998 ${90+Math.floor(Math.random()*9)} ${100+Math.floor(Math.random()*900)} ${10+Math.floor(Math.random()*90)} ${10+Math.floor(Math.random()*90)}`;
+const genCard=()=>String(1000+Math.floor(Math.random()*9000));
+const money=n=>Math.round(n).toLocaleString('ru-RU')+' сум';
 
 function initState(){
   const saved=localStorage.getItem(STORAGE_KEY);
-  if(saved){state=JSON.parse(saved);}
+  if(saved)state=JSON.parse(saved);
   else{
-    state={agreementAccepted:false,pinVerified:false,balanceHidden:false,
-      profile:{name:genName(),phone:genPhone()},
+    state={agreementAccepted:false,pinVerified:false,balanceHidden:false,theme:'classic',
+      profile:{name:genName(),phone:genPhone(),color:'#1e88e5'},
       cards:[{number:genCard(),system:'Visa',balance:50000},{number:genCard(),system:'Mastercard',balance:30000}],
-      wallet:727,transactions:[]};
+      wallet:727,transactions:[],favorites:FAVS.map(f=>({...f,starred:true}))};
     saveState();
   }
+  if(!state.favorites)state.favorites=FAVS.map(f=>({...f,starred:true}));
+  if(!state.theme)state.theme='classic';
+  if(!state.profile.color)state.profile.color='#1e88e5';
   if(state.wallet===undefined)state.wallet=727;
-  if(state.balanceHidden===undefined)state.balanceHidden=false;
+  document.body.dataset.theme=state.theme;
 }
 function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 
 const $=id=>document.getElementById(id);
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
-function fmt(n){return state.balanceHidden?'••••••':Math.round(n).toLocaleString('ru-RU')+' сум'}
-function initials(n){const p=n.split(' ');return ((p[0]||'')[0]||'•')+((p[1]||'')[0]||'•').toUpperCase()}
-
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
+function fmt(n){return state.balanceHidden?'••••••':money(n)}
+function initials(n){const p=n.split(' ');return ((p[0]||'')[0]||'•')+(((p[1]||'')[0])||'•').toUpperCase()}
+function animNum(el,to){
+  const from=+el.dataset.v||0;el.dataset.v=to;
+  if(state.balanceHidden){el.textContent='••••••';return}
+  const t0=performance.now(),dur=550;
+  (function f(t){const p=Math.min(1,(t-t0)/dur),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));
+    el.textContent=v.toLocaleString('ru-RU')+(el.dataset.suf||' сум');if(p<1)requestAnimationFrame(f)})(t0);
+}
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $(id+'Screen').classList.add('active');
-  const authed=(id!=='agreement'&&id!=='pin');
-  document.body.classList.toggle('noauth',!authed);
+  document.body.classList.toggle('noauth',id==='agreement'||id==='pin');
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
 }
+function sheet(id,show){$(id).classList.toggle('show',show);$('overlay').classList.toggle('show',show||$('drawer').classList.contains('show'))}
 
-/* ---- agreement ---- */
+/* agreement */
 $('agreeCheckbox').addEventListener('change',e=>$('acceptBtn').disabled=!e.target.checked);
 $('acceptBtn').addEventListener('click',()=>{state.agreementAccepted=true;saveState();showScreen('pin')});
 
-/* ---- pin ---- */
+/* pin */
 function renderPinDots(){document.querySelectorAll('#pinDots span').forEach((s,i)=>s.classList.toggle('on',i<pinBuffer.length))}
 $('keypad').addEventListener('click',e=>{
-  const b=e.target.closest('button');if(!b)return;
-  const d=b.dataset.d;if(!d)return;
-  if(d==='del')pinBuffer=pinBuffer.slice(0,-1);
-  else if(pinBuffer.length<4)pinBuffer+=d;
+  const b=e.target.closest('button');if(!b||!b.dataset.d)return;
+  if(b.dataset.d==='del')pinBuffer=pinBuffer.slice(0,-1);
+  else if(pinBuffer.length<4)pinBuffer+=b.dataset.d;
   renderPinDots();
-  if(pinBuffer.length===4){
-    setTimeout(()=>{
-      if(pinBuffer==='1234'){state.pinVerified=true;saveState();enterApp();}
-      else{toast('Неверный PIN');pinBuffer='';renderPinDots();}
-    },150);
-  }
+  if(pinBuffer.length===4)setTimeout(()=>{
+    if(pinBuffer==='1234'){state.pinVerified=true;saveState();enterApp()}
+    else{toast('Неверный PIN');pinBuffer='';renderPinDots()}
+  },160);
 });
 
-/* ---- nav ---- */
+/* nav */
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{showScreen(b.dataset.tab);renderAll()}));
 
-/* ---- drawer ---- */
+/* drawer & sheets */
 function openDr(){$('drawer').classList.add('show');$('overlay').classList.add('show')}
-function closeDr(){$('drawer').classList.remove('show');$('overlay').classList.remove('show')}
+function closeAll(){$('drawer').classList.remove('show');sheet('settingsSheet',false);sheet('cardsSheet',false);$('overlay').classList.remove('show')}
 $('menuBtn').addEventListener('click',openDr);
-$('overlay').addEventListener('click',closeDr);
-$('drProfile').addEventListener('click',()=>{closeDr();showScreen('profile');renderAll()});
+$('overlay').addEventListener('click',closeAll);
+$('drProfile').addEventListener('click',()=>{closeAll();showScreen('profile');renderAll()});
 $('hAvatar').addEventListener('click',()=>{showScreen('profile');renderAll()});
 document.querySelectorAll('.dr-item[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
-$('drAbout').addEventListener('click',()=>{closeDr();$('aboutModal').classList.add('show')});
+$('drAbout').addEventListener('click',()=>{closeAll();$('aboutModal').classList.add('show')});
 $('closeAboutBtn').addEventListener('click',()=>$('aboutModal').classList.remove('show'));
+$('drSettings').addEventListener('click',()=>{closeAll();renderChips();sheet('settingsSheet',true)});
 $('drSubConnect').addEventListener('click',e=>{e.preventDefault();toast('Демо: подписка подключена ✓')});
-$('drShare').addEventListener('click',()=>{if(navigator.share)navigator.share({title:'CampusPay',text:'Посмотри CampusPay!',url:location.href}).catch(()=>{});else toast('Ссылка скопирована (демо)')});
+$('drShare').addEventListener('click',()=>{if(navigator.share)navigator.share({title:'CampusPay',text:'Посмотри CampusPay!',url:location.href}).catch(()=>{});else toast('Демо: поделиться')});
+$('setProfile').addEventListener('click',()=>{closeAll();showScreen('profile');renderAll()});
+$('setCards').addEventListener('click',()=>{closeAll();renderCardsSheet();sheet('cardsSheet',true)});
+$('qCards').addEventListener('click',()=>{renderCardsSheet();sheet('cardsSheet',true)});
 
-/* ---- home ---- */
+/* themes */
+function renderChips(){
+  const w=$('themeChips');w.innerHTML='';
+  THEMES.forEach(t=>{
+    const b=document.createElement('button');b.className='chip'+(state.theme===t.id?' on':'');
+    b.innerHTML=(state.theme===t.id?'<svg class="ic"><use href="#i-check"/></svg>':'')+t.name;
+    b.addEventListener('click',()=>{state.theme=t.id;document.body.dataset.theme=t.id;saveState();renderChips();toast('Тема: '+t.name)});
+    w.appendChild(b);
+  });
+}
+
+/* cards sheet */
+function renderCardsSheet(){
+  const w=$('cardsList');w.innerHTML='';
+  state.cards.forEach((c,i)=>{
+    const d=document.createElement('div');d.className='cardrow';
+    d.innerHTML=`<svg class="ic" style="color:var(--accent)"><use href="#i-card"/></svg><div class="info"><div class="n">•••• ${c.number}</div><div class="s">${c.system} · ${money(c.balance)}</div></div>${state.cards.length>1?`<button class="del" data-i="${i}"><svg class="ic" style="width:18px;height:18px"><use href="#i-x"/></svg></button>`:''}`;
+    w.appendChild(d);
+  });
+  w.querySelectorAll('.del').forEach(b=>b.addEventListener('click',()=>{
+    state.cards.splice(+b.dataset.i,1);saveState();renderCardsSheet();renderAll();toast('Карта удалена');
+  }));
+}
+$('addCardBtn').addEventListener('click',()=>{
+  state.cards.push({number:genCard(),system:rnd(SYSTEMS),balance:10000});
+  saveState();renderCardsSheet();renderAll();toast('Карта добавлена ✓');
+});
+
+/* home */
 $('bellBtn').addEventListener('click',()=>toast('Нет новых уведомлений'));
 $('subsBtn').addEventListener('click',()=>toast('Демо: мониторинг по подписке'));
 $('eventCard').addEventListener('click',()=>{showScreen('reports');renderAll()});
-$('eyeBtn').addEventListener('click',()=>{state.balanceHidden=!state.balanceHidden;saveState();renderHome()});
-$('miniAll').addEventListener('click',e=>{e.preventDefault();showScreen('mini')});
-document.querySelectorAll('[data-toast]').forEach(el=>{
-  if(el.closest('.dr-item')||el.closest('.mini'))return;
-  el.addEventListener('click',()=>toast(el.dataset.toast));
+$('eyeBtn').addEventListener('click',()=>{
+  state.balanceHidden=!state.balanceHidden;saveState();
+  $('eyeIcon').innerHTML=`<use href="#i-${state.balanceHidden?'eyeoff':'eye'}"/>`;
+  renderHome();renderReports();
 });
-document.querySelectorAll('.mini').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
+$('miniAll').addEventListener('click',e=>{e.preventDefault();showScreen('mini')});
+document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
 
 function initCarousel(){
   const dots=$('carDots');dots.innerHTML='';
   for(let i=0;i<3;i++){const b=document.createElement('button');b.addEventListener('click',()=>goCar(i));dots.appendChild(b)}
-  goCar(0);
-  if(carTimer)clearInterval(carTimer);
-  carTimer=setInterval(()=>goCar((carIdx+1)%3),4500);
+  goCar(0);clearInterval(carTimer);carTimer=setInterval(()=>goCar((carIdx+1)%3),4500);
 }
 function goCar(i){carIdx=i;$('carTrack').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('#carDots button').forEach((d,j)=>d.classList.toggle('on',j===i))}
 
-function renderHome(){
-  const total=state.cards.reduce((s,c)=>s+c.balance,0);
-  $('totalBalance').textContent=fmt(total);
-  $('walletBalance').textContent=fmt(state.wallet);
+function paintAvatars(){
   const ini=initials(state.profile.name);
-  $('hAvatar').firstChild.textContent=ini;
-  $('drAvatar').firstChild.textContent=ini;
-  $('pAvatar').firstChild.textContent=ini;
-  $('drName').textContent=state.profile.name;
-  $('drPhone').textContent=state.profile.phone;
+  [['hAvatar',ini],['drAvatar',ini],['pAvatar',ini]].forEach(([id,v])=>{
+    const el=$(id);el.firstChild.textContent=v;el.style.background=state.profile.color;
+  });
+  $('drName').textContent=state.profile.name;$('drPhone').textContent=state.profile.phone;
+}
+function renderHome(){
+  animNum($('totalBalance'),state.cards.reduce((s,c)=>s+c.balance,0));
+  animNum($('walletBalance'),state.wallet);
+  paintAvatars();
 }
 
-/* ---- transfers ---- */
-function fillCardSelect(sel){
-  sel.innerHTML='<option value="">С карты</option>';
-  state.cards.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`•••• ${c.number} (${c.system}) — ${Math.round(c.balance).toLocaleString('ru-RU')} сум`;sel.appendChild(o)});
+/* transfers */
+function fillCardSelect(sel,ph){
+  sel.innerHTML=`<option value="">${ph||'С карты'}</option>`;
+  state.cards.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`•••• ${c.number} (${c.system}) — ${money(c.balance)}`;sel.appendChild(o)});
 }
-function renderTransfers(){
-  fillCardSelect($('fromCard'));
-  const tc=$('toContact');tc.innerHTML='<option value="">Получатель</option>';
-  CONTACTS.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;tc.appendChild(o)});
+function lastTime(name){
+  const t=state.transactions.find(x=>x.to===name);
+  return t?new Date(t.date).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):null;
+}
+function renderFavs(){
+  const q=($('favSearch').value||'').toLowerCase();
+  const w=$('favList');w.innerHTML='';
+  state.favorites.filter(f=>f.starred&&f.name.toLowerCase().includes(q)).forEach((f,idx)=>{
+    const d=document.createElement('div');d.className='card fav';d.style.animationDelay=(idx*0.06)+'s';
+    d.innerHTML=`<div class="av" style="background:${f.color}">${initials(f.name)}</div>
+      <div class="info"><div class="n">${f.name}<span class="vbadge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
+      <div class="c">${f.system} *${f.last4}</div></div>
+      <div class="right"><button class="star on" data-id="${f.id}"><svg class="icf" style="width:22px;height:22px"><use href="#i-star"/></svg></button>${lastTime(f.name)||f.time}</div>`;
+    d.querySelector('.star').addEventListener('click',e=>{e.stopPropagation();f.starred=false;saveState();renderFavs();toast(f.name+' убран из избранных')});
+    d.addEventListener('click',()=>openTransfer(f.name));
+    w.appendChild(d);
+  });
+  if(!w.children.length)w.innerHTML='<div class="empty"><div class="e">🤷</div>Никого не нашли</div>';
+}
+$('favSearch').addEventListener('input',renderFavs);
+
+function openTransfer(recipient){
+  curRecipient=recipient;
+  $('transferTitle').textContent='Перевод: '+recipient;
+  fillCardSelect($('fromCard'));$('transferAmount').value='';$('transferFee').textContent='';
+  $('transferModal').classList.add('show');
 }
 $('transferAmount').addEventListener('input',e=>{
   const a=parseFloat(e.target.value)||0;
-  $('transferFee').textContent=a>0?`Комиссия 1%: ${Math.round(a*0.01).toLocaleString('ru-RU')} сум. Итого: ${Math.round(a*1.01).toLocaleString('ru-RU')} сум`:'';
-});
-$('transferBtn').addEventListener('click',()=>{
-  const fi=$('fromCard').value,to=$('toContact').value,a=parseFloat($('transferAmount').value);
-  if(fi==='')return toast('Выберите карту');
-  if(!to)return toast('Выберите получателя');
-  if(!a||a<=0)return toast('Введите сумму');
-  const card=state.cards[fi],fee=Math.round(a*0.01),total=a+fee;
-  if(card.balance<total)return toast('Недостаточно средств');
-  $('transferDetails').innerHTML=`<p><b>С карты:</b> •••• ${card.number}</p><p><b>Получатель:</b> ${to}</p><p><b>Сумма:</b> ${Math.round(a).toLocaleString('ru-RU')} сум</p><p><b>Комиссия 1%:</b> ${fee.toLocaleString('ru-RU')} сум</p><p><b>Итого:</b> ${Math.round(total).toLocaleString('ru-RU')} сум</p>`;
-  $('transferModal').classList.add('show');
+  $('transferFee').textContent=a>0?`Комиссия 1%: ${money(a*0.01)}. Итого: ${money(a*1.01)}`:'';
 });
 $('cancelTransferBtn').addEventListener('click',()=>$('transferModal').classList.remove('show'));
 $('confirmTransferBtn').addEventListener('click',()=>{
-  const fi=+$('fromCard').value,to=$('toContact').value,a=parseFloat($('transferAmount').value);
+  const fi=$('fromCard').value,a=parseFloat($('transferAmount').value);
+  if(fi==='')return toast('Выберите карту');
+  if(!a||a<=0)return toast('Введите сумму');
   const fee=Math.round(a*0.01),total=a+fee;
+  if(state.cards[fi].balance<total)return toast('Недостаточно средств');
   state.cards[fi].balance-=total;
-  state.transactions.unshift({type:'transfer',icon:'💸',to,amount:a,fee,date:new Date().toISOString()});
-  saveState();$('transferModal').classList.remove('show');$('transferAmount').value='';$('transferFee').textContent='';
-  toast('Перевод выполнен ✓');renderAll();
+  state.transactions.unshift({type:'transfer',ic:'i-swap',to:curRecipient,amount:a,fee,date:new Date().toISOString()});
+  saveState();$('transferModal').classList.remove('show');toast('Перевод выполнен ✓');renderAll();
 });
 
-/* ---- payments ---- */
+/* between own */
+$('ownBtn').addEventListener('click',()=>{fillCardSelect($('ownFrom','Откуда'));fillCardSelect($('ownTo','Куда'));$('ownAmount').value='';$('ownModal').classList.add('show')});
+$('cancelOwnBtn').addEventListener('click',()=>$('ownModal').classList.remove('show'));
+$('confirmOwnBtn').addEventListener('click',()=>{
+  const f=$('ownFrom').value,t=$('ownTo').value,a=parseFloat($('ownAmount').value);
+  if(f===''||t==='')return toast('Выберите карты');
+  if(f===t)return toast('Карты совпадают');
+  if(!a||a<=0)return toast('Введите сумму');
+  if(state.cards[f].balance<a)return toast('Недостаточно средств');
+  state.cards[f].balance-=a;state.cards[t].balance+=a;
+  state.transactions.unshift({type:'own',ic:'i-swap',to:'Между своими → •••• '+state.cards[t].number,amount:a,fee:0,date:new Date().toISOString()});
+  saveState();$('ownModal').classList.remove('show');toast('Переведено ✓');renderAll();
+});
+
+/* by phone */
+$('phoneRow').addEventListener('click',()=>{fillCardSelect($('phoneCard'));$('phoneInput').value='';$('phoneAmount').value='';$('phoneModal').classList.add('show')});
+$('cancelPhoneBtn').addEventListener('click',()=>$('phoneModal').classList.remove('show'));
+$('confirmPhoneBtn').addEventListener('click',()=>{
+  const ph=$('phoneInput').value.trim(),fi=$('phoneCard').value,a=parseFloat($('phoneAmount').value);
+  if(ph.replace(/\D/g,'').length<9)return toast('Введите номер');
+  if(fi==='')return toast('Выберите карту');
+  if(!a||a<=0)return toast('Введите сумму');
+  const fee=Math.round(a*0.01),total=a+fee;
+  if(state.cards[fi].balance<total)return toast('Недостаточно средств');
+  state.cards[fi].balance-=total;
+  state.transactions.unshift({type:'transfer',ic:'i-swap',to:ph,amount:a,fee,date:new Date().toISOString()});
+  saveState();$('phoneModal').classList.remove('show');toast('Перевод на '+ph+' ✓');renderAll();
+});
+
+/* payments */
 document.querySelectorAll('.svc button').forEach(b=>b.addEventListener('click',()=>{
-  curSvc={name:b.dataset.svc,em:b.dataset.em};
-  $('payTitle').textContent=`Оплата: ${curSvc.name}`;
+  curSvc={name:b.dataset.svc,ic:b.dataset.ic};
+  $('payTitle').textContent='Оплата: '+curSvc.name;
   fillCardSelect($('payCard'));$('payAmount').value='';
   $('payModal').classList.add('show');
 }));
@@ -524,33 +762,42 @@ $('confirmPayBtn').addEventListener('click',()=>{
   if(!a||a<=0)return toast('Введите сумму');
   if(state.cards[fi].balance<a)return toast('Недостаточно средств');
   state.cards[fi].balance-=a;
-  state.transactions.unshift({type:'payment',icon:curSvc.em,to:curSvc.name,amount:a,fee:0,date:new Date().toISOString()});
-  saveState();$('payModal').classList.remove('show');
-  toast(`Оплачено: ${curSvc.name} ✓`);renderAll();
+  state.transactions.unshift({type:'payment',ic:curSvc.ic,to:curSvc.name,amount:a,fee:0,date:new Date().toISOString()});
+  saveState();$('payModal').classList.remove('show');toast('Оплачено: '+curSvc.name+' ✓');renderAll();
 });
 
-/* ---- reports ---- */
+/* reports */
 function renderReports(){
   const total=state.transactions.reduce((s,t)=>s+t.amount+t.fee,0);
-  $('totalExpenses').textContent=Math.round(total).toLocaleString('ru-RU')+' сум';
-  const list=$('txList');
-  if(!state.transactions.length){list.innerHTML='<div class="empty"><div class="e">📭</div>Нет транзакций</div>';return}
-  list.innerHTML='';
-  state.transactions.forEach(t=>{
+  const fees=state.transactions.reduce((s,t)=>s+(t.fee||0),0);
+  $('stTotal').textContent=money(total);$('stFees').textContent=money(fees);$('stCount').textContent=state.transactions.length;
+  const w=$('txList');
+  if(!state.transactions.length){w.innerHTML='<div class="empty"><div class="e">📭</div>Нет операций</div>';return}
+  w.innerHTML='';
+  state.transactions.forEach((t,idx)=>{
     const d=new Date(t.date);
-    const div=document.createElement('div');div.className='tx';
-    div.innerHTML=`<div class="ic">${t.icon}</div><div><div class="n">${t.type==='transfer'?'Перевод → '+t.to:t.to}</div><div class="d">${d.toLocaleDateString('ru-RU')} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="a">−${Math.round(t.amount+t.fee).toLocaleString('ru-RU')} сум</div>`;
-    list.appendChild(div);
+    const el=document.createElement('div');el.className='tx';el.style.animationDelay=(idx*0.05)+'s';
+    el.innerHTML=`<div class="txic"><svg class="ic"><use href="#${t.ic||'i-swap'}"/></svg></div>
+      <div class="info"><div class="n">${t.to}</div><div class="d">${t.type==='payment'?'Оплата услуги':t.type==='own'?'Перевод между своими':'Перевод средств'} · ${d.toLocaleDateString('ru-RU')} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div>
+      <div class="a">- ${money(t.amount+t.fee)}</div>`;
+    w.appendChild(el);
   });
 }
 
-/* ---- profile ---- */
-function renderProfile(){$('profileName').textContent=state.profile.name;$('profilePhone').textContent=state.profile.phone}
+/* profile */
+function renderColors(){
+  const w=$('colorRow');w.innerHTML='';
+  COLORS.forEach(c=>{
+    const b=document.createElement('button');b.style.background=c;b.className=state.profile.color===c?'on':'';
+    b.addEventListener('click',()=>{state.profile.color=c;saveState();renderColors();paintAvatars();toast('Цвет обновлён ✓')});
+    w.appendChild(b);
+  });
+}
+function renderProfile(){$('profileName').textContent=state.profile.name;$('profilePhone').textContent=state.profile.phone;renderColors()}
 $('editNameBtn').addEventListener('click',()=>{$('newNameInput').value=state.profile.name;$('editNameModal').classList.add('show')});
 $('cancelEditBtn').addEventListener('click',()=>$('editNameModal').classList.remove('show'));
 $('saveNameBtn').addEventListener('click',()=>{
-  const n=$('newNameInput').value.trim();
-  if(!n)return toast('Введите имя');
+  const n=$('newNameInput').value.trim();if(!n)return toast('Введите имя');
   state.profile.name=n;saveState();$('editNameModal').classList.remove('show');renderAll();toast('Имя обновлено ✓');
 });
 $('resetTransfersBtn').addEventListener('click',()=>{
@@ -559,12 +806,11 @@ $('resetTransfersBtn').addEventListener('click',()=>{
   }
 });
 
-/* ---- render all ---- */
-function renderAll(){renderHome();renderTransfers();renderReports();renderProfile()}
+/* render all */
+function renderAll(){renderHome();renderFavs();renderReports();renderProfile()}
 function enterApp(){showScreen('home');renderAll();initCarousel()}
 
 if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
-
 initState();
 if(!state.agreementAccepted)showScreen('agreement');
 else if(!state.pinVerified)showScreen('pin');
