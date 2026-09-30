@@ -18,6 +18,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
 @keyframes slideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 h1{font-size:26px;font-weight:800;margin-bottom:16px}h1.center{text-align:center}
 h2{font-size:18px;font-weight:700;margin:16px 0 10px}
 .card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;transition:background-color .3s}
@@ -34,7 +36,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .stagger>*{animation:slideIn .4s both}
 .vbadge{width:18px;height:18px;background:var(--accent);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .vbadge svg{width:10px;height:10px;stroke:#fff;stroke-width:3.4;fill:none}
-/* header */
 .header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer;color:#fff}
 .avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
@@ -42,7 +43,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .search{flex:1;background:var(--card);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}
 .iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
 .iconbtn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff9800;animation:pop .3s}
-/* balance */
 .bal-label{font-size:14px;color:var(--muted);margin-bottom:6px}
 .bal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .bal-amount{font-size:40px;font-weight:800;letter-spacing:-1px}
@@ -51,17 +51,14 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .wallet-left .v{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700}
 .wallet-left .v svg{color:var(--accent)}
 .subs-btn{background:linear-gradient(90deg,#42a5f5,var(--accent));border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;flex-shrink:0;color:#fff}
-/* quick */
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .quick button{background:var(--card);border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
 .quick button:active{background:var(--card2)}
 .quick .ic{color:var(--accent);width:26px;height:26px}
-/* event */
 .event-card{display:flex;align-items:center;gap:12px;cursor:pointer}
 .event-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#64b5f6,var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .event-card .t{font-size:16px;font-weight:700}.event-card .s{font-size:13px;color:var(--muted);margin-top:2px}
 .chev{margin-left:auto;color:var(--muted)}
-/* carousel banners */
 .carousel{overflow:hidden;border-radius:16px;margin-bottom:10px}
 .car-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
 .slide{min-width:100%;border-radius:16px;padding:20px;display:flex;align-items:flex-start;gap:14px;min-height:140px;color:#fff;position:relative;overflow:hidden}
@@ -79,7 +76,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .dots{display:flex;justify-content:center;gap:6px;margin-bottom:18px}
 .dots button{width:8px;height:8px;border-radius:999px;background:var(--card2);transition:all .3s}
 .dots button.on{width:22px;background:var(--accent)}
-/* mini apps */
 .sec-head{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px}
 .sec-head .t{font-size:22px;font-weight:800}
 .sec-head a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
@@ -94,11 +90,9 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .mcard .n{font-size:14px;font-weight:800;margin-bottom:3px}
 .mcard .c{font-size:11px;color:var(--muted)}
 .mcard .u{font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
-/* pay */
 .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .svc button{background:var(--card);border-radius:16px;padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
 .svc .ic{width:28px;height:28px;color:var(--accent)}
-/* transfers list */
 .tsearch{display:flex;background:var(--card);border-radius:14px;padding:6px;align-items:center;margin-bottom:16px}
 .tsearch input{flex:1;background:none;margin:0;padding:10px 12px;font-size:15px}
 .tsearch .pbtn{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;margin-left:4px;flex-shrink:0}
@@ -113,7 +107,10 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .fav .c{color:var(--muted);font-size:15px;margin-top:3px}
 .fav .right{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:13px}
 .fav .star{color:var(--text)}
-/* transfer screen */
+.add-recipient{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;border:2px dashed var(--card2);border-radius:16px;margin-top:12px}
+.add-recipient .plus{width:62px;height:62px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+.add-recipient .t{font-size:15px;font-weight:600}
+.add-recipient .s{font-size:12px;color:var(--muted);margin-top:3px}
 .tr-head{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .tr-head .av{width:44px;height:44px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
 .tr-head .n{font-size:18px;font-weight:800;display:flex;align-items:center;gap:6px}
@@ -138,7 +135,16 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .amt-chip{background:var(--card2);border-radius:999px;padding:14px 22px;font-size:16px;font-weight:800;flex-shrink:0}
 .amt-chip:active{background:var(--accent);color:#fff}
 .fee-line{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
-/* receipt */
+#processingScreen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 40px)}
+#processingScreen.active{display:flex}
+.proc-circle{width:180px;height:180px;border-radius:50%;position:relative;margin-bottom:32px}
+.proc-circle .ring{position:absolute;inset:0;border-radius:50%;border:8px solid var(--card2);border-top-color:var(--accent);animation:spin 2s linear infinite}
+.proc-circle .icon{position:absolute;inset:20px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center}
+.proc-circle .icon svg{width:60px;height:60px;color:var(--accent)}
+.proc-status{font-size:22px;font-weight:800;margin-bottom:8px}
+.proc-detail{font-size:14px;color:var(--muted);text-align:center;animation:pulse 1.5s infinite}
+.proc-progress{width:200px;height:6px;background:var(--card2);border-radius:999px;margin-top:24px;overflow:hidden}
+.proc-progress .bar{height:100%;background:var(--accent);border-radius:999px;width:0%;transition:width .3s}
 .rc-card{background:var(--card);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:14px}
 .rc-ok{width:84px;height:84px;border-radius:50%;background:var(--accent);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 0 70px rgba(30,136,229,.55);animation:pop .45s}
 .rc-ok svg{width:40px;height:40px;stroke-width:3}
@@ -166,7 +172,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .rc-promo{display:flex;align-items:center;gap:14px;cursor:pointer}
 .rc-promo .y{width:52px;height:52px;border-radius:14px;background:#e6b800;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
 .rc-promo .t{font-size:17px;font-weight:700}
-/* reports */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .stat{background:var(--card);border-radius:16px;padding:12px}
 .stat .t{font-size:11px;color:var(--muted)}
@@ -181,7 +186,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .tx .a{font-size:16px;font-weight:700;white-space:nowrap;margin-left:8px}
 .empty{text-align:center;padding:36px 0;color:var(--muted)}
 .empty .e{font-size:44px;margin-bottom:10px}
-/* profile */
 .p-head{display:flex;align-items:center;gap:14px}
 .p-head .avatar{width:56px;height:56px;font-size:20px}
 .p-head .n{font-size:19px;font-weight:800}
@@ -194,7 +198,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .colors button{width:34px;height:34px;border-radius:50%;border:3px solid transparent}
 .colors button.on{border-color:var(--text)}
 .disc{font-size:12px;color:var(--muted);line-height:1.55}
-/* drawer & sheets */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
 .overlay.show{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:var(--bg);z-index:210;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1);padding:24px 18px;overflow-y:auto}
@@ -218,6 +221,7 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .chip{background:var(--card2);border-radius:999px;padding:13px 24px;font-size:15px;font-weight:700;display:flex;gap:8px;align-items:center}
 .chip.on{background:rgba(30,136,229,.16);color:var(--accent)}
 .chip .ic{width:16px;height:16px;stroke-width:2.6}
+.chip.mini{padding:8px 16px;font-size:13px;margin-left:auto}
 .sheet-row{display:flex;align-items:center;gap:16px;padding:16px 4px;font-size:16px;font-weight:600;cursor:pointer}
 .sheet-row .ic{color:var(--accent);width:26px;height:26px}
 .cardrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2);cursor:pointer}
@@ -226,7 +230,6 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .cardrow .n{font-weight:700}
 .cardrow .s{font-size:13px;color:var(--muted);margin-top:2px}
 .cardrow .del{color:var(--red);width:32px;height:32px;display:flex;align-items:center;justify-content:center}
-/* pin & agreement */
 #pinScreen{min-height:calc(100vh - 40px);display:none;flex-direction:column;align-items:center;justify-content:center}
 #pinScreen.active{display:flex}
 .lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 70px rgba(30,136,229,.5);margin-bottom:28px;color:#fff;animation:pop .4s}
@@ -248,14 +251,12 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .ag-check{display:flex;gap:14px;align-items:flex-start;margin:26px 0 16px}
 .ag-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--accent)}
 .ag-check label{font-size:15.5px;line-height:1.5}
-/* nav */
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:11px;color:var(--muted);position:relative}
 nav button:active .ic{transform:scale(.85)}
 nav button.active{color:var(--accent)}
 nav .newb{position:absolute;top:4px;right:calc(50% - 26px);background:#ff9800;color:#000;font-size:9px;font-weight:800;border-radius:999px;padding:2px 6px}
 body.noauth nav{display:none}
-/* modal & toast */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
 .modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%;animation:pop .25s}
@@ -319,6 +320,8 @@ body.noauth nav{display:none}
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16m0 0l-5-5m5 5l5-5"/></symbol>
 <symbol id="i-ribbon" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M12 6.5l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z"/><path d="M9 13.5L7 22l5-2.5L17 22l-2-8.5"/></symbol>
 <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a3 3 0 0 1 0 6h-2"/><path d="M7 3v2M11 3v2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
 </svg>
 
 <div class="overlay" id="overlay"></div>
@@ -340,6 +343,7 @@ body.noauth nav{display:none}
 <div class="sheet" id="settingsSheet">
   <h2>Настройки</h2>
   <div class="chips" id="themeChips"></div>
+  <div class="sheet-row" id="setFull"><svg class="ic"><use href="#i-expand"/></svg>Полноэкранный режим<span class="chip mini" id="fullChip">Выкл</span></div>
   <div class="sheet-row" id="setProfile"><svg class="ic"><use href="#i-person"/></svg>Профиль: имя, телефон, цвет аватара</div>
   <div class="sheet-row" id="setCards"><svg class="ic"><use href="#i-card"/></svg>Карты: добавить и настроить</div>
 </div>
@@ -448,6 +452,10 @@ body.noauth nav{display:none}
     </div>
     <h2>Избранные</h2>
     <div id="favList" class="stagger"></div>
+    <div class="add-recipient" id="addRecipientBtn">
+      <div class="plus"><svg class="ic" style="width:28px;height:28px"><use href="#i-plus"/></svg></div>
+      <div><div class="t">Добавить получателя</div><div class="s">Сохраните карту для быстрых переводов</div></div>
+    </div>
   </div>
 
   <div id="transferScreen" class="screen">
@@ -474,6 +482,16 @@ body.noauth nav{display:none}
       <div class="fee-line" id="trFee"></div>
       <button class="btn" id="trSubmit" disabled>Перевести</button>
     </div></div>
+  </div>
+
+  <div id="processingScreen" class="screen">
+    <div class="proc-circle">
+      <div class="ring"></div>
+      <div class="icon"><svg class="ic"><use href="#i-send"/></svg></div>
+    </div>
+    <div class="proc-status">Выполняем перевод</div>
+    <div class="proc-detail">Проверяем данные и отправляем средства...</div>
+    <div class="proc-progress"><div class="bar" id="procBar"></div></div>
   </div>
 
   <div id="receiptScreen" class="screen">
@@ -531,6 +549,7 @@ body.noauth nav{display:none}
     <div class="card level" style="margin-bottom:12px"><svg class="icf sh" style="width:26px;height:26px"><use href="#i-shield"/></svg><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div></div>
     <div class="card"><div class="bal-label">Цвет аватара</div><div class="colors" id="colorRow"></div></div>
     <button class="btn" id="editNameBtn" style="margin-bottom:10px">Редактировать имя</button>
+    <button class="btn secondary" id="fsBtn" style="margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px"><svg class="ic" style="width:18px;height:18px"><use href="#i-expand"/></svg>Полноэкранный режим</button>
     <button class="btn secondary" id="resetTransfersBtn" style="margin-bottom:14px">Сбросить переводы</button>
     <div class="card"><div class="disc">⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя. 18+</div></div>
   </div>
@@ -540,6 +559,21 @@ body.noauth nav{display:none}
   <div class="modal-t">Редактировать имя</div>
   <input type="text" id="newNameInput" placeholder="Введите имя">
   <div class="modal-a"><button class="btn secondary" id="cancelEditBtn">Отмена</button><button class="btn" id="saveNameBtn">Сохранить</button></div>
+</div></div>
+
+<div class="modal" id="addRecipientModal"><div class="modal-c">
+  <div class="modal-t">Добавить получателя</div>
+  <input type="text" id="recipientName" placeholder="Имя получателя">
+  <input type="text" id="recipientCard" placeholder="Последние 4 цифры карты" maxlength="4" inputmode="numeric">
+  <select id="recipientSystem">
+    <option value="">Платёжная система</option>
+    <option value="Visa">Visa</option>
+    <option value="Mastercard">Mastercard</option>
+    <option value="HumoCard">HumoCard</option>
+    <option value="UzCard">UzCard</option>
+  </select>
+  <input type="tel" id="recipientPhone" placeholder="+998 XX XXX XX XX (необязательно)">
+  <div class="modal-a"><button class="btn secondary" id="cancelRecipientBtn">Отмена</button><button class="btn" id="saveRecipientBtn">Сохранить</button></div>
 </div></div>
 
 <div class="modal" id="ownModal"><div class="modal-c">
@@ -619,10 +653,11 @@ const genPhone=()=>`+998 ${90+Math.floor(Math.random()*9)} ${100+Math.floor(Math
 const genCard=()=>String(1000+Math.floor(Math.random()*9000));
 const money=n=>Math.round(n).toLocaleString('ru-RU')+' сум';
 const $=id=>document.getElementById(id);
+const tg=()=>window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
 function initState(){
   const s=localStorage.getItem(STORAGE_KEY);
   if(s)state=JSON.parse(s);
-  else{state={agreementAccepted:false,pinVerified:false,balanceHidden:false,theme:'classic',
+  else{state={agreementAccepted:false,pinVerified:false,balanceHidden:false,theme:'classic',fullscreen:false,
     profile:{name:genName(),phone:genPhone(),color:'#1e88e5'},
     cards:[{number:genCard(),system:'HumoCard',balance:8494500,color:'#1e88e5'},{number:genCard(),system:'UzCard',balance:30000,color:'#43a047'}],
     wallet:727,transactions:[],favorites:FAVS.map(f=>({...f,starred:true}))};saveState()}
@@ -631,6 +666,8 @@ function initState(){
   if(!state.theme)state.theme='classic';
   if(!state.profile.color)state.profile.color='#1e88e5';
   if(state.wallet===undefined)state.wallet=727;
+  if(state.fullscreen===undefined)state.fullscreen=false;
+  if(!state.profile.phone||!state.profile.phone.startsWith('+998'))state.profile.phone=genPhone();
   document.body.dataset.theme=state.theme;
 }
 function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
@@ -643,10 +680,40 @@ function animNum(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
   (function f(t){const p=Math.min(1,(t-t0)/d),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString('ru-RU')+' сум';if(p<1)requestAnimationFrame(f)})(t0)}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id+'Screen').classList.add('active');
   document.body.classList.toggle('noauth',id==='agreement'||id==='pin');
-  const navMap={transfer:'transfers',receipt:'transfers'};
+  const navMap={transfer:'transfers',receipt:'transfers',processing:'transfers'};
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===(navMap[id]||id)))}
 function sheet(id,show){$(id).classList.toggle('show',show);$('overlay').classList.toggle('show',show||$('drawer').classList.contains('show'))}
 function vthumbHTML(c,stripe){return `<div class="vthumb" style="background:${c.color}">${stripe?'<div class="stripes"><i></i><i></i><i></i><i></i></div>':'<div class="mark"></div>'}<div class="row"><span>*${c.number||c.last4}</span><span>${(c.system||'')[0]||'H'}</span></div></div>`}
+
+/* ===== FULLSCREEN ===== */
+function fallbackFs(on){try{
+  if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+  else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+}catch(e){}}
+function applyFullscreen(on){
+  const t=tg();
+  try{
+    if(on){
+      let done=false;
+      if(t&&typeof t.requestFullscreen==='function'){const p=t.requestFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(true));done=true}
+      if(!done)fallbackFs(true);
+      if(t&&t.expand)t.expand();
+    }else{
+      let done=false;
+      if(t&&typeof t.exitFullscreen==='function'){const p=t.exitFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(false));done=true}
+      if(!done)fallbackFs(false);
+    }
+  }catch(e){fallbackFs(on)}
+  state.fullscreen=on;saveState();renderFullChip();
+  toast(on?'Полноэкранный режим включён ✓':'Полноэкранный режим выключен');
+}
+function renderFullChip(){const c=$('fullChip');if(!c)return;c.textContent=state.fullscreen?'Вкл':'Выкл';c.classList.toggle('on',state.fullscreen)}
+document.addEventListener('fullscreenchange',()=>{
+  const t=tg();const active=!!document.fullscreenElement||(t&&t.isFullscreen);
+  if(!active&&state.fullscreen){state.fullscreen=false;saveState();renderFullChip()}
+});
+$('setFull').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
+$('fsBtn').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
 
 /* agreement & pin */
 $('agreeCheckbox').addEventListener('change',e=>$('acceptBtn').disabled=!e.target.checked);
@@ -669,7 +736,7 @@ $('hAvatar').addEventListener('click',()=>{showScreen('profile');renderAll()});
 document.querySelectorAll('.dr-item[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
 $('drAbout').addEventListener('click',()=>{closeAll();$('aboutModal').classList.add('show')});
 $('closeAboutBtn').addEventListener('click',()=>$('aboutModal').classList.remove('show'));
-$('drSettings').addEventListener('click',()=>{closeAll();renderChips();sheet('settingsSheet',true)});
+$('drSettings').addEventListener('click',()=>{closeAll();renderChips();renderFullChip();sheet('settingsSheet',true)});
 $('drSubConnect').addEventListener('click',e=>{e.preventDefault();toast('Демо: подписка подключена ✓')});
 $('drShare').addEventListener('click',()=>{if(navigator.share)navigator.share({title:'CampusPay',url:location.href}).catch(()=>{});else toast('Демо: поделиться')});
 $('setProfile').addEventListener('click',()=>{closeAll();showScreen('profile');renderAll()});
@@ -695,7 +762,7 @@ function renderBanners(){const w=$('carTrack');w.innerHTML='';
   BANNERS.forEach((b,i)=>{const x=document.createElement('button');x.addEventListener('click',()=>goCar(i));dots.appendChild(x)});
   goCar(0);clearInterval(carTimer);carTimer=setInterval(()=>goCar((carIdx+1)%BANNERS.length),4500)}
 function goCar(i){carIdx=i;$('carTrack').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('#carDots button').forEach((d,j)=>d.classList.toggle('on',j===i))}
-function renderMinis(){[ $('miniRowHome'),$('miniRowTab')].forEach(w=>{w.innerHTML='';
+function renderMinis(){[$('miniRowHome'),$('miniRowTab')].forEach(w=>{w.innerHTML='';
   MINIS.forEach(m=>{const d=document.createElement('div');d.className='mcard';
     d.innerHTML=`<div class="top"><div class="logo" style="background:${m.col}"><svg class="icf" style="width:20px;height:20px"><use href="#${m.ic}"/></svg></div><span class="rate"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>${m.r}</span></div><div class="n">${m.n}</div><div class="c">${m.c}</div><div class="u"><svg class="ic" style="width:12px;height:12px"><use href="#i-person"/></svg>${m.u} пользователей</div>`;
     d.addEventListener('click',()=>toast('Демо Mini App: '+m.n));w.appendChild(d)})})}
@@ -723,6 +790,22 @@ function renderFavs(){const q=($('favSearch').value||'').toLowerCase();const w=$
   if(!w.children.length)w.innerHTML='<div class="empty"><div class="e">🤷</div>Никого не нашли</div>'}
 $('favSearch').addEventListener('input',renderFavs);
 
+/* add recipient */
+$('addRecipientBtn').addEventListener('click',()=>{
+  $('recipientName').value='';$('recipientCard').value='';$('recipientSystem').value='';$('recipientPhone').value='';
+  $('addRecipientModal').classList.add('show')});
+$('cancelRecipientBtn').addEventListener('click',()=>$('addRecipientModal').classList.remove('show'));
+$('saveRecipientBtn').addEventListener('click',()=>{
+  const name=$('recipientName').value.trim();
+  const card=$('recipientCard').value.trim();
+  const system=$('recipientSystem').value;
+  const phone=$('recipientPhone').value.trim();
+  if(!name)return toast('Введите имя');
+  if(!card||card.length!==4||!/^\d{4}$/.test(card))return toast('Введите 4 цифры карты');
+  if(!system)return toast('Выберите платёжную систему');
+  state.favorites.push({id:Date.now(),name,color:rnd(COLORS),system,last4:card,pm:phone||'+998 ** *** ** **',time:'только что',starred:true});
+  saveState();$('addRecipientModal').classList.remove('show');renderFavs();toast('Получатель добавлен ✓')});
+
 /* transfer screen */
 function openTransfer(f){curFav=f;trFromIdx=0;
   $('trAvatar').textContent=initials(f.name);$('trAvatar').style.background=f.color;
@@ -749,10 +832,18 @@ $('trSubmit').addEventListener('click',()=>{
   const a=parseFloat($('trAmount').value);if(!a||a<=0)return toast('Введите сумму');
   const c=state.cards[trFromIdx],fee=Math.round(a*.01),total=a+fee;
   if(c.balance<total)return toast('Недостаточно средств');
-  c.balance-=total;
-  state.transactions.unshift({type:'transfer',ic:'i-swap',to:curFav.name,amount:a,fee,date:new Date().toISOString()});
-  lastReceipt={amount:a,fee,total,to:curFav.name,mask:'*'+curFav.last4,date:new Date(),from:'•••• '+c.number,system:c.system};
-  saveState();renderReceipt();showScreen('receipt')});
+  showScreen('processing');
+  const bar=$('procBar');bar.style.width='0%';
+  let progress=0;
+  const interval=setInterval(()=>{
+    progress+=2;bar.style.width=progress+'%';
+    if(progress>=100){clearInterval(interval);
+      c.balance-=total;
+      state.transactions.unshift({type:'transfer',ic:'i-swap',to:curFav.name,amount:a,fee,date:new Date().toISOString()});
+      lastReceipt={amount:a,fee,total,to:curFav.name,mask:'*'+curFav.last4,date:new Date(),from:'•••• '+c.number,system:c.system};
+      saveState();renderReceipt();showScreen('receipt')}
+  },100);
+});
 
 /* receipt */
 function renderReceipt(){const r=lastReceipt;if(!r)return;
@@ -827,8 +918,8 @@ $('saveNameBtn').addEventListener('click',()=>{const n=$('newNameInput').value.t
 $('resetTransfersBtn').addEventListener('click',()=>{if(confirm('Сбросить все переводы и платежи?')){state.transactions=[];state.cards.forEach(c=>c.balance=50000);state.wallet=727;saveState();renderAll();toast('Сброшено ✓')}});
 
 function renderAll(){renderHome();renderFavs();renderReports();renderProfile()}
-function enterApp(){showScreen('home');renderAll();renderBanners();renderMinis()}
-if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
+function enterApp(){showScreen('home');renderAll();renderBanners();renderMinis();renderFullChip()}
+const t0=tg();if(t0){try{t0.ready();t0.expand()}catch(e){}}
 initState();
 if(!state.agreementAccepted)showScreen('agreement');
 else if(!state.pinVerified)showScreen('pin');
