@@ -16,6 +16,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .container{max-width:560px;margin:0 auto;padding:16px}
 .screen{display:none}.screen.active{display:block;animation:fadeUp .32s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
 @keyframes slideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -28,14 +29,21 @@ button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(
 button:active{transform:scale(.97)}
 input,select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:14px;font-size:16px;color:var(--text);margin-bottom:12px;font-family:inherit}
 input:focus,select:focus{outline:2px solid var(--accent)}
-.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700}
+.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700;transition:transform .1s}
 .btn:disabled{background:var(--card2);color:var(--muted)}
 .btn.secondary{background:var(--card2)}
+.btn.pressed{transform:scale(.96)}
+.btn.loading{color:transparent;pointer-events:none;position:relative}
+.btn.loading::after{content:'';position:absolute;inset:0;margin:auto;width:22px;height:22px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 .ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .icf{width:24px;height:24px;fill:currentColor;stroke:none}
 .stagger>*{animation:slideIn .4s both}
 .vbadge{width:18px;height:18px;background:var(--accent);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .vbadge svg{width:10px;height:10px;stroke:#fff;stroke-width:3.4;fill:none}
+#dimmer{position:fixed;inset:0;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .3s;z-index:85}
+#dimmer.show{opacity:1}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:600}
+.coin{position:fixed;left:0;top:0;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff3c4,#ffd54f 45%,#ffb300 70%,#ff8f00);box-shadow:0 2px 6px rgba(0,0,0,.4);will-change:transform,opacity}
 .header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer;color:#fff}
 .avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
@@ -135,43 +143,56 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .amt-chip{background:var(--card2);border-radius:999px;padding:14px 22px;font-size:16px;font-weight:800;flex-shrink:0}
 .amt-chip:active{background:var(--accent);color:#fff}
 .fee-line{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
-#processingScreen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 40px)}
-#processingScreen.active{display:flex}
-.proc-circle{width:180px;height:180px;border-radius:50%;position:relative;margin-bottom:32px}
-.proc-circle .ring{position:absolute;inset:0;border-radius:50%;border:8px solid var(--card2);border-top-color:var(--accent);animation:spin 2s linear infinite}
-.proc-circle .icon{position:absolute;inset:20px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center}
-.proc-circle .icon svg{width:60px;height:60px;color:var(--accent)}
-.proc-status{font-size:22px;font-weight:800;margin-bottom:8px}
-.proc-detail{font-size:14px;color:var(--muted);text-align:center;animation:pulse 1.5s infinite}
-.proc-progress{width:200px;height:6px;background:var(--card2);border-radius:999px;margin-top:24px;overflow:hidden}
-.proc-progress .bar{height:100%;background:var(--accent);border-radius:999px;width:0%;transition:width .3s}
-.rc-card{background:var(--card);border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:14px}
-.rc-ok{width:84px;height:84px;border-radius:50%;background:var(--accent);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 0 70px rgba(30,136,229,.55);animation:pop .45s}
-.rc-ok svg{width:40px;height:40px;stroke-width:3}
-.rc-status{color:var(--green);font-size:20px;font-weight:800;margin-bottom:10px}
-.rc-date{color:var(--muted);font-size:16px;margin-bottom:20px}
-.rc-amount{font-size:46px;font-weight:800;letter-spacing:-1px}
-.rc-amount span{font-size:24px;color:var(--muted);font-weight:600}
-.rc-fee{color:var(--muted);font-size:16px;margin-top:14px}
-.rc-fee b{color:var(--text)}
-.rcpt-row{display:flex;align-items:center;gap:14px}
-.rcpt-row .tile{width:62px;height:62px;border-radius:16px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.rcpt-row .l{font-size:13px;color:var(--muted)}
-.rcpt-row .n{font-size:19px;font-weight:800;margin:2px 0}
-.rcpt-row .m{font-size:14px;color:var(--muted)}
-.pill-ok{background:rgba(76,175,80,.16);color:var(--green);border-radius:999px;padding:11px 16px;font-weight:700;display:flex;gap:8px;align-items:center;margin-left:auto;font-size:14px;flex-shrink:0}
-.pill-ok svg{width:16px;height:16px;stroke-width:2.6}
-.rc-actions{display:flex;padding:0}
-.rc-actions button{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:19px;color:var(--muted);font-size:16px;font-weight:600}
-.rc-actions button:first-child{border-right:1px solid var(--card2)}
-.rc-actions .ic{width:22px;height:22px}
-.rc-circles{display:flex;justify-content:center;gap:48px;margin:24px 0}
-.rc-circles .c{display:flex;flex-direction:column;align-items:center;gap:12px;font-size:15px;max-width:110px;text-align:center;line-height:1.3}
-.rc-circles .cir{width:88px;height:88px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.rc-circles .cir .ic{width:30px;height:30px}
+/* ===== RECEIPT ROCKET ===== */
+.rc-layer{position:fixed;inset:0;z-index:500;display:none}
+.rc-layer.show{display:block}
+.rc-layer.hide{opacity:0;transition:opacity .25s}
+.rc-backdrop{position:absolute;inset:0;background:rgba(4,8,16,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .3s both}
+.rc-slide{position:absolute;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:20px;animation:rcSlide 1.4s cubic-bezier(0.33,1,0.68,1) both}
+@keyframes rcSlide{from{transform:translateY(115vh);opacity:0}to{transform:translateY(0);opacity:1}}
+.rc-pop{width:100%;max-width:420px;max-height:100%;overflow-y:auto;animation:rcPop .7s cubic-bezier(0.34,1.56,0.64,1) .7s both;scrollbar-width:none}
+.rc-pop::-webkit-scrollbar{display:none}
+@keyframes rcPop{from{transform:scale(.9)}to{transform:scale(1)}}
+.ticket{position:relative;background:var(--card);border-radius:20px;padding:24px 20px 16px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.ticket::before,.ticket::after{content:'';position:absolute;width:26px;height:26px;border-radius:50%;background:var(--bg);bottom:64px}
+.ticket::before{left:-13px}.ticket::after{right:-13px}
+.tear{border-top:2px dashed var(--card2);margin:16px -20px 12px}
+.stamp{position:absolute;top:78px;right:16px;border:3px solid var(--green);color:var(--green);padding:6px 14px;border-radius:10px;font-weight:900;font-size:14px;letter-spacing:2px;opacity:0;transform:rotate(-12deg);pointer-events:none}
+.landed .stamp{animation:stampIn .25s cubic-bezier(0.34,1.56,0.64,1) both}
+@keyframes stampIn{from{opacity:0;transform:rotate(-12deg) scale(1.6)}to{opacity:1;transform:rotate(-12deg) scale(1)}}
+.tk-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.tk-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0}
+.tk-name{font-size:17px;font-weight:800}
+.tk-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.pill-ok{background:rgba(76,175,80,.16);color:var(--green);border-radius:999px;padding:9px 14px;font-weight:700;display:flex;gap:7px;align-items:center;margin-left:auto;font-size:13px;flex-shrink:0;opacity:0}
+.pill-ok svg{width:15px;height:15px;stroke-width:2.8}
+.landed .pill-ok{animation:badgeIn .2s cubic-bezier(0.34,1.56,0.64,1) .1s both}
+@keyframes badgeIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.tk-amount{font-size:44px;font-weight:900;letter-spacing:-1px;margin-bottom:14px}
+.tk-amount .cur{font-size:20px;color:var(--muted);font-weight:600}
+.odo{display:inline-block;overflow:hidden;vertical-align:bottom}
+.landed .odo{animation:odo .5s cubic-bezier(0.33,1,0.68,1) both}
+@keyframes odo{from{transform:translateY(60%);opacity:.15}to{transform:none;opacity:1}}
+.tk-rows .r{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:4px 0}
+.tk-rows .r b{color:var(--text);font-weight:600}
+.rc-actions{display:flex;gap:10px}
+.ghost-btn{flex:1;background:var(--card2);border-radius:12px;padding:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:15px}
+.ghost-btn .ic{width:20px;height:20px}
+.st{opacity:0}
+.landed .st{animation:btnIn .3s ease both}
+.landed .st.d1{animation-delay:.04s}
+.landed .st.d2{animation-delay:.08s}
+.landed .st.d3{animation-delay:.12s}
+.landed .st.d4{animation-delay:.16s}
+@keyframes btnIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rc-circles{display:flex;justify-content:center;gap:44px;margin:20px 0}
+.rc-circles .c{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px;max-width:110px;text-align:center;line-height:1.3}
+.rc-circles .cir{width:80px;height:80px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.rc-circles .cir .ic{width:28px;height:28px}
 .rc-promo{display:flex;align-items:center;gap:14px;cursor:pointer}
-.rc-promo .y{width:52px;height:52px;border-radius:14px;background:#e6b800;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.rc-promo .t{font-size:17px;font-weight:700}
+.rc-promo .y{width:48px;height:48px;border-radius:14px;background:#e6b800;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.rc-promo .t{font-size:16px;font-weight:700}
+/* reports */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .stat{background:var(--card);border-radius:16px;padding:12px}
 .stat .t{font-size:11px;color:var(--muted)}
@@ -186,6 +207,7 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .tx .a{font-size:16px;font-weight:700;white-space:nowrap;margin-left:8px}
 .empty{text-align:center;padding:36px 0;color:var(--muted)}
 .empty .e{font-size:44px;margin-bottom:10px}
+/* profile */
 .p-head{display:flex;align-items:center;gap:14px}
 .p-head .avatar{width:56px;height:56px;font-size:20px}
 .p-head .n{font-size:19px;font-weight:800}
@@ -198,6 +220,7 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .colors button{width:34px;height:34px;border-radius:50%;border:3px solid transparent}
 .colors button.on{border-color:var(--text)}
 .disc{font-size:12px;color:var(--muted);line-height:1.55}
+/* drawer & sheets */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
 .overlay.show{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:var(--bg);z-index:210;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1);padding:24px 18px;overflow-y:auto}
@@ -230,6 +253,7 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .cardrow .n{font-weight:700}
 .cardrow .s{font-size:13px;color:var(--muted);margin-top:2px}
 .cardrow .del{color:var(--red);width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+/* pin & agreement */
 #pinScreen{min-height:calc(100vh - 40px);display:none;flex-direction:column;align-items:center;justify-content:center}
 #pinScreen.active{display:flex}
 .lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 70px rgba(30,136,229,.5);margin-bottom:28px;color:#fff;animation:pop .4s}
@@ -251,13 +275,15 @@ input:focus,select:focus{outline:2px solid var(--accent)}
 .ag-check{display:flex;gap:14px;align-items:flex-start;margin:26px 0 16px}
 .ag-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--accent)}
 .ag-check label{font-size:15.5px;line-height:1.5}
+/* nav */
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:11px;color:var(--muted);position:relative}
 nav button:active .ic{transform:scale(.85)}
 nav button.active{color:var(--accent)}
 nav .newb{position:absolute;top:4px;right:calc(50% - 26px);background:#ff9800;color:#000;font-size:9px;font-weight:800;border-radius:999px;padding:2px 6px}
 body.noauth nav{display:none}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:20px}
+/* modal & toast */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:700;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
 .modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%;animation:pop .25s}
 .modal-t{font-size:19px;font-weight:800;margin-bottom:10px}
@@ -265,7 +291,7 @@ body.noauth nav{display:none}
 .modal-x b{color:var(--text)}
 .modal-a{display:flex;gap:10px}
 .modal-a button{flex:1}
-.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:400;max-width:90%;text-align:center}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:800;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -320,11 +346,12 @@ body.noauth nav{display:none}
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16m0 0l-5-5m5 5l5-5"/></symbol>
 <symbol id="i-ribbon" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M12 6.5l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z"/><path d="M9 13.5L7 22l5-2.5L17 22l-2-8.5"/></symbol>
 <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a3 3 0 0 1 0 6h-2"/><path d="M7 3v2M11 3v2"/></symbol>
-<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
 <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
 </svg>
 
 <div class="overlay" id="overlay"></div>
+<div id="dimmer"></div>
+<div id="fx"></div>
 <div class="drawer" id="drawer">
   <div class="dr-head" id="drProfile">
     <div class="avatar" id="drAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
@@ -480,47 +507,8 @@ body.noauth nav{display:none}
         <button class="amt-chip" data-a="5000">5 000</button>
       </div>
       <div class="fee-line" id="trFee"></div>
-      <button class="btn" id="trSubmit" disabled>Перевести</button>
+      <button class="btn" id="trSubmit">Перевести</button>
     </div></div>
-  </div>
-
-  <div id="processingScreen" class="screen">
-    <div class="proc-circle">
-      <div class="ring"></div>
-      <div class="icon"><svg class="ic"><use href="#i-send"/></svg></div>
-    </div>
-    <div class="proc-status">Выполняем перевод</div>
-    <div class="proc-detail">Проверяем данные и отправляем средства...</div>
-    <div class="proc-progress"><div class="bar" id="procBar"></div></div>
-  </div>
-
-  <div id="receiptScreen" class="screen">
-    <div class="rc-card">
-      <div class="rc-ok"><svg class="ic"><use href="#i-check"/></svg></div>
-      <div class="rc-status">Успешно</div>
-      <div class="rc-date" id="rcDate">—</div>
-      <div class="rc-amount" id="rcAmount">0 <span>сум</span></div>
-      <div class="rc-fee">Комиссия: <b id="rcFee">0 сум</b></div>
-    </div>
-    <div class="card rcpt-row">
-      <div class="tile"><svg class="icf" style="width:28px;height:28px"><use href="#i-person"/></svg></div>
-      <div style="min-width:0"><div class="l">Получатель</div><div class="n" id="rcName">—</div><div class="m" id="rcMask">—</div></div>
-      <div class="pill-ok"><svg class="ic"><use href="#i-check"/></svg>Зачислено</div>
-    </div>
-    <div class="card rc-actions">
-      <button id="rcDetails"><svg class="ic"><use href="#i-receipt"/></svg>Детали</button>
-      <button id="rcShare"><svg class="ic"><use href="#i-share"/></svg>Поделиться</button>
-    </div>
-    <div class="rc-circles">
-      <button class="c" id="rcAgain"><span class="cir"><svg class="ic"><use href="#i-repeat"/></svg></span>Перевести ещё</button>
-      <button class="c" id="rcFav"><span class="cir"><svg class="icf"><use href="#i-star"/></svg></span>В избранное</button>
-    </div>
-    <div class="card rc-promo" id="rcPromo">
-      <div class="y"><svg class="icf" style="width:26px;height:26px"><use href="#i-ribbon"/></svg></div>
-      <div class="t">Как переводить без комиссии</div>
-      <svg class="ic chev"><use href="#i-chev"/></svg>
-    </div>
-    <button class="btn" id="rcDone" style="margin-top:14px">Готово</button>
   </div>
 
   <div id="reportsScreen" class="screen">
@@ -552,6 +540,44 @@ body.noauth nav{display:none}
     <button class="btn secondary" id="fsBtn" style="margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px"><svg class="ic" style="width:18px;height:18px"><use href="#i-expand"/></svg>Полноэкранный режим</button>
     <button class="btn secondary" id="resetTransfersBtn" style="margin-bottom:14px">Сбросить переводы</button>
     <div class="card"><div class="disc">⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя. 18+</div></div>
+  </div>
+</div>
+
+<!-- RECEIPT ROCKET LAYER -->
+<div class="rc-layer" id="rcLayer">
+  <div class="rc-backdrop"></div>
+  <div class="rc-slide">
+    <div class="rc-pop" id="rcPop">
+      <div class="ticket">
+        <div class="stamp">ЗАЧИСЛЕНО</div>
+        <div class="tk-head">
+          <div class="tk-av" id="rcAvatar">ZR</div>
+          <div style="min-width:0"><div class="tk-name" id="rcName">—</div><div class="tk-sub" id="rcMask">—</div></div>
+          <div class="pill-ok"><svg class="ic"><use href="#i-check"/></svg>Зачислено</div>
+        </div>
+        <div class="tk-amount"><span class="odo"><span id="rcAmountNum">0</span></span> <span class="cur">сум</span></div>
+        <div class="tk-rows">
+          <div class="r"><span>Дата</span><b id="rcDate">—</b></div>
+          <div class="r"><span>Комиссия</span><b id="rcFee">—</b></div>
+          <div class="r"><span>№ операции</span><b id="rcOp">—</b></div>
+        </div>
+        <div class="tear"></div>
+        <div class="rc-actions">
+          <button class="ghost-btn st" id="rcDetails"><svg class="ic"><use href="#i-receipt"/></svg>Детали</button>
+          <button class="ghost-btn st d1" id="rcShare"><svg class="ic"><use href="#i-share"/></svg>Поделиться</button>
+        </div>
+      </div>
+      <div class="rc-circles st d2">
+        <button class="c" id="rcAgain"><span class="cir"><svg class="ic"><use href="#i-repeat"/></svg></span>Перевести ещё</button>
+        <button class="c" id="rcFav"><span class="cir"><svg class="icf"><use href="#i-star"/></svg></span>В избранное</button>
+      </div>
+      <div class="card rc-promo st d3" id="rcPromo">
+        <div class="y"><svg class="icf" style="width:24px;height:24px"><use href="#i-ribbon"/></svg></div>
+        <div class="t">Как переводить без комиссии</div>
+        <svg class="ic chev"><use href="#i-chev"/></svg>
+      </div>
+      <button class="btn st d4" id="rcDone" style="margin-top:12px">Готово</button>
+    </div>
   </div>
 </div>
 
@@ -623,7 +649,7 @@ body.noauth nav{display:none}
 
 <script>
 const STORAGE_KEY='campuspay_data';
-let state=null,pinBuffer='',carIdx=0,carTimer=null,curSvc=null,curFav=null,trFromIdx=0,lastReceipt=null,filterContact=null;
+let state=null,pinBuffer='',carIdx=0,carTimer=null,curSvc=null,curFav=null,trFromIdx=0,lastReceipt=null,filterContact=null,busy=false;
 const NAMES=['Bekzod','Malika','Aziz','Dilnoza','Jasur','Nigora','Sardor','Zilola','Александр','Мария'];
 const SURNAMES=['Rahimova','Karimov','Tursunova','Yusupov','Ergasheva','Mirzayev','Козлова','Михайлов'];
 const SYSTEMS=['Visa','Mastercard','HumoCard','UzCard'];
@@ -672,20 +698,53 @@ function initState(){
 }
 function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
-const fmt=n=>state.balanceHidden?'••••••':money(n);
 const initials=n=>{const p=n.split(' ');return ((p[0]||'')[0]||'•')+(((p[1]||'')[0])||'•').toUpperCase()};
 function animNum(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
   if(state.balanceHidden){el.textContent='••••••';return}
   const t0=performance.now(),d=550;
   (function f(t){const p=Math.min(1,(t-t0)/d),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString('ru-RU')+' сум';if(p<1)requestAnimationFrame(f)})(t0)}
+function countTo(el,to,dur){const t0=performance.now();
+  (function f(t){const p=Math.min(1,(t-t0)/dur),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString('ru-RU');if(p<1)requestAnimationFrame(f)})(t0)}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id+'Screen').classList.add('active');
   document.body.classList.toggle('noauth',id==='agreement'||id==='pin');
-  const navMap={transfer:'transfers',receipt:'transfers',processing:'transfers'};
+  const navMap={transfer:'transfers'};
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===(navMap[id]||id)))}
 function sheet(id,show){$(id).classList.toggle('show',show);$('overlay').classList.toggle('show',show||$('drawer').classList.contains('show'))}
 function vthumbHTML(c,stripe){return `<div class="vthumb" style="background:${c.color}">${stripe?'<div class="stripes"><i></i><i></i><i></i><i></i></div>':'<div class="mark"></div>'}<div class="row"><span>*${c.number||c.last4}</span><span>${(c.system||'')[0]||'H'}</span></div></div>`}
-
-/* ===== FULLSCREEN ===== */
+/* haptics & sound */
+function hapImpact(style){const t=tg();if(t&&t.HapticFeedback){try{t.HapticFeedback.impactOccurred(style)}catch(e){}}}
+function hapVibe(p){if(navigator.vibrate)navigator.vibrate(p)}
+function ding(){try{
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+  const ctx=ding._c||(ding._c=new C());const t=ctx.currentTime;
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type='sine';o.frequency.setValueAtTime(1046,t);o.frequency.exponentialRampToValueAtTime(1568,t+.09);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.3);
+  o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.32);
+}catch(e){}}
+/* coins */
+function spawnCoins(x,y){
+  const fx=$('fx');const n=10+Math.floor(Math.random()*5);
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div');d.className='coin';
+    const s=8+Math.random()*6;d.style.width=d.style.height=s+'px';
+    fx.appendChild(d);
+    const ang=(-90+(Math.random()*100-50))*Math.PI/180;
+    const sp=280+Math.random()*320;
+    const vx=Math.cos(ang)*sp,vy0=Math.sin(ang)*sp,g=1150,vr=Math.random()*720-360;
+    const t0=performance.now();
+    (function f(t){
+      const dt=(t-t0)/1000;
+      if(dt>.75){d.remove();return}
+      const cx=x+vx*dt,cy=y+vy0*dt+.5*g*dt*dt,rot=vr*dt;
+      const op=dt<.35?1:Math.max(0,1-(dt-.35)/.4);
+      d.style.transform=`translate3d(${cx}px,${cy}px,0) rotate(${rot}deg)`;
+      d.style.opacity=op;
+      requestAnimationFrame(f);
+    })(t0);
+  }
+}
+/* fullscreen */
 function fallbackFs(on){try{
   if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
   else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
@@ -693,16 +752,13 @@ function fallbackFs(on){try{
 function applyFullscreen(on){
   const t=tg();
   try{
-    if(on){
-      let done=false;
+    if(on){let done=false;
       if(t&&typeof t.requestFullscreen==='function'){const p=t.requestFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(true));done=true}
       if(!done)fallbackFs(true);
       if(t&&t.expand)t.expand();
-    }else{
-      let done=false;
+    }else{let done=false;
       if(t&&typeof t.exitFullscreen==='function'){const p=t.exitFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(false));done=true}
-      if(!done)fallbackFs(false);
-    }
+      if(!done)fallbackFs(false);}
   }catch(e){fallbackFs(on)}
   state.fullscreen=on;saveState();renderFullChip();
   toast(on?'Полноэкранный режим включён ✓':'Полноэкранный режим выключен');
@@ -714,7 +770,6 @@ document.addEventListener('fullscreenchange',()=>{
 });
 $('setFull').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
 $('fsBtn').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
-
 /* agreement & pin */
 $('agreeCheckbox').addEventListener('change',e=>$('acceptBtn').disabled=!e.target.checked);
 $('acceptBtn').addEventListener('click',()=>{state.agreementAccepted=true;saveState();showScreen('pin')});
@@ -723,10 +778,8 @@ $('keypad').addEventListener('click',e=>{const b=e.target.closest('button');if(!
   if(b.dataset.d==='del')pinBuffer=pinBuffer.slice(0,-1);else if(pinBuffer.length<4)pinBuffer+=b.dataset.d;
   renderPinDots();
   if(pinBuffer.length===4)setTimeout(()=>{if(pinBuffer==='1234'){state.pinVerified=true;saveState();enterApp()}else{toast('Неверный PIN');pinBuffer='';renderPinDots()}},160)});
-
 /* nav */
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{filterContact=null;showScreen(b.dataset.tab);renderAll()}));
-
 /* drawer/sheets */
 const openDr=()=>{$('drawer').classList.add('show');$('overlay').classList.add('show')};
 const closeAll=()=>{$('drawer').classList.remove('show');['settingsSheet','cardsSheet','pickSheet'].forEach(i=>$(i).classList.remove('show'));$('overlay').classList.remove('show')};
@@ -752,7 +805,6 @@ function renderCardsSheet(){const w=$('cardsList');w.innerHTML='';
     w.appendChild(d)});
   w.querySelectorAll('.del').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();state.cards.splice(+b.dataset.i,1);saveState();renderCardsSheet();renderAll();toast('Карта удалена')}))}
 $('addCardBtn').addEventListener('click',()=>{state.cards.push({number:genCard(),system:rnd(SYSTEMS),balance:10000,color:rnd(CARD_COLORS)});saveState();renderCardsSheet();renderAll();toast('Карта добавлена ✓')});
-
 /* banners & minis */
 function renderBanners(){const w=$('carTrack');w.innerHTML='';
   BANNERS.forEach(b=>{const d=document.createElement('div');d.className='slide '+b.cls;
@@ -766,7 +818,6 @@ function renderMinis(){[$('miniRowHome'),$('miniRowTab')].forEach(w=>{w.innerHTM
   MINIS.forEach(m=>{const d=document.createElement('div');d.className='mcard';
     d.innerHTML=`<div class="top"><div class="logo" style="background:${m.col}"><svg class="icf" style="width:20px;height:20px"><use href="#${m.ic}"/></svg></div><span class="rate"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>${m.r}</span></div><div class="n">${m.n}</div><div class="c">${m.c}</div><div class="u"><svg class="ic" style="width:12px;height:12px"><use href="#i-person"/></svg>${m.u} пользователей</div>`;
     d.addEventListener('click',()=>toast('Демо Mini App: '+m.n));w.appendChild(d)})})}
-
 /* home */
 $('bellBtn').addEventListener('click',()=>toast('Нет новых уведомлений'));
 $('subsBtn').addEventListener('click',()=>toast('Демо: мониторинг по подписке'));
@@ -778,7 +829,6 @@ function paintAvatars(){const ini=initials(state.profile.name);
   [['hAvatar',ini],['drAvatar',ini],['pAvatar',ini]].forEach(([id,v])=>{const el=$(id);el.firstChild.textContent=v;el.style.background=state.profile.color});
   $('drName').textContent=state.profile.name;$('drPhone').textContent=state.profile.phone}
 function renderHome(){animNum($('totalBalance'),state.cards.reduce((s,c)=>s+c.balance,0));animNum($('walletBalance'),state.wallet);paintAvatars()}
-
 /* favorites */
 const lastTime=n=>{const t=state.transactions.find(x=>x.to===n);return t?new Date(t.date).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):null};
 function renderFavs(){const q=($('favSearch').value||'').toLowerCase();const w=$('favList');w.innerHTML='';
@@ -789,23 +839,18 @@ function renderFavs(){const q=($('favSearch').value||'').toLowerCase();const w=$
     d.addEventListener('click',()=>openTransfer(f));w.appendChild(d)});
   if(!w.children.length)w.innerHTML='<div class="empty"><div class="e">🤷</div>Никого не нашли</div>'}
 $('favSearch').addEventListener('input',renderFavs);
-
 /* add recipient */
 $('addRecipientBtn').addEventListener('click',()=>{
   $('recipientName').value='';$('recipientCard').value='';$('recipientSystem').value='';$('recipientPhone').value='';
   $('addRecipientModal').classList.add('show')});
 $('cancelRecipientBtn').addEventListener('click',()=>$('addRecipientModal').classList.remove('show'));
 $('saveRecipientBtn').addEventListener('click',()=>{
-  const name=$('recipientName').value.trim();
-  const card=$('recipientCard').value.trim();
-  const system=$('recipientSystem').value;
-  const phone=$('recipientPhone').value.trim();
+  const name=$('recipientName').value.trim(),card=$('recipientCard').value.trim(),system=$('recipientSystem').value,phone=$('recipientPhone').value.trim();
   if(!name)return toast('Введите имя');
   if(!card||card.length!==4||!/^\d{4}$/.test(card))return toast('Введите 4 цифры карты');
   if(!system)return toast('Выберите платёжную систему');
   state.favorites.push({id:Date.now(),name,color:rnd(COLORS),system,last4:card,pm:phone||'+998 ** *** ** **',time:'только что',starred:true});
   saveState();$('addRecipientModal').classList.remove('show');renderFavs();toast('Получатель добавлен ✓')});
-
 /* transfer screen */
 function openTransfer(f){curFav=f;trFromIdx=0;
   $('trAvatar').textContent=initials(f.name);$('trAvatar').style.background=f.color;
@@ -828,39 +873,67 @@ function updFee(){const a=parseFloat($('trAmount').value)||0;
   $('trSubmit').disabled=!(a>0)}
 $('trAmount').addEventListener('input',updFee);
 document.querySelectorAll('.amt-chip').forEach(b=>b.addEventListener('click',()=>{$('trAmount').value=b.dataset.a;updFee()}));
+/* ===== TRANSFER CHOREOGRAPHY ===== */
 $('trSubmit').addEventListener('click',()=>{
+  if(busy)return;
   const a=parseFloat($('trAmount').value);if(!a||a<=0)return toast('Введите сумму');
   const c=state.cards[trFromIdx],fee=Math.round(a*.01),total=a+fee;
   if(c.balance<total)return toast('Недостаточно средств');
-  showScreen('processing');
-  const bar=$('procBar');bar.style.width='0%';
-  let progress=0;
-  const interval=setInterval(()=>{
-    progress+=2;bar.style.width=progress+'%';
-    if(progress>=100){clearInterval(interval);
-      c.balance-=total;
-      state.transactions.unshift({type:'transfer',ic:'i-swap',to:curFav.name,amount:a,fee,date:new Date().toISOString()});
-      lastReceipt={amount:a,fee,total,to:curFav.name,mask:'*'+curFav.last4,date:new Date(),from:'•••• '+c.number,system:c.system};
-      saveState();renderReceipt();showScreen('receipt')}
-  },100);
+  busy=true;
+  const btn=$('trSubmit');
+  /* Ф0 — нажатие */
+  btn.classList.add('pressed');hapImpact('light');hapVibe(10);
+  setTimeout(()=>btn.classList.remove('pressed'),100);
+  /* Ф1 — обработка */
+  setTimeout(()=>{btn.classList.add('loading');$('dimmer').classList.add('show')},100);
+  /* Ф2 — монеты */
+  setTimeout(()=>{const r=btn.getBoundingClientRect();spawnCoins(r.left+r.width/2,r.top+r.height/2)},200);
+  /* списание */
+  setTimeout(()=>{
+    c.balance-=total;
+    state.transactions.unshift({type:'transfer',ic:'i-swap',to:curFav.name,amount:a,fee,date:new Date().toISOString()});
+    lastReceipt={amount:a,fee,total,to:curFav.name,mask:'*'+curFav.last4,date:new Date(),from:'•••• '+c.number,system:c.system,color:curFav.color||'#455a64'};
+    saveState();
+  },400);
+  /* Ф3 — ракета */
+  setTimeout(()=>{
+    $('dimmer').classList.remove('show');btn.classList.remove('loading');
+    $('trAmount').value='';updFee();busy=false;
+    openReceipt();
+  },700);
 });
-
-/* receipt */
-function renderReceipt(){const r=lastReceipt;if(!r)return;
-  $('rcDate').textContent=r.date.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+', '+r.date.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
-  $('rcAmount').innerHTML=Math.round(r.amount).toLocaleString('ru-RU')+' <span>сум</span>';
-  $('rcFee').textContent=money(r.fee);$('rcName').textContent=r.to;$('rcMask').textContent=r.mask}
+function openReceipt(){
+  const r=lastReceipt;if(!r)return;
+  const pop=$('rcPop');pop.classList.remove('landed');
+  $('rcAvatar').textContent=initials(r.to);$('rcAvatar').style.background=r.color;
+  $('rcName').textContent=r.to;$('rcMask').textContent=r.mask;
+  $('rcAmountNum').textContent='0';
+  $('rcDate').textContent=r.date.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'})+', '+r.date.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  $('rcFee').textContent=money(r.fee);
+  $('rcOp').textContent='CP-'+String(Date.now()).slice(-8);
+  const layer=$('rcLayer');layer.classList.remove('hide');layer.classList.add('show');
+  /* вибрация «ту-ту-тум» */
+  hapImpact('heavy');hapVibe([60,100,40,120,20]);
+  setTimeout(()=>hapImpact('medium'),160);
+  setTimeout(()=>hapImpact('light'),320);
+  /* дзынь на посадке */
+  setTimeout(ding,1300);
+  /* Ф4 — посадка и детали */
+  setTimeout(()=>{pop.classList.add('landed');countTo($('rcAmountNum'),r.amount,500)},1400);
+}
 $('rcDetails').addEventListener('click',()=>{const r=lastReceipt;
-  $('detailsBody').innerHTML=`<b>Операция:</b> Перевод средств<br><b>Статус:</b> Зачислено<br><b>Дата:</b> ${r.date.toLocaleString('ru-RU')}<br><b>С карты:</b> ${r.from} (${r.system})<br><b>Получатель:</b> ${r.to} ${r.mask}<br><b>Сумма:</b> ${money(r.amount)}<br><b>Комиссия:</b> ${money(r.fee)}<br><b>Итого списано:</b> ${money(r.total)}`;
+  $('detailsBody').innerHTML=`<b>Операция:</b> Перевод средств<br><b>Статус:</b> Зачислено<br><b>Дата:</b> ${r.date.toLocaleString('ru-RU')}<br><b>С карты:</b> ${r.from} (${r.system})<br><b>Получатель:</b> ${r.to} ${r.mask}<br><b>Сумма:</b> ${money(r.amount)}<br><b>Комиссия:</b> ${money(r.fee)}<br><b>Итого списано:</b> ${money(r.total)}<br><b>№ операции:</b> CP-${String(r.date.getTime()).slice(-8)}`;
   $('detailsModal').classList.add('show')});
 $('closeDetailsBtn').addEventListener('click',()=>$('detailsModal').classList.remove('show'));
 $('rcShare').addEventListener('click',()=>{const r=lastReceipt;const txt=`Перевод ${money(r.amount)} → ${r.to}. CampusPay (учебный прототип)`;
   if(navigator.share)navigator.share({text:txt}).catch(()=>{});else toast('Чек скопирован (демо)')});
-$('rcAgain').addEventListener('click',()=>openTransfer(curFav));
+$('rcAgain').addEventListener('click',()=>{$('rcLayer').classList.remove('show');openTransfer(curFav)});
 $('rcFav').addEventListener('click',()=>{const f=state.favorites.find(x=>x.id===curFav.id);if(f){f.starred=true;saveState()}toast('Добавлено в избранное ★')});
 $('rcPromo').addEventListener('click',()=>toast('Подключите CampusPay+ — 0% комиссии'));
-$('rcDone').addEventListener('click',()=>{showScreen('home');renderAll()});
-
+$('rcDone').addEventListener('click',()=>{
+  const layer=$('rcLayer');layer.classList.add('hide');
+  setTimeout(()=>{layer.classList.remove('show','hide');showScreen('home');renderAll()},250);
+});
 /* own / phone / pay */
 function fillCardSelect(sel,ph){sel.innerHTML=`<option value="">${ph||'С карты'}</option>`;state.cards.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`•••• ${c.number} (${c.system}) — ${money(c.balance)}`;sel.appendChild(o)})}
 $('ownBtn').addEventListener('click',()=>{fillCardSelect($('ownFrom'),'Откуда');fillCardSelect($('ownTo'),'Куда');$('ownAmount').value='';$('ownModal').classList.add('show')});
@@ -879,8 +952,8 @@ $('confirmPhoneBtn').addEventListener('click',()=>{const ph=$('phoneInput').valu
   if(state.cards[fi].balance<total)return toast('Недостаточно средств');
   state.cards[fi].balance-=total;
   state.transactions.unshift({type:'transfer',ic:'i-swap',to:ph,amount:a,fee,date:new Date().toISOString()});
-  lastReceipt={amount:a,fee,total,to:ph,mask:ph,date:new Date(),from:'•••• '+state.cards[fi].number,system:state.cards[fi].system};
-  saveState();$('phoneModal').classList.remove('show');renderReceipt();showScreen('receipt')});
+  lastReceipt={amount:a,fee,total,to:ph,mask:ph,date:new Date(),from:'•••• '+state.cards[fi].number,system:state.cards[fi].system,color:'#455a64'};
+  saveState();$('phoneModal').classList.remove('show');openReceipt()});
 document.querySelectorAll('.svc button').forEach(b=>b.addEventListener('click',()=>{curSvc={name:b.dataset.svc,ic:b.dataset.ic};
   $('payTitle').textContent='Оплата: '+curSvc.name;fillCardSelect($('payCard'));$('payAmount').value='';$('payModal').classList.add('show')}));
 $('cancelPayBtn').addEventListener('click',()=>$('payModal').classList.remove('show'));
@@ -890,7 +963,6 @@ $('confirmPayBtn').addEventListener('click',()=>{const fi=$('payCard').value,a=p
   state.cards[fi].balance-=a;
   state.transactions.unshift({type:'payment',ic:curSvc.ic,to:curSvc.name,amount:a,fee:0,date:new Date().toISOString()});
   saveState();$('payModal').classList.remove('show');toast('Оплачено: '+curSvc.name+' ✓');renderAll()});
-
 /* reports */
 function renderReports(){
   $('filterWrap').innerHTML=filterContact?`<span class="filterchip">История с ${filterContact} <button id="clearFilter" style="display:inline-flex"><svg class="ic" style="width:14px;height:14px"><use href="#i-x"/></svg></button></span>`:'';
@@ -905,7 +977,6 @@ function renderReports(){
   list.forEach((t,idx)=>{const d=new Date(t.date);const el=document.createElement('div');el.className='tx';el.style.animationDelay=(idx*.05)+'s';
     el.innerHTML=`<div class="txic"><svg class="ic"><use href="#${t.ic||'i-swap'}"/></svg></div><div class="info"><div class="n">${t.to}</div><div class="d">${t.type==='payment'?'Оплата услуги':t.type==='own'?'Перевод между своими':'Перевод средств'} · ${d.toLocaleDateString('ru-RU')} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="a">- ${money(t.amount+t.fee)}</div>`;
     w.appendChild(el)})}
-
 /* profile */
 function renderColors(){const w=$('colorRow');w.innerHTML='';
   COLORS.forEach(c=>{const b=document.createElement('button');b.style.background=c;b.className=state.profile.color===c?'on':'';
@@ -916,7 +987,6 @@ $('cancelEditBtn').addEventListener('click',()=>$('editNameModal').classList.rem
 $('saveNameBtn').addEventListener('click',()=>{const n=$('newNameInput').value.trim();if(!n)return toast('Введите имя');
   state.profile.name=n;saveState();$('editNameModal').classList.remove('show');renderAll();toast('Имя обновлено ✓')});
 $('resetTransfersBtn').addEventListener('click',()=>{if(confirm('Сбросить все переводы и платежи?')){state.transactions=[];state.cards.forEach(c=>c.balance=50000);state.wallet=727;saveState();renderAll();toast('Сброшено ✓')}});
-
 function renderAll(){renderHome();renderFavs();renderReports();renderProfile()}
 function enterApp(){showScreen('home');renderAll();renderBanners();renderMinis();renderFullChip()}
 const t0=tg();if(t0){try{t0.ready();t0.expand()}catch(e){}}
