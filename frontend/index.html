@@ -3,1041 +3,251 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b1220">
-<title>CampusPay</title>
+<meta name="theme-color" content="#0a0a0f">
+<title>ВОЛК ТАП 🐺</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0b1220;--card:#151e2b;--card2:#1d2836;--accent:#1e88e5;--text:#f2f2f2;--muted:#8a94a3;--green:#4caf50;--red:#ef5350}
-body[data-theme="amoled"]{--bg:#000;--card:#0a0a0a;--card2:#171717}
-body[data-theme="night"]{--bg:#05080f;--card:#0d1220;--card2:#141b2c;--accent:#5c6bc0}
-body[data-theme="winter"]{--bg:#0a1624;--card:#12202f;--card2:#1b2c3d;--accent:#4fc3f7}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:88px;user-select:none;transition:background-color .35s}
-.container{max-width:560px;margin:0 auto;padding:16px}
-.screen{display:none}.screen.active{display:block;animation:fadeUp .32s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
-@keyframes slideIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-@keyframes btnIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-h1{font-size:26px;font-weight:800;margin-bottom:16px}h1.center{text-align:center}
-h2{font-size:18px;font-weight:700;margin:16px 0 10px}
-.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;transition:background-color .3s}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+:root{--bg:#0a0a0f;--card:#15151d;--card2:#1e1e28;--acc:#ff3b3b;--moon:#aab4c4;--text:#f2f2f2;--muted:#7d8590}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:84px;overflow-x:hidden}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.active{display:block;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.6)}to{transform:scale(1)}}
+h1{font-size:26px;font-weight:900;margin-bottom:14px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px}
 .muted{color:var(--muted)}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
-button:active{transform:scale(.97)}
-input,select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:14px;font-size:16px;color:var(--text);margin-bottom:12px;font-family:inherit}
-input:focus,select:focus{outline:2px solid var(--accent)}
-.btn{width:100%;background:var(--accent);color:#fff;border-radius:12px;padding:15px;font-size:16px;font-weight:700;transition:transform .1s}
-.btn:disabled{background:var(--card2);color:var(--muted)}
-.btn.secondary{background:var(--card2)}
-.btn.pressed{transform:scale(.96)}
-.btn.loading{color:transparent;pointer-events:none;position:relative}
-.btn.loading::after{content:'';position:absolute;inset:0;margin:auto;width:22px;height:22px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.icf{width:24px;height:24px;fill:currentColor;stroke:none}
-.stagger>*{animation:slideIn .4s both}
-.vbadge{width:18px;height:18px;background:var(--accent);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.vbadge svg{width:10px;height:10px;stroke:#fff;stroke-width:3.4;fill:none}
-#dimmer{position:fixed;inset:0;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .3s;z-index:85}
-#dimmer.show{opacity:1}
-#fx{position:fixed;inset:0;pointer-events:none;z-index:610}
-.conf{position:fixed;left:0;top:0;pointer-events:none;border-radius:2px;will-change:transform,opacity}
-.header{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.avatar{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;position:relative;flex-shrink:0;cursor:pointer;color:#fff}
-.avatar .badge{position:absolute;right:-2px;bottom:-2px;width:16px;height:16px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center}
-.avatar .badge svg{width:9px;height:9px;stroke:#fff;stroke-width:3;fill:none}
-.search{flex:1;background:var(--card);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:15px}
-.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
-.iconbtn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff9800;animation:pop .3s}
-.bal-label{font-size:14px;color:var(--muted);margin-bottom:6px}
-.bal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.bal-amount{font-size:40px;font-weight:800;letter-spacing:-1px}
-.wallet-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.wallet-left .t{font-size:14px;color:var(--muted);display:block;margin-bottom:6px}
-.wallet-left .v{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700}
-.wallet-left .v svg{color:var(--accent)}
-.subs-btn{background:linear-gradient(90deg,#42a5f5,var(--accent));border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;flex-shrink:0;color:#fff}
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.quick button{background:var(--card);border-radius:16px;padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
-.quick button:active{background:var(--card2)}
-.quick .ic{color:var(--accent);width:26px;height:26px}
-.event-card{display:flex;align-items:center;gap:12px;cursor:pointer}
-.event-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#64b5f6,var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.event-card .t{font-size:16px;font-weight:700}.event-card .s{font-size:13px;color:var(--muted);margin-top:2px}
-.chev{margin-left:auto;color:var(--muted)}
-.carousel{overflow:hidden;border-radius:16px;margin-bottom:10px}
-.car-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-.slide{min-width:100%;border-radius:16px;padding:20px;display:flex;align-items:flex-start;gap:14px;min-height:140px;color:#fff;position:relative;overflow:hidden}
-.slide::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 90% at 85% -10%,rgba(255,255,255,.28),transparent 55%);pointer-events:none}
-.slide .logo{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;backdrop-filter:blur(4px)}
-.slide .t{font-size:20px;font-weight:800;margin-bottom:5px;line-height:1.2}
-.slide .s{font-size:13px;opacity:.88;line-height:1.4}
-.slide .cta{margin-top:10px;display:inline-block;background:rgba(255,255,255,.22);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;backdrop-filter:blur(4px)}
-.slide .ghost{position:absolute;right:-16px;bottom:-20px;opacity:.16;width:116px;height:116px}
-.slide .adv{position:absolute;top:12px;right:14px;font-size:10px;opacity:.65;letter-spacing:.4px}
-.s1{background:linear-gradient(115deg,#4a148c,#8e24aa 60%,#ab47bc)}
-.s2{background:linear-gradient(115deg,#004d40,#00897b 60%,#26a69a)}
-.s3{background:linear-gradient(115deg,#0d47a1,#1e88e5 60%,#42a5f5)}
-.s4{background:linear-gradient(115deg,#bf360c,#f57c00 60%,#ffa726)}
-.dots{display:flex;justify-content:center;gap:6px;margin-bottom:18px}
-.dots button{width:8px;height:8px;border-radius:999px;background:var(--card2);transition:all .3s}
-.dots button.on{width:22px;background:var(--accent)}
-.sec-head{display:flex;justify-content:space-between;align-items:center;margin:6px 0 12px}
-.sec-head .t{font-size:22px;font-weight:800}
-.sec-head a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
-.minirow{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
-.minirow::-webkit-scrollbar{display:none}
-.mcard{min-width:152px;background:var(--card);border-radius:16px;padding:14px;cursor:pointer;transition:transform .15s}
-.mcard:active{transform:scale(.95)}
-.mcard .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.mcard .logo{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff}
-.mcard .rate{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
-.mcard .rate svg{width:12px;height:12px;fill:#ffb300}
-.mcard .n{font-size:14px;font-weight:800;margin-bottom:3px}
-.mcard .c{font-size:11px;color:var(--muted)}
-.mcard .u{font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
-.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.svc button{background:var(--card);border-radius:16px;padding:18px 8px;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:12.5px;line-height:1.3}
-.svc .ic{width:28px;height:28px;color:var(--accent)}
-.tsearch{display:flex;background:var(--card);border-radius:14px;padding:6px;align-items:center;margin-bottom:16px}
-.tsearch input{flex:1;background:none;margin:0;padding:10px 12px;font-size:15px}
-.tsearch .pbtn{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;margin-left:4px;flex-shrink:0}
-.tsearch .qbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
-.phone-row{display:flex;align-items:center;gap:14px;cursor:pointer}
-.phone-row .pi{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.phone-row .t{font-size:17px;font-weight:700}
-.fav{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer}
-.fav .av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
-.fav .info{flex:1;min-width:0}
-.fav .n{font-size:17px;font-weight:800;display:flex;align-items:center;gap:6px}
-.fav .c{color:var(--muted);font-size:15px;margin-top:3px}
-.fav .right{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:13px}
-.fav .star{color:var(--text)}
-.add-recipient{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;border:2px dashed var(--card2);border-radius:16px;margin-top:12px}
-.add-recipient .plus{width:62px;height:62px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
-.add-recipient .t{font-size:15px;font-weight:600}
-.add-recipient .s{font-size:12px;color:var(--muted);margin-top:3px}
-.tr-head{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.tr-head .av{width:44px;height:44px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
-.tr-head .n{font-size:18px;font-weight:800;display:flex;align-items:center;gap:6px}
-.tr-head .p{font-size:13px;color:var(--muted);margin-top:2px}
-.hist-pill{background:var(--accent);color:#fff;border-radius:999px;padding:11px 16px;display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;margin-left:auto;flex-shrink:0}
-.vcard{background:var(--card);border-radius:16px;padding:14px;display:flex;align-items:center;gap:14px;cursor:pointer}
-.vcard .info{flex:1;min-width:0}
-.vcard .b{font-size:18px;font-weight:800}
-.vcard .s{color:var(--muted);font-size:14px;margin-top:3px}
-.vthumb{width:88px;height:58px;border-radius:12px;position:relative;flex-shrink:0;color:#fff;padding:8px 9px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 6px 18px rgba(0,0,0,.35)}
-.vthumb .mark{width:12px;height:9px;background:rgba(255,255,255,.9);clip-path:polygon(0 100%,50% 0,100% 100%)}
-.vthumb .stripes{display:flex;gap:3px}
-.vthumb .stripes i{width:3px;height:20px;background:rgba(255,255,255,.75);border-radius:1px}
-.vthumb .row{display:flex;justify-content:space-between;align-items:flex-end;font-size:13px;font-weight:800}
-.arrowcircle{width:62px;height:62px;border-radius:50%;background:#080808;border:6px solid var(--bg);display:flex;align-items:center;justify-content:center;margin:-12px auto;position:relative;z-index:2;color:#fff}
-.proto-note{text-align:center;color:var(--muted);font-size:13px;margin:14px 0}
-.amount-panel{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));z-index:90;box-shadow:0 -10px 40px rgba(0,0,0,.4)}
-.amount-panel .inner{max-width:560px;margin:0 auto}
-.amt-input{width:100%;background:var(--card2);border:2px solid var(--accent);border-radius:16px;padding:20px;text-align:center;font-size:32px;font-weight:800;color:var(--text);margin-bottom:12px;caret-color:var(--accent)}
-.chips-row{display:flex;gap:10px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
-.chips-row::-webkit-scrollbar{display:none}
-.amt-chip{background:var(--card2);border-radius:999px;padding:14px 22px;font-size:16px;font-weight:800;flex-shrink:0}
-.amt-chip:active{background:var(--accent);color:#fff}
-.fee-line{text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px}
-/* ===== BANK PROCESSING ===== */
-.proc-layer{position:fixed;inset:0;z-index:520;display:none;align-items:center;justify-content:center;background:rgba(4,8,16,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.proc-layer.show{display:flex;animation:fadeIn .25s both}
-.proc-card{background:var(--card);border-radius:20px;padding:26px 24px;width:min(330px,86vw);box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.proc-logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#64b5f6,var(--accent));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:#fff}
-.proc-title{text-align:center;font-weight:800;font-size:16px;margin-bottom:18px}
-.pstep{display:flex;align-items:center;gap:12px;padding:9px 0;font-size:14.5px;color:var(--muted);opacity:.4;transition:opacity .3s,color .3s}
-.pstep.active,.pstep.done{opacity:1;color:var(--text)}
-.pstep .pic{width:20px;height:20px;flex-shrink:0;position:relative}
-.pstep .sp{position:absolute;inset:0;border:2.5px solid var(--card2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:none}
-.pstep.active .sp{display:block}
-.pstep .ck{position:absolute;inset:0;display:none;color:var(--green)}
-.pstep.done .ck{display:block;animation:pop .25s}
-.pstep .ck svg{width:20px;height:20px;stroke-width:2.6}
-/* ===== BANK SUCCESS ===== */
-.bank-layer{position:fixed;inset:0;z-index:540;display:none}
-.bank-layer.show{display:block}
-.bank-layer.hide{opacity:0;transition:opacity .25s}
-.bl-backdrop{position:absolute;inset:0;background:rgba(4,8,16,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadeIn .3s both}
-.bl-center{position:absolute;left:0;right:0;top:0;padding-top:13vh;display:flex;flex-direction:column;align-items:center;gap:6px;animation:fadeIn .35s both}
-.bc-wrap{width:112px;height:112px;border-radius:50%;background:rgba(76,175,80,.12);display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:14px}
-.bc-wrap::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:0 0 70px rgba(76,175,80,.5);animation:pulse 1.8s infinite}
-.bank-check{width:74px;height:74px}
-.bc-circle{stroke:var(--green);stroke-width:2.5;fill:none;stroke-dasharray:151;stroke-dashoffset:151}
-.bc-path{stroke:var(--green);stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:36;stroke-dashoffset:36}
-.bank-layer.go .bc-circle{animation:bcCircle .6s ease-out forwards}
-.bank-layer.go .bc-path{animation:bcPath .35s .55s ease-out forwards}
-@keyframes bcCircle{to{stroke-dashoffset:0}}
-@keyframes bcPath{to{stroke-dashoffset:0}}
-.bl-title{font-size:22px;font-weight:800;color:var(--green)}
-.bl-amount{font-size:40px;font-weight:900;letter-spacing:-1px}
-.bl-sub{color:var(--muted);font-size:14px}
-.bl-sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;padding:14px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(103%);transition:transform .55s cubic-bezier(0.33,1,0.68,1);max-height:64vh;overflow-y:auto;scrollbar-width:none;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
-.bl-sheet::-webkit-scrollbar{display:none}
-.bl-sheet.up{transform:none}
-.drag{width:44px;height:5px;border-radius:999px;background:var(--card2);margin:0 auto 14px}
-.bs-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.tk-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0}
-.tk-name{font-size:17px;font-weight:800}
-.tk-sub{font-size:13px;color:var(--muted);margin-top:2px}
-.okpill{background:rgba(76,175,80,.16);color:var(--green);border-radius:999px;padding:9px 14px;font-weight:700;display:flex;gap:7px;align-items:center;margin-left:auto;font-size:13px;flex-shrink:0}
-.okpill svg{width:15px;height:15px;stroke-width:2.8}
-.tk-rows .r{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted);padding:5px 0}
-.tk-rows .r b{color:var(--text);font-weight:600;text-align:right}
-.tear{border-top:2px dashed var(--card2);margin:12px 0}
-.rc-actions{display:flex;gap:10px}
-.ghost-btn{flex:1;background:var(--card2);border-radius:12px;padding:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:15px}
-.ghost-btn .ic{width:20px;height:20px}
-.bl-sheet .st{opacity:0}
-.bl-sheet.up .st{animation:btnIn .3s ease both}
-.bl-sheet.up .st.d1{animation-delay:.05s}
-.bl-sheet.up .st.d2{animation-delay:.1s}
-.bl-sheet.up .st.d3{animation-delay:.15s}
-.bl-sheet.up .st.d4{animation-delay:.2s}
-.rc-circles{display:flex;justify-content:center;gap:44px;margin:18px 0}
-.rc-circles .c{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px;max-width:110px;text-align:center;line-height:1.3}
-.rc-circles .cir{width:80px;height:80px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.rc-circles .cir .ic{width:28px;height:28px}
-.rc-promo{display:flex;align-items:center;gap:14px;cursor:pointer}
-.rc-promo .y{width:48px;height:48px;border-radius:14px;background:#e6b800;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-.rc-promo .t{font-size:16px;font-weight:700}
-/* reports */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border-radius:16px;padding:12px}
-.stat .t{font-size:11px;color:var(--muted)}
-.stat .v{font-size:15px;font-weight:800;margin-top:4px}
-.filterchip{display:inline-flex;align-items:center;gap:8px;background:rgba(30,136,229,.16);color:var(--accent);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;margin-bottom:12px}
-.tx{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--card2)}
+button:active{transform:scale(.96)}
+.btn{width:100%;background:var(--acc);color:#fff;border-radius:14px;padding:15px;font-size:16px;font-weight:800}
+.btn.ghost{background:var(--card2)}
+/* welcome */
+#welcome{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+#welcome .moon{font-size:70px;margin-bottom:10px;animation:pop .5s}
+#welcome h1{font-size:32px}
+#welcome p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:26px}
+/* reg gate */
+#regGate{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+/* tap */
+.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.rank-badge{background:var(--card2);border-radius:999px;padding:8px 16px;font-weight:800;font-size:14px}
+.bal{text-align:center;margin:6px 0 2px}
+.bal .v{font-size:52px;font-weight:900;letter-spacing:-1px}
+.bal .c{color:var(--muted);font-size:15px;font-weight:700}
+.wolf-zone{position:relative;display:flex;align-items:center;justify-content:center;height:280px}
+#wolf{font-size:140px;filter:drop-shadow(0 0 40px rgba(255,59,59,.35));transition:transform .08s;cursor:pointer;line-height:1}
+#wolf.hit{transform:scale(.9)}
+.combo{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;border-radius:999px;padding:6px 16px;font-weight:900;font-size:14px;opacity:0;transition:opacity .2s}
+.combo.on{opacity:1}
+.float{position:absolute;font-weight:900;font-size:22px;color:var(--acc);pointer-events:none;animation:fl .8s ease-out forwards;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.float.crit{color:#ffd54f;font-size:30px}
+@keyframes fl{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-90px) scale(1.3)}}
+.chars{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.chars::-webkit-scrollbar{display:none}
+.chars button{background:var(--card2);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:78px;font-size:11px;font-weight:700;color:var(--muted)}
+.chars button .e{font-size:26px}
+.chars button.on{background:var(--acc);color:#fff}
+.prog{height:8px;background:var(--card2);border-radius:999px;overflow:hidden;margin-top:8px}
+.prog .bar{height:100%;background:linear-gradient(90deg,var(--acc),#ff8a65);border-radius:999px;transition:width .3s}
+.stats-row{display:flex;gap:10px}
+.stats-row .card{flex:1;text-align:center;margin-bottom:0}
+.stats-row .v{font-size:20px;font-weight:900}
+.stats-row .t{font-size:11px;color:var(--muted);margin-top:3px}
+/* top */
+.tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2)}
 .tx:last-child{border-bottom:none}
-.txic{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tx .info{flex:1;min-width:0}
-.tx .n{font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tx .d{font-size:13px;color:var(--muted);margin-top:3px}
-.tx .a{font-size:16px;font-weight:700;white-space:nowrap;margin-left:8px}
-.empty{text-align:center;padding:36px 0;color:var(--muted)}
-.empty .e{font-size:44px;margin-bottom:10px}
-/* profile */
-.p-head{display:flex;align-items:center;gap:14px}
-.p-head .avatar{width:56px;height:56px;font-size:20px}
-.p-head .n{font-size:19px;font-weight:800}
-.p-head .p{font-size:14px;color:var(--muted);margin-top:2px}
-.level{display:flex;align-items:center;gap:12px}
-.level .sh{color:#43a047}
-.level .t{font-size:13px;color:var(--muted)}
-.level .v{font-size:17px;font-weight:800}
-.colors{display:flex;gap:12px;flex-wrap:wrap}
-.colors button{width:34px;height:34px;border-radius:50%;border:3px solid transparent}
-.colors button.on{border-color:var(--text)}
-.disc{font-size:12px;color:var(--muted);line-height:1.55}
-/* drawer & sheets */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
-.overlay.show{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:var(--bg);z-index:210;transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1);padding:24px 18px;overflow-y:auto}
-.drawer.show{transform:none}
-.dr-head{display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:16px}
-.dr-head .avatar{width:56px;height:56px;font-size:19px}
-.dr-head .n{font-size:17px;font-weight:800}
-.dr-head .p{font-size:13px;color:var(--muted);margin-top:3px}
-.dr-item{display:flex;align-items:center;gap:16px;padding:15px 4px;font-size:16px;font-weight:600;cursor:pointer}
-.dr-item .ic{color:var(--accent);width:26px;height:26px}
-.dr-sub{background:linear-gradient(120deg,#00695c,#00838f);border-radius:16px;padding:20px;margin:14px 0;color:#fff}
-.dr-sub .t{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:10px}
-.dr-sub .s{font-size:14px;opacity:.9;margin-bottom:12px}
-.dr-sub a{color:#81d4fa;font-weight:700;font-size:14px;text-decoration:none}
-.dr-share{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:14px;font-weight:600;cursor:pointer}
-.dr-share .c{width:38px;height:38px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff}
-.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;z-index:260;padding:26px 20px calc(26px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:80vh;overflow-y:auto}
-.sheet.show{transform:none}
-.sheet h2{margin:0 0 18px;font-size:22px}
-.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
-.chip{background:var(--card2);border-radius:999px;padding:13px 24px;font-size:15px;font-weight:700;display:flex;gap:8px;align-items:center}
-.chip.on{background:rgba(30,136,229,.16);color:var(--accent)}
-.chip .ic{width:16px;height:16px;stroke-width:2.6}
-.chip.mini{padding:8px 16px;font-size:13px;margin-left:auto}
-.sheet-row{display:flex;align-items:center;gap:16px;padding:16px 4px;font-size:16px;font-weight:600;cursor:pointer}
-.sheet-row .ic{color:var(--accent);width:26px;height:26px}
-.cardrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--card2);cursor:pointer}
-.cardrow:last-of-type{border-bottom:none}
-.cardrow .info{flex:1}
-.cardrow .n{font-weight:700}
-.cardrow .s{font-size:13px;color:var(--muted);margin-top:2px}
-.cardrow .del{color:var(--red);width:32px;height:32px;display:flex;align-items:center;justify-content:center}
-/* pin & agreement */
-#pinScreen{min-height:calc(100vh - 40px);display:none;flex-direction:column;align-items:center;justify-content:center}
-#pinScreen.active{display:flex}
-.lock{width:110px;height:110px;border-radius:28px;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 70px rgba(30,136,229,.5);margin-bottom:28px;color:#fff;animation:pop .4s}
-.pin-t{font-size:26px;font-weight:800;margin-bottom:8px}
-.pin-s{font-size:15px;color:var(--muted);margin-bottom:26px}
-.pin-dots{display:flex;gap:22px;margin-bottom:34px}
-.pin-dots span{width:14px;height:14px;border-radius:50%;background:var(--card2)}
-.pin-dots span.on{background:var(--accent);animation:pop .2s}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:300px;width:100%}
-.keypad button{height:78px;border-radius:50%;background:var(--card);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.keypad button:active{background:var(--card2)}
-.keypad .empty-k{background:none;pointer-events:none}
-.pin-hint{margin-top:26px;background:var(--card);border-radius:999px;padding:10px 20px;font-size:14px;color:var(--muted)}
-#agreementScreen{padding-top:48px}
-.ag-ic{margin-bottom:22px;color:var(--accent)}
-.ag-ic .ic{width:52px;height:52px;stroke-width:2.2}
-.ag-t{font-size:26px;font-weight:800;margin-bottom:22px}
-.ag-text{font-size:15.5px;line-height:1.55;margin-bottom:18px;animation:slideIn .5s both}
-.ag-check{display:flex;gap:14px;align-items:flex-start;margin:26px 0 16px}
-.ag-check input{width:24px;height:24px;margin:0;flex-shrink:0;accent-color:var(--accent)}
-.ag-check label{font-size:15.5px;line-height:1.5}
+.tx .pos{width:34px;font-size:17px;font-weight:900;text-align:center;color:var(--muted)}
+.tx .pos.m1{color:#ffd54f}.tx .pos.m2{color:#cfd8dc}.tx .pos.m3{color:#cd7f32}
+.tx .av{width:42px;height:42px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tx .n{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx .n.me{color:var(--acc)}
+.tx .b{font-weight:900}
+/* pack */
+.pack-btn{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:16px;padding:16px;margin-bottom:10px;width:100%;text-align:left;font-weight:700;font-size:16px}
+.pack-btn .ic{font-size:24px}
+.pack-btn .s{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
+.quote{font-style:italic;line-height:1.6;color:var(--moon);font-size:15px}
 /* nav */
-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:11px;color:var(--muted);position:relative}
-nav button:active .ic{transform:scale(.85)}
-nav button.active{color:var(--accent)}
-nav .newb{position:absolute;top:4px;right:calc(50% - 26px);background:#ff9800;color:#000;font-size:9px;font-weight:800;border-radius:999px;padding:2px 6px}
-body.noauth nav{display:none}
-/* fullscreen top space */
-body.fs .container{padding-top:calc(env(safe-area-inset-top, 0px) + 64px)}
-body.fs #agreementScreen{padding-top:calc(env(safe-area-inset-top, 0px) + 48px)}
-body.fs #pinScreen{padding-top:calc(env(safe-area-inset-top, 0px) + 48px)}
-body.fs .toast{top:calc(env(safe-area-inset-top, 0px) + 92px)}
-/* modal & toast */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:700;align-items:center;justify-content:center;padding:20px}
-.modal.show{display:flex}
-.modal-c{background:var(--card);border-radius:16px;padding:22px;max-width:400px;width:100%;animation:pop .25s}
-.modal-t{font-size:19px;font-weight:800;margin-bottom:10px}
-.modal-x{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:18px}
-.modal-x b{color:var(--text)}
-.modal-a{display:flex;gap:10px}
-.modal-a button{flex:1}
-.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:800;max-width:90%;text-align:center}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,.96);backdrop-filter:blur(10px);border-top:1px solid var(--card2);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 8px;font-size:11px;color:var(--muted);font-weight:700}
+nav button .ic{font-size:22px}
+nav button.active{color:var(--acc)}
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-14px);background:var(--acc);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:all .3s;z-index:700}
+.toast.show{opacity:1;transform:translateX(-50%)}
+input{width:100%;background:var(--card2);border:none;border-radius:12px;padding:13px;font-size:16px;color:var(--text);margin-bottom:10px;font-family:inherit}
 </style>
 </head>
-<body class="noauth" data-theme="classic">
+<body>
 
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
-<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
-<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
-<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10 5.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6A16.7 16.7 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
-<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 0 1 0-4h13v3"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><circle cx="16.5" cy="13.5" r="1.4"/></symbol>
-<symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 3L7 21M17 3l-2 18M4 8h16M3 16h16"/></symbol>
-<symbol id="i-contact" viewBox="0 0 24 24"><rect x="5" y="3" width="10" height="18" rx="2"/><path d="M18 9a5 5 0 0 1 0 6M20.5 7a8 8 0 0 1 0 10"/></symbol>
-<symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
-<symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></symbol>
-<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
-<symbol id="i-chevd" viewBox="0 0 24 24"><path d="M5 9l7 7 7-7"/></symbol>
-<symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
-<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1-5.6-3-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></symbol>
-<symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4v13m0 0l-3-3m3 3l3-3M17 20V7m0 0l-3 3m3-3l3 3"/></symbol>
-<symbol id="i-invoice" viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6z"/><path d="M14 2v5h5"/><path d="M12 11v6M9.5 12.5h5M9.5 15.5h5"/></symbol>
-<symbol id="i-hand" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M4 21v-1a7 7 0 0 1 5-6.7M20 21v-1a7 7 0 0 0-5-6.7"/><path d="M9 17h6"/></symbol>
-<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
-<symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
-<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol>
-<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></symbol>
-<symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/></symbol>
-<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7v.5"/></symbol>
-<symbol id="i-subs" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M8 3l4 3 4-3"/><path d="M10 10v6l5-3z"/></symbol>
-<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V5m0 0l-4 4m4-4l4 4"/><path d="M5 20h14"/></symbol>
-<symbol id="i-lock" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 0 1 6 0v3H9z"/></symbol>
-<symbol id="i-gavel" viewBox="0 0 24 24"><path d="M14 4l6 6"/><path d="M12 6l6 6"/><path d="M13 5l-8.5 8.5a2.1 2.1 0 0 0 3 3L16 8"/><path d="M3 21h9"/></symbol>
-<symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M14 2a9 9 0 0 1 8 8h-8z"/></symbol>
-<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
-<symbol id="i-home" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol>
-<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5"/><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M7 14h10v7H7z"/></symbol>
-<symbol id="i-food" viewBox="0 0 24 24"><path d="M5 3v8a3 3 0 0 0 6 0V3M8 3v18"/><path d="M17 3c-2 3-2 7 0 9v9"/></symbol>
-<symbol id="i-gym" viewBox="0 0 24 24"><path d="M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12"/></symbol>
-<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4a2 2 0 0 1 2-2h14v18H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 1 2-2h14"/></symbol>
-<symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 10h16M8 21l1-4M16 21l-1-4"/><path d="M8 14h.5M15.5 14h.5"/></symbol>
-<symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></symbol>
-<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
-<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
-<symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 3h8l10 10-8 8L3 11z"/><circle cx="8" cy="8" r="1.6"/></symbol>
-<symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="17" cy="6" r="2.5"/><circle cx="17" cy="18" r="2.5"/><path d="M8.2 10.8l6.6-3.6M8.2 13.2l6.6 3.6"/></symbol>
-<symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 2h12v20l-2-1.5L14 22l-2-1.5L10 22l-2-1.5L6 22z"/><path d="M9 7h6M9 11h6M9 15h4"/></symbol>
-<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></symbol>
-<symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
-<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16m0 0l-5-5m5 5l5-5"/></symbol>
-<symbol id="i-ribbon" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M12 6.5l.9 1.8 2 .3-1.4 1.4.3 2-1.8-1-1.8 1 .3-2-1.4-1.4 2-.3z"/><path d="M9 13.5L7 22l5-2.5L17 22l-2-8.5"/></symbol>
-<symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a3 3 0 0 1 0 6h-2"/><path d="M7 3v2M11 3v2"/></symbol>
-<symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
-</svg>
-
-<div class="overlay" id="overlay"></div>
-<div id="dimmer"></div>
-<div id="fx"></div>
-<div class="drawer" id="drawer">
-  <div class="dr-head" id="drProfile">
-    <div class="avatar" id="drAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
-    <div><div class="n" id="drName"></div><div class="p" id="drPhone"></div></div>
-  </div>
-  <div class="card level"><svg class="icf sh" style="width:26px;height:26px"><use href="#i-shield"/></svg><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div><svg class="ic chev" style="margin-left:auto"><use href="#i-chev"/></svg></div>
-  <div class="dr-item" data-toast="Демо-раздел: Подписки"><svg class="ic"><use href="#i-subs"/></svg>Подписки</div>
-  <div class="dr-item" data-toast="Демо-раздел: Безопасность"><svg class="ic"><use href="#i-shield"/></svg>Безопасность</div>
-  <div class="dr-item" id="drSettings"><svg class="ic"><use href="#i-gear"/></svg>Настройки</div>
-  <div class="dr-item" data-toast="Демо-раздел: Поддержка"><svg class="ic"><use href="#i-headset"/></svg>Служба поддержки</div>
-  <div class="dr-item" id="drAbout"><svg class="ic"><use href="#i-info"/></svg>О программе</div>
-  <div class="dr-sub"><div class="t">CampusPay Подписка</div><div class="s">0% комиссии, кешбэк и другие бонусы</div><a href="#" id="drSubConnect">Подключить ›</a></div>
-  <div class="dr-share" id="drShare"><span class="c"><svg class="ic" style="width:18px;height:18px"><use href="#i-up"/></svg></span>Поделиться приложением</div>
+<div id="welcome">
+  <div class="moon">🌙</div>
+  <h1>ВОЛК ТАП</h1>
+  <p>Ты один? Нас много.<br>Мемная тапалка для одиночек, волков и сигм.<br>Тапай волка → копи ВОЙ → обгоняй стаю.</p>
+  <button class="btn" id="joinBtn" style="max-width:280px">🐺 ВОЙТИ В СТАЮ</button>
 </div>
 
-<div class="sheet" id="settingsSheet">
-  <h2>Настройки</h2>
-  <div class="chips" id="themeChips"></div>
-  <div class="sheet-row" id="setFull"><svg class="ic"><use href="#i-expand"/></svg>Полноэкранный режим<span class="chip mini" id="fullChip">Выкл</span></div>
-  <div class="sheet-row" id="setProfile"><svg class="ic"><use href="#i-person"/></svg>Профиль: имя, телефон, цвет аватара</div>
-  <div class="sheet-row" id="setCards"><svg class="ic"><use href="#i-card"/></svg>Карты: добавить и настроить</div>
+<div id="regGate">
+  <div style="font-size:60px">📱</div>
+  <h1>Нужна регистрация</h1>
+  <p class="muted" style="margin-bottom:20px">Открой бота и отправь контакт —<br>иначе в стаю не пустим.</p>
+  <button class="btn" id="regBtn" style="max-width:260px">🐺 Открыть бота</button>
 </div>
 
-<div class="sheet" id="cardsSheet">
-  <h2>Мои карты</h2>
-  <div id="cardsList"></div>
-  <button class="btn" id="addCardBtn" style="margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px"><svg class="ic" style="width:18px;height:18px;stroke:#fff"><use href="#i-plus"/></svg>Добавить карту</button>
-</div>
-
-<div class="sheet" id="pickSheet">
-  <h2>Выберите карту</h2>
-  <div id="pickList"></div>
-</div>
-
-<div class="container">
-
-  <div id="agreementScreen" class="screen">
-    <div class="ag-ic"><svg class="ic"><use href="#i-gavel"/></svg></div>
-    <div class="ag-t">Пользовательское соглашение</div>
-    <div class="ag-text" style="animation-delay:.05s">1. CampusPay — учебный тестовый проект. Все карты, балансы и переводы в нём ненастоящие и созданы исключительно для демонстрации и тестирования приложения.</div>
-    <div class="ag-text" style="animation-delay:.1s">2. Пользователь подтверждает, что ему исполнилось 18 лет.</div>
-    <div class="ag-text" style="animation-delay:.15s">3. Пользователь обязуется не использовать приложение для обмана людей, мошенничества и любых иных противоправных действий.</div>
-    <div class="ag-text" style="animation-delay:.2s">4. Создатель приложения не принимает участия в действиях пользователя и не несёт никакой ответственности за обман, мошенничество или иной ущерб, причинённый пользователем третьим лицам с использованием или упоминанием приложения.</div>
-    <div class="ag-text" style="animation-delay:.25s">5. Все данные хранятся локально на устройстве пользователя и никуда не передаются.</div>
-    <div class="ag-check"><input type="checkbox" id="agreeCheckbox"><label for="agreeCheckbox">Мне есть 18 лет, я принимаю условия и буду использовать приложение только для тестирования</label></div>
-    <button class="btn" id="acceptBtn" disabled>Принять и продолжить</button>
-  </div>
-
-  <div id="pinScreen" class="screen">
-    <div class="lock"><svg class="icf" style="width:44px;height:44px"><use href="#i-lock"/></svg></div>
-    <div class="pin-t">Добро пожаловать</div>
-    <div class="pin-s">Введите PIN для входа</div>
-    <div class="pin-dots" id="pinDots"><span></span><span></span><span></span><span></span></div>
-    <div class="keypad" id="keypad">
-      <button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button>
-      <button data-d="4">4</button><button data-d="5">5</button><button data-d="6">6</button>
-      <button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button>
-      <button class="empty-k"></button><button data-d="0">0</button><button data-d="del"><svg class="ic" style="color:var(--muted)"><use href="#i-x"/></svg></button>
+<div class="wrap">
+  <div id="tapScreen" class="screen">
+    <div class="top-row">
+      <span class="rank-badge" id="rankBadge">Щенок 🐶</span>
+      <span class="muted" id="dayStreak"></span>
     </div>
-    <div class="pin-hint">Демо-PIN: 1234</div>
-  </div>
-
-  <div id="homeScreen" class="screen">
-    <div class="header">
-      <div class="avatar" id="hAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
-      <div class="search"><svg class="ic" style="width:17px;height:17px"><use href="#i-search"/></svg>Поиск</div>
-      <div class="iconbtn" id="menuBtn"><svg class="ic"><use href="#i-menu"/></svg></div>
-      <div class="iconbtn" id="bellBtn"><svg class="ic"><use href="#i-bell"/></svg><span class="dot"></span></div>
+    <div class="bal"><div class="v" id="balance">0</div><div class="c">ВОЙ</div></div>
+    <div class="wolf-zone" id="wolfZone">
+      <div class="combo" id="combo">COMBO x1</div>
+      <div id="wolf">🐺</div>
     </div>
-    <div class="bal-label">Общий баланс</div>
-    <div class="bal-row">
-      <div class="bal-amount" id="totalBalance">0 сум</div>
-      <div class="iconbtn" id="eyeBtn"><svg class="ic" id="eyeIcon" style="color:var(--muted)"><use href="#i-eye"/></svg></div>
+    <div class="chars" id="charRow"></div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span id="rankNow">Щенок 🐶</span><span id="rankNext" class="muted">→ Волк 🐺</span></div>
+      <div class="prog"><div class="bar" id="rankBar" style="width:0%"></div></div>
     </div>
-    <div class="wallet-row">
-      <div class="wallet-left"><span class="t">Мой кошелёк</span><span class="v"><svg class="icf" style="width:20px;height:20px"><use href="#i-wallet"/></svg><span id="walletBalance">0 сум</span></span></div>
-      <button class="subs-btn" id="subsBtn"><svg class="icf" style="width:22px;height:22px"><use href="#i-clock"/></svg>Мониторинг по подписке</button>
-    </div>
-    <div class="quick">
-      <button data-toast="Демо: Campus Pass"><svg class="ic"><use href="#i-hash"/></svg>Campus Pass</button>
-      <button data-toast="Демо: Campus Boom"><svg class="ic"><use href="#i-contact"/></svg>Campus Boom</button>
-      <button id="qCards"><svg class="ic"><use href="#i-card"/></svg>Карты и кошелёк</button>
-      <button data-toast="Демо: QR сканер"><svg class="ic"><use href="#i-qr"/></svg>QR сканер</button>
-    </div>
-    <div class="card event-card" id="eventCard">
-      <div class="event-icon"><svg class="icf" style="width:22px;height:22px"><use href="#i-sparkle"/></svg></div>
-      <div><div class="t">Мой CampusPay</div><div class="s">Посмотрите важные события</div></div>
-      <svg class="ic chev"><use href="#i-chev"/></svg>
-    </div>
-    <div class="carousel"><div class="car-track" id="carTrack"></div></div>
-    <div class="dots" id="carDots"></div>
-    <div class="sec-head"><span class="t">Mini Apps</span><a href="#" id="miniAll">Смотреть все</a></div>
-    <div class="minirow" id="miniRowHome"></div>
-  </div>
-
-  <div id="payScreen" class="screen">
-    <h1>Оплата</h1>
-    <div class="svc stagger">
-      <button data-svc="Мобильная связь" data-ic="i-phone"><svg class="ic"><use href="#i-phone"/></svg>Мобильная связь</button>
-      <button data-svc="Столовая" data-ic="i-food"><svg class="ic"><use href="#i-food"/></svg>Столовая</button>
-      <button data-svc="Печать" data-ic="i-print"><svg class="ic"><use href="#i-print"/></svg>Печать</button>
-      <button data-svc="Спортзал" data-ic="i-gym"><svg class="ic"><use href="#i-gym"/></svg>Спортзал</button>
-      <button data-svc="Библиотека" data-ic="i-book"><svg class="ic"><use href="#i-book"/></svg>Библиотека</button>
-      <button data-svc="Транспорт" data-ic="i-bus"><svg class="ic"><use href="#i-bus"/></svg>Транспорт</button>
+    <div class="stats-row">
+      <div class="card"><div class="v" id="stTaps">0</div><div class="t">ТАПОВ</div></div>
+      <div class="card"><div class="v" id="stCrits">0</div><div class="t">КРИТОВ</div></div>
+      <div class="card"><div class="v" id="stBest">x1</div><div class="t">ЛУЧШЕЕ КОМБО</div></div>
     </div>
   </div>
 
-  <div id="transfersScreen" class="screen">
-    <h1 class="center">Переводы</h1>
-    <div class="tsearch">
-      <input id="favSearch" placeholder="Номер карты, кошелька или тел…">
-      <button class="pbtn" data-toast="Демо: выбор контакта"><svg class="icf" style="width:20px;height:20px"><use href="#i-person"/></svg></button>
-      <button class="qbtn" data-toast="Демо: QR сканер"><svg class="ic"><use href="#i-qr"/></svg></button>
-    </div>
-    <div class="quick stagger">
-      <button id="ownBtn"><svg class="ic"><use href="#i-swap"/></svg>Между своими</button>
-      <button data-toast="Демо: Запрос средств"><svg class="ic"><use href="#i-invoice"/></svg>Запрос средств</button>
-      <button data-toast="Демо: Дать в долг"><svg class="ic"><use href="#i-hand"/></svg>Дать в долг</button>
-      <button data-toast="Демо: Click Boom"><svg class="ic"><use href="#i-phone"/></svg>Click Boom</button>
-    </div>
-    <div class="card phone-row" id="phoneRow">
-      <div class="pi"><svg class="icf" style="width:22px;height:22px"><use href="#i-phone"/></svg></div>
-      <div class="t">По номеру телефона</div>
-      <svg class="ic chev"><use href="#i-chev"/></svg>
-    </div>
-    <h2>Избранные</h2>
-    <div id="favList" class="stagger"></div>
-    <div class="add-recipient" id="addRecipientBtn">
-      <div class="plus"><svg class="ic" style="width:28px;height:28px"><use href="#i-plus"/></svg></div>
-      <div><div class="t">Добавить получателя</div><div class="s">Сохраните карту для быстрых переводов</div></div>
-    </div>
+  <div id="topScreen" class="screen">
+    <h1>🏆 ТОП СТАИ</h1>
+    <div class="card" id="topList"><div class="muted" style="text-align:center;padding:20px">Загружаем стаю...</div></div>
   </div>
 
-  <div id="transferScreen" class="screen">
-    <div class="tr-head">
-      <div class="iconbtn" id="trBack"><svg class="ic"><use href="#i-back"/></svg></div>
-      <div class="av" id="trAvatar">ZR</div>
-      <div style="min-width:0"><div class="n" id="trName">—</div><div class="p" id="trPhone">—</div></div>
-      <div class="iconbtn" data-toast="Демо: меню"><svg class="ic" style="color:var(--muted)"><use href="#i-dots"/></svg></div>
-      <button class="hist-pill" id="trHistory"><svg class="icf" style="width:18px;height:18px"><use href="#i-clock"/></svg>История</button>
+  <div id="packScreen" class="screen">
+    <h1>🐺 СТАЯ</h1>
+    <button class="pack-btn" id="btnChannel"><span class="ic">📢</span><span>Канал стаи<span class="s">мемы, апдейты, вой</span></span></button>
+    <button class="pack-btn" id="btnChat"><span class="ic">💬</span><span>Чат стаи<span class="s">общаемся, но каждый сам по себе</span></span></button>
+    <button class="pack-btn" id="btnInvite"><span class="ic">📨</span><span>Позвать одиночку<span class="s">скинь ссылку другу-волку</span></span></button>
+    <div class="card"><div class="muted" style="font-size:12px;margin-bottom:8px">МЫСЛЬ ДНЯ</div><div class="quote" id="quote"></div></div>
+  </div>
+
+  <div id="profScreen" class="screen">
+    <h1>👤 ПРОФИЛЬ ВОЛКА</h1>
+    <div class="card">
+      <div style="font-size:40px;text-align:center;margin-bottom:6px" id="pEmoji">🐺</div>
+      <div style="text-align:center;font-size:20px;font-weight:900" id="pName">—</div>
+      <div style="text-align:center" class="muted" id="pRank">—</div>
     </div>
-    <div class="vcard" id="trFromCard"></div>
-    <div class="arrowcircle"><svg class="ic" style="width:26px;height:26px"><use href="#i-down"/></svg></div>
-    <div class="vcard" id="trToCard"></div>
-    <div class="proto-note">Учебный прототип</div>
-    <div style="height:230px"></div>
-    <div class="amount-panel"><div class="inner">
-      <input class="amt-input" id="trAmount" inputmode="numeric" placeholder="0 сум">
-      <div class="chips-row">
-        <button class="amt-chip" data-a="650">650</button>
-        <button class="amt-chip" data-a="1000">1 000</button>
-        <button class="amt-chip" data-a="2500">2 500</button>
-        <button class="amt-chip" data-a="5000">5 000</button>
-      </div>
-      <div class="fee-line" id="trFee"></div>
-      <button class="btn" id="trSubmit">Перевести</button>
-    </div></div>
-  </div>
-
-  <div id="reportsScreen" class="screen">
-    <h1>Аналитика</h1>
-    <div id="filterWrap"></div>
-    <div class="stats stagger">
-      <div class="stat"><div class="t">Расходы</div><div class="v" id="stTotal">0</div></div>
-      <div class="stat"><div class="t">Комиссии</div><div class="v" id="stFees">0</div></div>
-      <div class="stat"><div class="t">Операций</div><div class="v" id="stCount">0</div></div>
-    </div>
-    <h2>История</h2>
-    <div id="txList" class="stagger"></div>
-  </div>
-
-  <div id="miniScreen" class="screen">
-    <h1>Mini Apps</h1>
-    <div class="minirow" style="flex-wrap:wrap" id="miniRowTab"></div>
-  </div>
-
-  <div id="profileScreen" class="screen">
-    <h1>Профиль</h1>
-    <div class="card"><div class="p-head">
-      <div class="avatar" id="pAvatar">••<span class="badge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
-      <div><div class="n" id="profileName"></div><div class="p" id="profilePhone"></div></div>
-    </div></div>
-    <div class="card level" style="margin-bottom:12px"><svg class="icf sh" style="width:26px;height:26px"><use href="#i-shield"/></svg><div><div class="t">Ваш уровень:</div><div class="v">Campus Gold</div></div></div>
-    <div class="card"><div class="bal-label">Цвет аватара</div><div class="colors" id="colorRow"></div></div>
-    <button class="btn" id="editNameBtn" style="margin-bottom:10px">Редактировать имя</button>
-    <button class="btn secondary" id="fsBtn" style="margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px"><svg class="ic" style="width:18px;height:18px"><use href="#i-expand"/></svg>Полноэкранный режим</button>
-    <button class="btn secondary" id="resetTransfersBtn" style="margin-bottom:14px">Сбросить переводы</button>
-    <div class="card"><div class="disc">⚠️ Это учебный демонстрационный проект. Все данные фиктивные, платежи не проводятся. Запрещено использовать для обмана или мошенничества. Создатель не несёт ответственности за действия пользователя. 18+</div></div>
+    <input id="nameInput" placeholder="Твоё имя в стае">
+    <button class="btn ghost" id="saveName">Сохранить имя</button>
+    <div style="height:10px"></div>
+    <button class="btn ghost" id="resetBtn" style="color:#ff6b6b">Сбежать из стаи (сброс)</button>
+    <div class="card" style="margin-top:12px"><div class="muted" style="font-size:12px;line-height:1.6">🌙 ВОЛК ТАП — мемный проект для сообщества одиночек. Всё ненастоящее, кроме уважения.</div></div>
   </div>
 </div>
 
-<!-- BANK PROCESSING -->
-<div class="proc-layer" id="procLayer">
-  <div class="proc-card">
-    <div class="proc-logo"><svg class="icf" style="width:26px;height:26px"><use href="#i-shield"/></svg></div>
-    <div class="proc-title">CampusPay обрабатывает платёж</div>
-    <div class="pstep" id="ps1"><span class="pic"><span class="sp"></span><span class="ck"><svg class="ic"><use href="#i-check"/></svg></span></span>Проверяем данные</div>
-    <div class="pstep" id="ps2"><span class="pic"><span class="sp"></span><span class="ck"><svg class="ic"><use href="#i-check"/></svg></span></span>Отправляем в банк</div>
-    <div class="pstep" id="ps3"><span class="pic"><span class="sp"></span><span class="ck"><svg class="ic"><use href="#i-check"/></svg></span></span>Подтверждаем операцию</div>
-  </div>
-</div>
-
-<!-- BANK SUCCESS -->
-<div class="bank-layer" id="bankLayer">
-  <div class="bl-backdrop"></div>
-  <div class="bl-center">
-    <div class="bc-wrap">
-      <svg class="bank-check" viewBox="0 0 52 52">
-        <circle class="bc-circle" cx="26" cy="26" r="24"/>
-        <path class="bc-path" d="M14 27l8 8 16-16"/>
-      </svg>
-    </div>
-    <div class="bl-title">Успешно</div>
-    <div class="bl-amount"><span id="blAmount">0</span> сум</div>
-    <div class="bl-sub" id="blSub">—</div>
-  </div>
-  <div class="bl-sheet" id="blSheet">
-    <div class="drag"></div>
-    <div class="bs-head">
-      <div class="tk-av" id="blAvatar">—</div>
-      <div style="min-width:0"><div class="tk-name" id="blName">—</div><div class="tk-sub" id="blMask">—</div></div>
-      <div class="okpill"><svg class="ic"><use href="#i-check"/></svg>Зачислено</div>
-    </div>
-    <div class="tk-rows" id="blRows"></div>
-    <div class="tear"></div>
-    <div class="rc-actions">
-      <button class="ghost-btn st" id="blDetails"><svg class="ic"><use href="#i-receipt"/></svg>Детали</button>
-      <button class="ghost-btn st d1" id="blShare"><svg class="ic"><use href="#i-share"/></svg>Поделиться</button>
-    </div>
-    <div class="rc-circles st d2">
-      <button class="c" id="blAgain"><span class="cir"><svg class="ic"><use href="#i-repeat"/></svg></span>Перевести ещё</button>
-      <button class="c" id="blFav"><span class="cir"><svg class="icf"><use href="#i-star"/></svg></span>В избранное</button>
-    </div>
-    <div class="card rc-promo st d3" id="blPromo">
-      <div class="y"><svg class="icf" style="width:24px;height:24px"><use href="#i-ribbon"/></svg></div>
-      <div class="t">Как переводить без комиссии</div>
-      <svg class="ic chev"><use href="#i-chev"/></svg>
-    </div>
-    <button class="btn st d4" id="blDone" style="margin-top:12px">Готово</button>
-  </div>
-</div>
-
-<div class="modal" id="editNameModal"><div class="modal-c">
-  <div class="modal-t">Редактировать имя</div>
-  <input type="text" id="newNameInput" placeholder="Введите имя">
-  <div class="modal-a"><button class="btn secondary" id="cancelEditBtn">Отмена</button><button class="btn" id="saveNameBtn">Сохранить</button></div>
-</div></div>
-
-<div class="modal" id="addRecipientModal"><div class="modal-c">
-  <div class="modal-t">Добавить получателя</div>
-  <input type="text" id="recipientName" placeholder="Имя получателя">
-  <input type="text" id="recipientCard" placeholder="Последние 4 цифры карты" maxlength="4" inputmode="numeric">
-  <select id="recipientSystem">
-    <option value="">Платёжная система</option>
-    <option value="Visa">Visa</option>
-    <option value="Mastercard">Mastercard</option>
-    <option value="HumoCard">HumoCard</option>
-    <option value="UzCard">UzCard</option>
-  </select>
-  <input type="tel" id="recipientPhone" placeholder="+998 XX XXX XX XX (необязательно)">
-  <div class="modal-a"><button class="btn secondary" id="cancelRecipientBtn">Отмена</button><button class="btn" id="saveRecipientBtn">Сохранить</button></div>
-</div></div>
-
-<div class="modal" id="ownModal"><div class="modal-c">
-  <div class="modal-t">Между своими картами</div>
-  <select id="ownFrom"><option value="">Откуда</option></select>
-  <select id="ownTo"><option value="">Куда</option></select>
-  <input type="number" id="ownAmount" placeholder="Сумма" min="1">
-  <div class="modal-a"><button class="btn secondary" id="cancelOwnBtn">Отмена</button><button class="btn" id="confirmOwnBtn">Перевести</button></div>
-</div></div>
-
-<div class="modal" id="phoneModal"><div class="modal-c">
-  <div class="modal-t">По номеру телефона</div>
-  <input type="tel" id="phoneInput" placeholder="+998 __ ___ __ __">
-  <select id="phoneCard"><option value="">С карты</option></select>
-  <input type="number" id="phoneAmount" placeholder="Сумма" min="1">
-  <div class="modal-a"><button class="btn secondary" id="cancelPhoneBtn">Отмена</button><button class="btn" id="confirmPhoneBtn">Перевести</button></div>
-</div></div>
-
-<div class="modal" id="payModal"><div class="modal-c">
-  <div class="modal-t" id="payTitle">Оплата</div>
-  <select id="payCard"><option value="">С карты</option></select>
-  <input type="number" id="payAmount" placeholder="Сумма" min="1">
-  <div class="modal-a"><button class="btn secondary" id="cancelPayBtn">Отмена</button><button class="btn" id="confirmPayBtn">Оплатить</button></div>
-</div></div>
-
-<div class="modal" id="detailsModal"><div class="modal-c">
-  <div class="modal-t">Детали операции</div>
-  <div class="modal-x" id="detailsBody"></div>
-  <div class="modal-a"><button class="btn" id="closeDetailsBtn">Закрыть</button></div>
-</div></div>
-
-<div class="modal" id="aboutModal"><div class="modal-c">
-  <div class="modal-t">О программе</div>
-  <div class="modal-x">CampusPay — учебный тестовый прототип кампусного супер-аппа. Все карты, балансы и переводы ненастоящие, платежи не проводятся, данные хранятся локально на устройстве. 18+. Создатель не несёт ответственности за действия пользователя.</div>
-  <div class="modal-a"><button class="btn" id="closeAboutBtn">Понятно</button></div>
-</div></div>
-
+<nav>
+  <button data-tab="tap" class="active"><span class="ic">🐺</span>ТАП</button>
+  <button data-tab="top"><span class="ic">🏆</span>ТОП</button>
+  <button data-tab="pack"><span class="ic">🌙</span>СТАЯ</button>
+  <button data-tab="prof"><span class="ic">👤</span>ПРОФИЛЬ</button>
+</nav>
 <div class="toast" id="toast"></div>
 
-<nav id="nav">
-  <button data-tab="home" class="active"><svg class="ic"><use href="#i-home"/></svg>Главный</button>
-  <button data-tab="pay"><svg class="ic"><use href="#i-card"/></svg>Оплата</button>
-  <button data-tab="transfers"><svg class="ic"><use href="#i-swap"/></svg>Переводы</button>
-  <button data-tab="reports"><svg class="ic"><use href="#i-pie"/></svg>Отчёты</button>
-  <button data-tab="mini"><span class="newb">New</span><svg class="ic"><use href="#i-grid"/></svg>Mini Apps</button>
-</nav>
-
 <script>
-const STORAGE_KEY='campuspay_data';
-let state=null,pinBuffer='',carIdx=0,carTimer=null,curSvc=null,curFav=null,trFromIdx=0,lastReceipt=null,filterContact=null,busy=false,bankTimers=[];
-const NAMES=['Bekzod','Malika','Aziz','Dilnoza','Jasur','Nigora','Sardor','Zilola','Александр','Мария'];
-const SURNAMES=['Rahimova','Karimov','Tursunova','Yusupov','Ergasheva','Mirzayev','Козлова','Михайлов'];
-const SYSTEMS=['Visa','Mastercard','HumoCard','UzCard'];
-const COLORS=['#1e88e5','#8e24aa','#43a047','#f57c00','#d81b60','#00897b','#455a64'];
-const CARD_COLORS=['#1e88e5','#43a047','#8e24aa','#f57c00','#00897b','#d81b60'];
-const THEMES=[{id:'classic',name:'Классика'},{id:'amoled',name:'AMOLED'},{id:'night',name:'Ночь'},{id:'winter',name:'Зима'}];
-const FAVS=[
- {id:1,name:'Zamira R.',color:'#8e24aa',system:'HumoCard',last4:'2241',pm:'+998 90 *** ** 10',time:'00:39'},
- {id:2,name:'Otabek S.',color:'#455a64',system:'UzCard',last4:'9359',pm:'+998 93 *** ** 29',time:'00:15'},
- {id:3,name:'Nuralibek L.',color:'#1e88e5',system:'UzCard',last4:'8096',pm:'+998 88 *** ** 30',time:'24 сент.'},
- {id:4,name:'Dilnoza A.',color:'#43a047',system:'HumoCard',last4:'6688',pm:'+998 95 *** ** 66',time:'24 сент.'}];
-const BANNERS=[
- {cls:'s1',icon:'i-tag',ghost:'i-tag',t:'Campus Pass −50%',s:'Скидка студентам на проезд и питание до 31 декабря',cta:'Подробнее'},
- {cls:'s2',icon:'i-sparkle',ghost:'i-sparkle',t:'CampusPay+ Подписка',s:'0% комиссии, кешбэк 5% и приоритетная поддержка',cta:'Подключить'},
- {cls:'s3',icon:'i-swap',ghost:'i-swap',t:'Campus Boom',s:'Переводы друзьям без комиссии до конца семестра',cta:'Попробовать'},
- {cls:'s4',icon:'i-cup',ghost:'i-cup',t:'Кофейня Campus',s:'Второй капучино в подарок по Campus Pass',cta:'Забрать'}];
-const MINIS=[
- {n:'Campus Eat',c:'Еда и напитки',u:'12,4K',r:'4.8',col:'#f57c00',ic:'i-food'},
- {n:'Campus Sport',c:'Спорт и зал',u:'8,1K',r:'4.7',col:'#8e24aa',ic:'i-gym'},
- {n:'Campus Print',c:'Печать и скан',u:'5,6K',r:'4.6',col:'#d81b60',ic:'i-print'},
- {n:'Campus Lib',c:'Библиотека',u:'9,3K',r:'4.9',col:'#00897b',ic:'i-book'},
- {n:'Campus Taxi',c:'Транспорт',u:'15,2K',r:'4.5',col:'#37474f',ic:'i-bus'},
- {n:'Campus Cafe',c:'Кофе и снеки',u:'7,7K',r:'4.8',col:'#5d4037',ic:'i-cup'}];
-const rnd=a=>a[Math.floor(Math.random()*a.length)];
-const genName=()=>rnd(NAMES)+' '+rnd(SURNAMES);
-const genPhone=()=>`+998 ${90+Math.floor(Math.random()*9)} ${100+Math.floor(Math.random()*900)} ${10+Math.floor(Math.random()*90)} ${10+Math.floor(Math.random()*90)}`;
-const genCard=()=>String(1000+Math.floor(Math.random()*9000));
-const money=n=>Math.round(n).toLocaleString('ru-RU')+' сум';
+/* ===== ССЫЛКИ (вставь свои) ===== */
+const CHANNEL_URL='https://t.me/voystai';
+const CHAT_URL='https://t.me/voystai_chat';
+const BOT_LINK='https://t.me/voystai_bot';
+/* ================================ */
+const RANKS=[['Щенок 🐶',0],['Волк 🐺',500],['Матёрый 🌫️',2500],['Альфа 👑',10000],['ОДИНОЧКА 🌙',50000]];
+const QUOTES=[
+'Волк не оглядывается на овцу.','Одиночество — это не пустота, это свобода.','Пока все спят, волк тапает.',
+'Сила стаи — в каждом одиночке.','Ты не изгой. Ты разведчик.','Лунный свет не спрашивает разрешения.',
+'Молчание — самый громкий вой.','Сигма не объясняет. Сигма тапает.'];
+let S=JSON.parse(localStorage.getItem('wolftap')||'null');
+if(!S)S={id:'',name:'',bal:0,taps:0,crits:0,best:1,joined:false,char:null};
 const $=id=>document.getElementById(id);
-const tg=()=>window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
-function initState(){
-  const s=localStorage.getItem(STORAGE_KEY);
-  if(s)state=JSON.parse(s);
-  else{state={agreementAccepted:false,pinVerified:false,balanceHidden:false,theme:'classic',fullscreen:false,
-    profile:{name:genName(),phone:genPhone(),color:'#1e88e5'},
-    cards:[{number:genCard(),system:'HumoCard',balance:8494500,color:'#1e88e5'},{number:genCard(),system:'UzCard',balance:30000,color:'#43a047'}],
-    wallet:727,transactions:[],favorites:FAVS.map(f=>({...f,starred:true}))};saveState()}
-  if(!state.favorites)state.favorites=FAVS.map(f=>({...f,starred:true}));
-  state.cards.forEach((c,i)=>{if(!c.color)c.color=CARD_COLORS[i%6]});
-  if(!state.theme)state.theme='classic';
-  if(!state.profile.color)state.profile.color='#1e88e5';
-  if(state.wallet===undefined)state.wallet=727;
-  if(state.fullscreen===undefined)state.fullscreen=false;
-  if(!state.profile.phone||!state.profile.phone.startsWith('+998'))state.profile.phone=genPhone();
-  document.body.dataset.theme=state.theme;
-}
-function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
-const initials=n=>{const p=n.split(' ');return ((p[0]||'')[0]||'•')+(((p[1]||'')[0])||'•').toUpperCase()};
-function animNum(el,to){const from=+el.dataset.v||0;el.dataset.v=to;
-  if(state.balanceHidden){el.textContent='••••••';return}
-  const t0=performance.now(),d=550;
-  (function f(t){const p=Math.min(1,(t-t0)/d),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString('ru-RU')+' сум';if(p<1)requestAnimationFrame(f)})(t0)}
-function countTo(el,to,dur){const t0=performance.now();
-  (function f(t){const p=Math.min(1,(t-t0)/dur),v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=v.toLocaleString('ru-RU');if(p<1)requestAnimationFrame(f)})(t0)}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id+'Screen').classList.add('active');
-  document.body.classList.toggle('noauth',id==='agreement'||id==='pin');
-  const navMap={transfer:'transfers'};
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===(navMap[id]||id)))}
-function sheet(id,show){$(id).classList.toggle('show',show);$('overlay').classList.toggle('show',show||$('drawer').classList.contains('show'))}
-function vthumbHTML(c,stripe){return `<div class="vthumb" style="background:${c.color}">${stripe?'<div class="stripes"><i></i><i></i><i></i><i></i></div>':'<div class="mark"></div>'}<div class="row"><span>*${c.number||c.last4}</span><span>${(c.system||'')[0]||'H'}</span></div></div>`}
-/* haptics & sound */
-function hapImpact(style){const t=tg();if(t&&t.HapticFeedback){try{t.HapticFeedback.impactOccurred(style)}catch(e){}}}
-function hapSuccess(){const t=tg();if(t&&t.HapticFeedback){try{t.HapticFeedback.notificationOccurred('success')}catch(e){}}}
-function hapVibe(p){if(navigator.vibrate)navigator.vibrate(p)}
-function ding(){try{
-  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
-  const ctx=ding._c||(ding._c=new C());const t=ctx.currentTime;
-  const o=ctx.createOscillator(),g=ctx.createGain();
-  o.type='sine';o.frequency.setValueAtTime(1046,t);o.frequency.exponentialRampToValueAtTime(1568,t+.09);
-  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.3);
-  o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+.32);
-}catch(e){}}
-/* confetti */
-function spawnConfetti(x,y){
-  const fx=$('fx');const cols=['#1e88e5','#4caf50','#ffb300','#e91e63','#8e24aa','#00bcd4','#ff7043'];
-  for(let i=0;i<36;i++){
-    const d=document.createElement('div');d.className='conf';
-    d.style.width=(6+Math.random()*4)+'px';d.style.height=(8+Math.random()*7)+'px';d.style.background=cols[i%cols.length];
-    fx.appendChild(d);
-    const ang=Math.random()*Math.PI*2,sp=220+Math.random()*380;
-    const vx=Math.cos(ang)*sp,vy=Math.sin(ang)*sp-260,g=980,vr=Math.random()*900-450;
-    const t0=performance.now();
-    (function f(t){const dt=(t-t0)/1000;
-      if(dt>1.4){d.remove();return}
-      const cx=x+vx*dt,cy=y+vy*dt+.5*g*dt*dt;
-      const op=dt<.9?1:Math.max(0,1-(dt-.9)/.5);
-      d.style.transform=`translate3d(${cx}px,${cy}px,0) rotate(${vr*dt}deg)`;
-      d.style.opacity=op;requestAnimationFrame(f)})(t0);
-  }
-}
-/* fullscreen */
-function fallbackFs(on){try{
-  if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
-  else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
-}catch(e){}}
-function syncFsPad(){const t=tg();const active=t?(t.isFullscreen!==undefined?!!t.isFullscreen:!!state.fullscreen):false;document.body.classList.toggle('fs',active)}
-function applyFullscreen(on){
-  const t=tg();
-  try{
-    if(on){let done=false;
-      if(t&&typeof t.requestFullscreen==='function'){const p=t.requestFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(true));done=true}
-      if(!done)fallbackFs(true);
-      if(t&&t.expand)t.expand();
-    }else{let done=false;
-      if(t&&typeof t.exitFullscreen==='function'){const p=t.exitFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(false));done=true}
-      if(!done)fallbackFs(false);}
-  }catch(e){fallbackFs(on)}
-  state.fullscreen=on;saveState();renderFullChip();syncFsPad();setTimeout(syncFsPad,500);
-  toast(on?'Полноэкранный режим включён ✓':'Полноэкранный режим выключен');
-}
-function renderFullChip(){const c=$('fullChip');if(!c)return;c.textContent=state.fullscreen?'Вкл':'Выкл';c.classList.toggle('on',state.fullscreen)}
-document.addEventListener('fullscreenchange',()=>{
-  const t=tg();const active=!!document.fullscreenElement||(t&&t.isFullscreen);
-  if(!active&&state.fullscreen){state.fullscreen=false;saveState();renderFullChip()}
-  syncFsPad();
+const tgU=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe)?Telegram.WebApp.initDataUnsafe.user:null;
+if(!S.id)S.id=tgU?String(tgU.id):('x'+Math.random().toString(36).slice(2,10));
+if(!S.name&&tgU)S.name=tgU.first_name||'волк';
+function save(){localStorage.setItem('wolftap',JSON.stringify(S))}
+let CHARS=[],CUR_CHAR=S.char||null;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),1800)}
+function rankOf(b){let i=0;RANKS.forEach((r,j)=>{if(b>=r[1])i=j});return i}
+function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(tab+'Screen').classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  if(tab==='top')loadTop();if(tab==='prof')renderProf()}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+/* welcome + reg gate */
+fetch('/api/me?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
+  if(!d.registered){$('regGate').style.display='flex';$('welcome').style.display='none'}
+}).catch(()=>{});
+$('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
+if(S.joined){$('welcome').style.display='none';if($('regGate').style.display!=='flex')show('tap')}
+$('joinBtn').addEventListener('click',()=>{S.joined=true;save();$('welcome').style.display='none';show('tap');sync();toast('Добро пожаловать в стаю 🐺')});
+/* chars */
+function loadChars(){fetch('/api/chars').then(r=>r.json()).then(d=>{CHARS=d.chars||[];renderChars()}).catch(()=>{})}
+function renderChars(){const w=$('charRow');if(!w)return;w.innerHTML='';
+  const d0=document.createElement('button');d0.className=!CUR_CHAR?'on':'';d0.innerHTML='<span class="e">🐺</span>Обычный x1';
+  d0.onclick=()=>{CUR_CHAR=null;S.char=null;save();renderChars();applyChar()};w.appendChild(d0);
+  CHARS.forEach(c=>{const b=document.createElement('button');b.className=(CUR_CHAR&&CUR_CHAR.id===c.id)?'on':'';
+    b.innerHTML='<span class="e">'+c.emoji+'</span>'+c.name+' x'+c.mult;
+    b.onclick=()=>{CUR_CHAR=c;S.char=c;save();renderChars();applyChar();toast(c.emoji+' '+c.name+' выбран')};w.appendChild(b)})}
+function applyChar(){const w=$('wolf');if(w)w.textContent=CUR_CHAR?CUR_CHAR.emoji:'🐺';
+  const p=$('pEmoji');if(p)p.textContent=CUR_CHAR?CUR_CHAR.emoji:'🐺'}
+/* tap */
+let combo=0,lastTap=0;
+$('wolfZone').addEventListener('pointerdown',e=>{
+  const now=Date.now();combo=(now-lastTap<1000)?combo+1:1;lastTap=now;
+  if(combo>S.best)S.best=combo;
+  const ri=rankOf(S.bal);
+  const crit=combo>=10&&Math.random()<0.12;
+  const gain=Math.round(((crit?5:1)+ri)*(CUR_CHAR?CUR_CHAR.mult:1));
+  S.bal+=gain;S.taps++;if(crit)S.crits++;
+  const w=$('wolf');w.classList.add('hit');setTimeout(()=>w.classList.remove('hit'),90);
+  const f=document.createElement('div');f.className='float'+(crit?' crit':'');f.textContent=(crit?'КРИТ +':'+')+gain;
+  const z=$('wolfZone').getBoundingClientRect();
+  f.style.left=(e.clientX-z.left-10+(Math.random()*40-20))+'px';f.style.top=(e.clientY-z.top-20)+'px';
+  $('wolfZone').appendChild(f);setTimeout(()=>f.remove(),800);
+  const cb=$('combo');cb.textContent='COMBO x'+combo;cb.classList.toggle('on',combo>1);
+  if(navigator.vibrate)navigator.vibrate(crit?[30,20,30]:12);
+  render();save();
 });
-$('setFull').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
-$('fsBtn').addEventListener('click',()=>applyFullscreen(!state.fullscreen));
-/* agreement & pin */
-$('agreeCheckbox').addEventListener('change',e=>$('acceptBtn').disabled=!e.target.checked);
-$('acceptBtn').addEventListener('click',()=>{state.agreementAccepted=true;saveState();showScreen('pin')});
-function renderPinDots(){document.querySelectorAll('#pinDots span').forEach((s,i)=>s.classList.toggle('on',i<pinBuffer.length))}
-$('keypad').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!b.dataset.d)return;
-  if(b.dataset.d==='del')pinBuffer=pinBuffer.slice(0,-1);else if(pinBuffer.length<4)pinBuffer+=b.dataset.d;
-  renderPinDots();
-  if(pinBuffer.length===4)setTimeout(()=>{if(pinBuffer==='1234'){state.pinVerified=true;saveState();enterApp()}else{toast('Неверный PIN');pinBuffer='';renderPinDots()}},160)});
-/* nav */
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{filterContact=null;showScreen(b.dataset.tab);renderAll()}));
-/* drawer/sheets */
-const openDr=()=>{$('drawer').classList.add('show');$('overlay').classList.add('show')};
-const closeAll=()=>{$('drawer').classList.remove('show');['settingsSheet','cardsSheet','pickSheet'].forEach(i=>$(i).classList.remove('show'));$('overlay').classList.remove('show')};
-$('menuBtn').addEventListener('click',openDr);$('overlay').addEventListener('click',closeAll);
-$('drProfile').addEventListener('click',()=>{closeAll();showScreen('profile');renderAll()});
-$('hAvatar').addEventListener('click',()=>{showScreen('profile');renderAll()});
-document.querySelectorAll('.dr-item[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
-$('drAbout').addEventListener('click',()=>{closeAll();$('aboutModal').classList.add('show')});
-$('closeAboutBtn').addEventListener('click',()=>$('aboutModal').classList.remove('show'));
-$('drSettings').addEventListener('click',()=>{closeAll();renderChips();renderFullChip();sheet('settingsSheet',true)});
-$('drSubConnect').addEventListener('click',e=>{e.preventDefault();toast('Демо: подписка подключена ✓')});
-$('drShare').addEventListener('click',()=>{if(navigator.share)navigator.share({title:'CampusPay',url:location.href}).catch(()=>{});else toast('Демо: поделиться')});
-$('setProfile').addEventListener('click',()=>{closeAll();showScreen('profile');renderAll()});
-$('setCards').addEventListener('click',()=>{closeAll();renderCardsSheet();sheet('cardsSheet',true)});
-$('qCards').addEventListener('click',()=>{renderCardsSheet();sheet('cardsSheet',true)});
-function renderChips(){const w=$('themeChips');w.innerHTML='';
-  THEMES.forEach(t=>{const b=document.createElement('button');b.className='chip'+(state.theme===t.id?' on':'');
-    b.innerHTML=(state.theme===t.id?'<svg class="ic"><use href="#i-check"/></svg>':'')+t.name;
-    b.addEventListener('click',()=>{state.theme=t.id;document.body.dataset.theme=t.id;saveState();renderChips();toast('Тема: '+t.name)});w.appendChild(b)})}
-function renderCardsSheet(){const w=$('cardsList');w.innerHTML='';
-  state.cards.forEach((c,i)=>{const d=document.createElement('div');d.className='cardrow';
-    d.innerHTML=`${vthumbHTML(c)}<div class="info"><div class="n">•••• ${c.number}</div><div class="s">${c.system} · ${money(c.balance)}</div></div>${state.cards.length>1?`<button class="del" data-i="${i}"><svg class="ic" style="width:18px;height:18px"><use href="#i-x"/></svg></button>`:''}`;
-    w.appendChild(d)});
-  w.querySelectorAll('.del').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();state.cards.splice(+b.dataset.i,1);saveState();renderCardsSheet();renderAll();toast('Карта удалена')}))}
-$('addCardBtn').addEventListener('click',()=>{state.cards.push({number:genCard(),system:rnd(SYSTEMS),balance:10000,color:rnd(CARD_COLORS)});saveState();renderCardsSheet();renderAll();toast('Карта добавлена ✓')});
-/* banners & minis */
-function renderBanners(){const w=$('carTrack');w.innerHTML='';
-  BANNERS.forEach(b=>{const d=document.createElement('div');d.className='slide '+b.cls;
-    d.innerHTML=`<span class="adv">Реклама</span><div class="logo"><svg class="icf" style="width:22px;height:22px"><use href="#${b.icon}"/></svg></div><div><div class="t">${b.t}</div><div class="s">${b.s}</div><span class="cta">${b.cta} ›</span></div><svg class="icf ghost"><use href="#${b.ghost}"/></svg>`;
-    d.addEventListener('click',()=>toast('Демо: '+b.t));w.appendChild(d)});
-  const dots=$('carDots');dots.innerHTML='';
-  BANNERS.forEach((b,i)=>{const x=document.createElement('button');x.addEventListener('click',()=>goCar(i));dots.appendChild(x)});
-  goCar(0);clearInterval(carTimer);carTimer=setInterval(()=>goCar((carIdx+1)%BANNERS.length),4500)}
-function goCar(i){carIdx=i;$('carTrack').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('#carDots button').forEach((d,j)=>d.classList.toggle('on',j===i))}
-function renderMinis(){[$('miniRowHome'),$('miniRowTab')].forEach(w=>{w.innerHTML='';
-  MINIS.forEach(m=>{const d=document.createElement('div');d.className='mcard';
-    d.innerHTML=`<div class="top"><div class="logo" style="background:${m.col}"><svg class="icf" style="width:20px;height:20px"><use href="#${m.ic}"/></svg></div><span class="rate"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg>${m.r}</span></div><div class="n">${m.n}</div><div class="c">${m.c}</div><div class="u"><svg class="ic" style="width:12px;height:12px"><use href="#i-person"/></svg>${m.u} пользователей</div>`;
-    d.addEventListener('click',()=>toast('Демо Mini App: '+m.n));w.appendChild(d)})})}
-/* home */
-$('bellBtn').addEventListener('click',()=>toast('Нет новых уведомлений'));
-$('subsBtn').addEventListener('click',()=>toast('Демо: мониторинг по подписке'));
-$('eventCard').addEventListener('click',()=>{showScreen('reports');renderAll()});
-$('eyeBtn').addEventListener('click',()=>{state.balanceHidden=!state.balanceHidden;saveState();$('eyeIcon').innerHTML=`<use href="#i-${state.balanceHidden?'eyeoff':'eye'}"/>`;renderHome();renderReports()});
-$('miniAll').addEventListener('click',e=>{e.preventDefault();showScreen('mini')});
-document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',()=>toast(el.dataset.toast)));
-function paintAvatars(){const ini=initials(state.profile.name);
-  [['hAvatar',ini],['drAvatar',ini],['pAvatar',ini]].forEach(([id,v])=>{const el=$(id);el.firstChild.textContent=v;el.style.background=state.profile.color});
-  $('drName').textContent=state.profile.name;$('drPhone').textContent=state.profile.phone}
-function renderHome(){animNum($('totalBalance'),state.cards.reduce((s,c)=>s+c.balance,0));animNum($('walletBalance'),state.wallet);paintAvatars()}
-/* favorites */
-const lastTime=n=>{const t=state.transactions.find(x=>x.to===n);return t?new Date(t.date).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):null};
-function renderFavs(){const q=($('favSearch').value||'').toLowerCase();const w=$('favList');w.innerHTML='';
-  state.favorites.filter(f=>f.starred&&f.name.toLowerCase().includes(q)).forEach((f,idx)=>{
-    const d=document.createElement('div');d.className='card fav';d.style.animationDelay=(idx*.06)+'s';
-    d.innerHTML=`<div class="av" style="background:${f.color}">${initials(f.name)}</div><div class="info"><div class="n">${f.name}<span class="vbadge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div><div class="c">${f.system} *${f.last4}</div></div><div class="right"><button class="star" data-id="${f.id}"><svg class="icf" style="width:22px;height:22px"><use href="#i-star"/></svg></button>${lastTime(f.name)||f.time}</div>`;
-    d.querySelector('.star').addEventListener('click',e=>{e.stopPropagation();f.starred=false;saveState();renderFavs();toast(f.name+' убран из избранных')});
-    d.addEventListener('click',()=>openTransfer(f));w.appendChild(d)});
-  if(!w.children.length)w.innerHTML='<div class="empty"><div class="e">🤷</div>Никого не нашли</div>'}
-$('favSearch').addEventListener('input',renderFavs);
-/* add recipient */
-$('addRecipientBtn').addEventListener('click',()=>{
-  $('recipientName').value='';$('recipientCard').value='';$('recipientSystem').value='';$('recipientPhone').value='';
-  $('addRecipientModal').classList.add('show')});
-$('cancelRecipientBtn').addEventListener('click',()=>$('addRecipientModal').classList.remove('show'));
-$('saveRecipientBtn').addEventListener('click',()=>{
-  const name=$('recipientName').value.trim(),card=$('recipientCard').value.trim(),system=$('recipientSystem').value,phone=$('recipientPhone').value.trim();
-  if(!name)return toast('Введите имя');
-  if(!card||card.length!==4||!/^\d{4}$/.test(card))return toast('Введите 4 цифры карты');
-  if(!system)return toast('Выберите платёжную систему');
-  state.favorites.push({id:Date.now(),name,color:rnd(COLORS),system,last4:card,pm:phone||'+998 ** *** ** **',time:'только что',starred:true});
-  saveState();$('addRecipientModal').classList.remove('show');renderFavs();toast('Получатель добавлен ✓')});
-/* transfer screen */
-function openTransfer(f){curFav=f;trFromIdx=0;
-  $('trAvatar').textContent=initials(f.name);$('trAvatar').style.background=f.color;
-  $('trName').innerHTML=f.name+' <span class="vbadge"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span>';
-  $('trPhone').textContent=f.pm;
-  renderTrCards();$('trAmount').value='';updFee();showScreen('transfer')}
-function renderTrCards(){const c=state.cards[trFromIdx];
-  $('trFromCard').innerHTML=`${vthumbHTML(c)}<div class="info"><div class="b">${money(c.balance).replace(' сум','')} <span class="muted" style="font-size:14px">сум</span></div><div class="s">${c.system} ${c.system} Premium</div></div><svg class="ic chev" style="transform:rotate(90deg)"><use href="#i-chevd"/></svg>`;
-  $('trToCard').innerHTML=`${vthumbHTML(curFav,true)}<div class="info"><div class="b">${curFav.name}</div><div class="s">${curFav.system} *${curFav.last4}</div></div><svg class="ic chev" style="transform:rotate(90deg)"><use href="#i-chevd"/></svg>`}
-$('trFromCard').addEventListener('click',()=>{const w=$('pickList');w.innerHTML='';
-  state.cards.forEach((c,i)=>{const d=document.createElement('div');d.className='cardrow';
-    d.innerHTML=`${vthumbHTML(c)}<div class="info"><div class="n">•••• ${c.number}</div><div class="s">${c.system} · ${money(c.balance)}</div></div>${i===trFromIdx?'<svg class="ic" style="color:var(--accent)"><use href="#i-check"/></svg>':''}`;
-    d.addEventListener('click',()=>{trFromIdx=i;renderTrCards();closeAll()});w.appendChild(d)});
-  sheet('pickSheet',true)});
-$('trToCard').addEventListener('click',()=>toast('Получатель: '+curFav.name));
-$('trBack').addEventListener('click',()=>{showScreen('transfers');renderAll()});
-$('trHistory').addEventListener('click',()=>{filterContact=curFav.name;showScreen('reports');renderAll()});
-function updFee(){const a=parseFloat($('trAmount').value)||0;
-  $('trFee').textContent=a>0?`Комиссия 1%: ${money(a*.01)} · Итого: ${money(a*1.01)}`:'';
-  $('trSubmit').disabled=!(a>0)}
-$('trAmount').addEventListener('input',updFee);
-document.querySelectorAll('.amt-chip').forEach(b=>b.addEventListener('click',()=>{$('trAmount').value=b.dataset.a;updFee()}));
-/* ===== BANK FLOW ===== */
-const later=(fn,ms)=>bankTimers.push(setTimeout(fn,ms));
-function setStep(i,st){const el=$('ps'+i);el.classList.remove('active','done');if(st)el.classList.add(st)}
-function runBankFlow(tx,btn){
-  if(busy)return;busy=true;
-  if(btn){btn.classList.add('pressed');hapImpact('light');hapVibe(10);
-    later(()=>btn.classList.remove('pressed'),100);
-    later(()=>btn.classList.add('loading'),100)}
-  later(()=>{$('dimmer').classList.add('show');
-    $('procLayer').classList.add('show');
-    setStep(1,'active');setStep(2,'');setStep(3,'')},btn?250:0);
-  later(()=>{setStep(1,'done');setStep(2,'active')},900);
-  later(()=>{setStep(2,'done');setStep(3,'active')},1500);
-  later(()=>setStep(3,'done'),2050);
-  later(()=>{tx.apply();
-    lastReceipt={amount:tx.amount,fee:tx.fee||0,total:tx.total||tx.amount,to:tx.to,mask:tx.mask||'',date:new Date(),from:tx.fromLabel||'',system:tx.system||'',color:tx.color||'#455a64',kind:tx.kind||'transfer'};
-    saveState()},2150);
-  later(()=>{$('dimmer').classList.remove('show');$('procLayer').classList.remove('show');
-    if(btn)btn.classList.remove('loading');
-    showBankSuccess()},2350);
+function render(){
+  $('balance').textContent=S.bal.toLocaleString('ru-RU');
+  const ri=rankOf(S.bal);$('rankBadge').textContent=RANKS[ri][0];$('rankNow').textContent=RANKS[ri][0];
+  const next=RANKS[ri+1];$('rankNext').textContent=next?('→ '+next[0]):'МАКС 🌙';
+  const base=RANKS[ri][1],top=next?next[1]:S.bal;
+  $('rankBar').style.width=(next?Math.min(100,(S.bal-base)/(top-base)*100):100)+'%';
+  $('stTaps').textContent=S.taps.toLocaleString('ru-RU');$('stCrits').textContent=S.crits;$('stBest').textContent='x'+S.best;
 }
-function showBankSuccess(){
-  const r=lastReceipt,layer=$('bankLayer');
-  layer.classList.remove('go','hide');
-  $('blAvatar').textContent=initials(r.to);$('blAvatar').style.background=r.color;
-  $('blName').textContent=r.to;$('blMask').textContent=r.mask||r.from;
-  $('blSub').textContent=(r.kind==='payment'?'Оплата: ':'Перевод: ')+r.to;
-  $('blAmount').textContent='0';
-  $('blRows').innerHTML=
-    `<div class="r"><span>С карты</span><b>${r.from} (${r.system})</b></div>`+
-    `<div class="r"><span>Дата</span><b>${r.date.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'})}, ${r.date.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</b></div>`+
-    `<div class="r"><span>Комиссия</span><b>${money(r.fee)}</b></div>`+
-    `<div class="r"><span>№ операции</span><b>CP-${String(r.date.getTime()).slice(-8)}</b></div>`;
-  $('blSheet').classList.remove('up');
-  layer.classList.add('show');
-  requestAnimationFrame(()=>layer.classList.add('go'));
-  hapImpact('heavy');hapVibe([50,60,30]);
-  later(()=>hapSuccess(),900);
-  later(()=>spawnConfetti(innerWidth/2,innerHeight*0.3),250);
-  later(ding,900);
-  later(()=>countTo($('blAmount'),r.amount,500),450);
-  later(()=>$('blSheet').classList.add('up'),800);
-  later(()=>{busy=false},1000);
-}
-$('blDetails').addEventListener('click',()=>{const r=lastReceipt;
-  $('detailsBody').innerHTML=`<b>Операция:</b> ${r.kind==='payment'?'Оплата услуги':r.kind==='own'?'Перевод между своими':'Перевод средств'}<br><b>Статус:</b> Зачислено<br><b>Дата:</b> ${r.date.toLocaleString('ru-RU')}<br><b>С карты:</b> ${r.from} (${r.system})<br><b>Получатель:</b> ${r.to} ${r.mask?' '+r.mask:''}<br><b>Сумма:</b> ${money(r.amount)}<br><b>Комиссия:</b> ${money(r.fee)}<br><b>Итого списано:</b> ${money(r.total)}<br><b>№ операции:</b> CP-${String(r.date.getTime()).slice(-8)}`;
-  $('detailsModal').classList.add('show')});
-$('closeDetailsBtn').addEventListener('click',()=>$('detailsModal').classList.remove('show'));
-$('blShare').addEventListener('click',()=>{const r=lastReceipt;const txt=`${r.kind==='payment'?'Оплата':'Перевод'} ${money(r.amount)} → ${r.to}. CampusPay (учебный прототип)`;
-  if(navigator.share)navigator.share({text:txt}).catch(()=>{});else toast('Чек скопирован (демо)')});
-$('blAgain').addEventListener('click',()=>{const l=$('bankLayer');l.classList.remove('show','go');
-  if(curFav&&lastReceipt&&lastReceipt.kind==='transfer')openTransfer(curFav);else{showScreen('home');renderAll()}});
-$('blFav').addEventListener('click',()=>{if(curFav){curFav.starred=true;saveState();renderFavs()}toast('Добавлено в избранное ★')});
-$('blPromo').addEventListener('click',()=>toast('Подключите CampusPay+ — 0% комиссии'));
-$('blDone').addEventListener('click',()=>{const l=$('bankLayer');l.classList.add('hide');
-  setTimeout(()=>{l.classList.remove('show','go','hide');showScreen('home');renderAll()},250)});
-/* submit handlers */
-$('trSubmit').addEventListener('click',()=>{
-  const a=parseFloat($('trAmount').value);if(!a||a<=0)return toast('Введите сумму');
-  const c=state.cards[trFromIdx],fee=Math.round(a*.01),total=a+fee;
-  if(c.balance<total)return toast('Недостаточно средств');
-  runBankFlow({amount:a,fee,total,kind:'transfer',to:curFav.name,mask:'*'+curFav.last4,color:curFav.color,
-    fromLabel:'•••• '+c.number,system:c.system,
-    apply:()=>{c.balance-=total;state.transactions.unshift({type:'transfer',ic:'i-swap',to:curFav.name,amount:a,fee,date:new Date().toISOString()});$('trAmount').value='';updFee()}},$('trSubmit'));
-});
-$('confirmOwnBtn').addEventListener('click',()=>{const f=$('ownFrom').value,t=$('ownTo').value,a=parseFloat($('ownAmount').value);
-  if(f===''||t==='')return toast('Выберите карты');if(f===t)return toast('Карты совпадают');
-  if(!a||a<=0)return toast('Введите сумму');if(state.cards[f].balance<a)return toast('Недостаточно средств');
-  $('ownModal').classList.remove('show');
-  const cf=state.cards[f],ct=state.cards[t];
-  runBankFlow({amount:a,fee:0,total:a,kind:'own',to:'Между своими',mask:'•••• '+ct.number,color:ct.color,
-    fromLabel:'•••• '+cf.number,system:cf.system,
-    apply:()=>{cf.balance-=a;ct.balance+=a;state.transactions.unshift({type:'own',ic:'i-swap',to:'Между своими → •••• '+ct.number,amount:a,fee:0,date:new Date().toISOString()})}},$('confirmOwnBtn'));
-});
-$('confirmPhoneBtn').addEventListener('click',()=>{const ph=$('phoneInput').value.trim(),fi=$('phoneCard').value,a=parseFloat($('phoneAmount').value);
-  if(ph.replace(/\D/g,'').length<9)return toast('Введите номер');if(fi==='')return toast('Выберите карту');
-  if(!a||a<=0)return toast('Введите сумму');const fee=Math.round(a*.01),total=a+fee;
-  if(state.cards[fi].balance<total)return toast('Недостаточно средств');
-  $('phoneModal').classList.remove('show');
-  const c=state.cards[fi];
-  runBankFlow({amount:a,fee,total,kind:'transfer',to:ph,mask:ph,color:'#455a64',
-    fromLabel:'•••• '+c.number,system:c.system,
-    apply:()=>{c.balance-=total;state.transactions.unshift({type:'transfer',ic:'i-swap',to:ph,amount:a,fee,date:new Date().toISOString()})}},$('confirmPhoneBtn'));
-});
-document.querySelectorAll('.svc button').forEach(b=>b.addEventListener('click',()=>{curSvc={name:b.dataset.svc,ic:b.dataset.ic};
-  $('payTitle').textContent='Оплата: '+curSvc.name;fillCardSelect($('payCard'));$('payAmount').value='';$('payModal').classList.add('show')}));
-$('cancelPayBtn').addEventListener('click',()=>$('payModal').classList.remove('show'));
-$('confirmPayBtn').addEventListener('click',()=>{const fi=$('payCard').value,a=parseFloat($('payAmount').value);
-  if(fi==='')return toast('Выберите карту');if(!a||a<=0)return toast('Введите сумму');
-  if(state.cards[fi].balance<a)return toast('Недостаточно средств');
-  $('payModal').classList.remove('show');
-  const c=state.cards[fi];
-  runBankFlow({amount:a,fee:0,total:a,kind:'payment',to:curSvc.name,mask:'',color:'#1e88e5',
-    fromLabel:'•••• '+c.number,system:c.system,
-    apply:()=>{c.balance-=a;state.transactions.unshift({type:'payment',ic:curSvc.ic,to:curSvc.name,amount:a,fee:0,date:new Date().toISOString()})}},$('confirmPayBtn'));
-});
-/* own/phone selects */
-function fillCardSelect(sel,ph){sel.innerHTML=`<option value="">${ph||'С карты'}</option>`;state.cards.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`•••• ${c.number} (${c.system}) — ${money(c.balance)}`;sel.appendChild(o)})}
-$('ownBtn').addEventListener('click',()=>{fillCardSelect($('ownFrom'),'Откуда');fillCardSelect($('ownTo'),'Куда');$('ownAmount').value='';$('ownModal').classList.add('show')});
-$('cancelOwnBtn').addEventListener('click',()=>$('ownModal').classList.remove('show'));
-$('phoneRow').addEventListener('click',()=>{fillCardSelect($('phoneCard'));$('phoneInput').value='';$('phoneAmount').value='';$('phoneModal').classList.add('show')});
-$('cancelPhoneBtn').addEventListener('click',()=>$('phoneModal').classList.remove('show'));
-/* reports */
-function renderReports(){
-  $('filterWrap').innerHTML=filterContact?`<span class="filterchip">История с ${filterContact} <button id="clearFilter" style="display:inline-flex"><svg class="ic" style="width:14px;height:14px"><use href="#i-x"/></svg></button></span>`:'';
-  if(filterContact)$('clearFilter').addEventListener('click',()=>{filterContact=null;renderReports()});
-  const list=state.transactions.filter(t=>!filterContact||t.to===filterContact);
-  $('stTotal').textContent=money(list.reduce((s,t)=>s+t.amount+t.fee,0));
-  $('stFees').textContent=money(list.reduce((s,t)=>s+(t.fee||0),0));
-  $('stCount').textContent=list.length;
-  const w=$('txList');
-  if(!list.length){w.innerHTML='<div class="empty"><div class="e">📭</div>Нет операций</div>';return}
-  w.innerHTML='';
-  list.forEach((t,idx)=>{const d=new Date(t.date);const el=document.createElement('div');el.className='tx';el.style.animationDelay=(idx*.05)+'s';
-    el.innerHTML=`<div class="txic"><svg class="ic"><use href="#${t.ic||'i-swap'}"/></svg></div><div class="info"><div class="n">${t.to}</div><div class="d">${t.type==='payment'?'Оплата услуги':t.type==='own'?'Перевод между своими':'Перевод средств'} · ${d.toLocaleDateString('ru-RU')} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="a">- ${money(t.amount+t.fee)}</div>`;
-    w.appendChild(el)})}
+/* sync + top */
+function sync(){fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:S.id,name:S.name||'волк-аноним',balance:S.bal,taps:S.taps})}).catch(()=>{})}
+setInterval(sync,5000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)sync()});
+function loadTop(){fetch('/api/top').then(r=>r.json()).then(d=>{
+  const w=$('topList');
+  if(!d.users||!d.users.length){w.innerHTML='<div class="muted" style="text-align:center;padding:20px">Пока пусто. Ты первый волк 🌙</div>';return}
+  w.innerHTML='';d.users.forEach((u,i)=>{
+    const div=document.createElement('div');div.className='tx';
+    const me=u.id===S.id;
+    div.innerHTML='<div class="pos '+(i===0?'m1':i===1?'m2':i===2?'m3':'')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</div><div class="av">🐺</div><div class="n '+(me?'me':'')+'">'+u.name+(me?' (ты)':'')+'</div><div class="b">'+u.balance.toLocaleString('ru-RU')+'</div>';
+    w.appendChild(div)});
+  }).catch(()=>{$('topList').innerHTML='<div class="muted" style="text-align:center;padding:20px">Топ недоступен офлайн</div>'})}
+/* pack */
+$('btnChannel').addEventListener('click',()=>location.href=CHANNEL_URL);
+$('btnChat').addEventListener('click',()=>location.href=CHAT_URL);
+$('btnInvite').addEventListener('click',()=>{const t='Я в стае ВОЛК ТАП 🐺 Тапай волка, копи ВОЙ, обгоняй одиночек: '+BOT_LINK;
+  if(navigator.share)navigator.share({text:t}).catch(()=>{});else{if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Ссылка скопирована 📨')}});
+$('quote').textContent=QUOTES[new Date().getDate()%QUOTES.length];
 /* profile */
-function renderColors(){const w=$('colorRow');w.innerHTML='';
-  COLORS.forEach(c=>{const b=document.createElement('button');b.style.background=c;b.className=state.profile.color===c?'on':'';
-    b.addEventListener('click',()=>{state.profile.color=c;saveState();renderColors();paintAvatars();toast('Цвет обновлён ✓')});w.appendChild(b)})}
-function renderProfile(){$('profileName').textContent=state.profile.name;$('profilePhone').textContent=state.profile.phone;renderColors()}
-$('editNameBtn').addEventListener('click',()=>{$('newNameInput').value=state.profile.name;$('editNameModal').classList.add('show')});
-$('cancelEditBtn').addEventListener('click',()=>$('editNameModal').classList.remove('show'));
-$('saveNameBtn').addEventListener('click',()=>{const n=$('newNameInput').value.trim();if(!n)return toast('Введите имя');
-  state.profile.name=n;saveState();$('editNameModal').classList.remove('show');renderAll();toast('Имя обновлено ✓')});
-$('resetTransfersBtn').addEventListener('click',()=>{if(confirm('Сбросить все переводы и платежи?')){state.transactions=[];state.cards.forEach(c=>c.balance=50000);state.wallet=727;saveState();renderAll();toast('Сброшено ✓')}});
-function renderAll(){renderHome();renderFavs();renderReports();renderProfile()}
-function enterApp(){showScreen('home');renderAll();renderBanners();renderMinis();renderFullChip();syncFsPad()}
-const t0=tg();if(t0){try{t0.ready();t0.expand()}catch(e){}
-if(t0.onEvent){try{t0.onEvent('fullscreenChanged',()=>syncFsPad())}catch(e){}}}
-syncFsPad();
-initState();
-if(!state.agreementAccepted)showScreen('agreement');
-else if(!state.pinVerified)showScreen('pin');
-else enterApp();
+function renderProf(){$('pName').textContent=S.name||'волк-аноним';
+  $('pRank').textContent=RANKS[rankOf(S.bal)][0]+' · '+S.bal.toLocaleString('ru-RU')+' ВОЙ';
+  $('nameInput').value=S.name||'';applyChar()}
+$('saveName').addEventListener('click',()=>{S.name=$('nameInput').value.trim()||'волк-аноним';save();renderProf();sync();toast('Имя сохранено ✓')});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбежать? Весь прогресс сгорит.')){S={id:S.id,name:S.name,bal:0,taps:0,crits:0,best:1,joined:true,char:null};CUR_CHAR=null;save();render();renderChars();applyChar();sync();toast('Начисто. Новый волк 🌙')}});
+/* init */
+if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
+render();loadChars();applyChar();
 </script>
 </body>
 </html>
