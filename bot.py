@@ -1,5 +1,5 @@
-"""bot.py — ВОЛК ТАП bot + регистрация + админ"""
-import asyncio, logging
+"""bot.py — ВОЛК ТАП bot + регистрация + админ с фото-персами"""
+import asyncio, logging, base64
 import aiohttp
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import CommandStart, Command
@@ -8,10 +8,8 @@ from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton, WebAppInf
 from aiogram.utils.markdown import hbold
 from config import BOT_TOKEN, WEBAPP_URL
 
-# === ССЫЛКИ ===
 CHANNEL_URL = 'https://t.me/voystai'
 CHAT_URL = 'https://t.me/voystai_chat'
-# === СЕКРЕТЫ ===
 ADMIN_PASS = '1221221'
 ADMIN_SECRET = 'wolftap2026secret'
 
@@ -56,7 +54,7 @@ async def welcome(m: types.Message):
     await m.answer(
         f"🌙 {hbold(m.from_user.first_name or 'волк')}, ты в стае.\n\n"
         "🐺 Тапай волка → копи ВОЙ → расти до ОДИНОЧКИ.\n"
-        "🏆 Топ, комбо, криты — всё внутри.\n\n👇 Жми:",
+        "🏆 Топ, комбо, криты, персы с фото — всё внутри.\n\n👇 Жми:",
         parse_mode="HTML", reply_markup=game_kb(m.from_user.id))
 
 @dp.message(CommandStart())
@@ -87,12 +85,31 @@ async def on_contact(m: types.Message):
 async def help(m: types.Message):
     await m.answer("🐺 ВОЛК ТАП — мемная тапалка для одиночек.\n\n"
                    "• Тапай волка — получай ВОЙ\n• Комбо → шанс КРИТА x5\n"
-                   "• Ранги: Щенок → Волк → Матёрый → Альфа → ОДИНОЧКА 🌙\n• Персы дают множитель тапа")
+                   "• Ранги: Щенок → Волк → Матёрый → Альфа → ОДИНОЧКА 🌙\n• Персы с фото дают множитель тапа")
 
 @dp.message(Command("admin"))
 async def admin(m: types.Message):
     flow[str(m.from_user.id)] = {'step': 'pass'}
     await m.answer("🔐 Введи пароль админа:")
+
+@dp.message(F.photo)
+async def photo_flow(m: types.Message):
+    uid = str(m.from_user.id)
+    f = flow.get(uid)
+    if not f or f.get('step') != 'char_photo':
+        return
+    ph = m.photo[-1]
+    try:
+        fg = await bot.get_file(ph.file_id)
+        bio = await bot.download_file(fg.file_path)
+        raw = bio.read()
+        if len(raw) > 1_500_000:
+            return await m.answer("⚠️ Фотка тяжелее 1.5MB — пришли поменьше:")
+        f['image'] = 'data:image/jpeg;base64,' + base64.b64encode(raw).decode()
+        f['step'] = 'char_mult'
+        await m.answer("📸 Фото принято. Множитель тапа (напр. 2 или 1.5):")
+    except Exception:
+        await m.answer("Не смог скачать фото. Ещё раз:")
 
 @dp.message(F.text)
 async def text_flow(m: types.Message):
@@ -108,19 +125,22 @@ async def text_flow(m: types.Message):
         else:
             await m.answer("❌ Неверно. Ещё раз:")
     elif step == 'char_name':
-        f['name'] = m.text.strip()[:20]; f['step'] = 'char_emoji'
-        await m.answer("Эмодзи перса (один смайл):")
-    elif step == 'char_emoji':
-        f['emoji'] = m.text.strip()[:8]; f['step'] = 'char_mult'
-        await m.answer("Множитель тапа (напр. 2 или 1.5):")
+        f['name'] = m.text.strip()[:20]; f['step'] = 'char_photo'
+        await m.answer("📸 Пришли ФОТО перса картинкой\n(или напиши «пропустить» — будет стандартный волк):")
+    elif step == 'char_photo':
+        if m.text.strip().lower() in ('пропустить', 'нет', '-'):
+            f['image'] = ''; f['step'] = 'char_mult'
+            await m.answer("Множитель тапа (напр. 2 или 1.5):")
+        else:
+            await m.answer("Пришли именно картинкой 📸 (или напиши «пропустить»):")
     elif step == 'char_mult':
         try:
             mult = float(m.text.replace(',', '.'))
         except ValueError:
             return await m.answer("Числом напиши:")
-        await api_post("/api/admin/chars", {"name": f['name'], "emoji": f['emoji'], "mult": mult}, secret=True)
+        await api_post("/api/admin/chars", {"name": f['name'], "mult": mult, "image": f.get('image', '')}, secret=True)
         flow.pop(uid)
-        await m.answer(f"✅ Перс добавлен: {f['emoji']} {f['name']} x{mult}", reply_markup=admin_kb())
+        await m.answer(f"✅ Перс «{f['name']}» x{mult} добавлен в игру!", reply_markup=admin_kb())
     elif step == 'bc':
         users = await api_get("/api/admin/users", secret=True)
         sent = 0
@@ -146,7 +166,7 @@ async def adm_cb(c: types.CallbackQuery):
             await c.message.answer("Персов пока нет.")
         else:
             kb = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text=f"{ch['emoji']} {ch['name']} x{ch['mult']} — удалить", callback_data=f"adm:del:{ch['id']}")]
+                [InlineKeyboardButton(text=f"{ch['name']} x{ch['mult']} — удалить", callback_data=f"adm:del:{ch['id']}")]
                 for ch in chars["chars"]])
             await c.message.answer("📋 Персы:", reply_markup=kb)
     elif act == 'del':

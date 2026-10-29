@@ -1,4 +1,4 @@
-"""server.py — ВОЛК ТАП: статика, лидерборд, персы, регистрация"""
+"""server.py — ВОЛК ТАП: статика, лидерборд, персы с фото, регистрация"""
 import os, time
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -31,9 +31,10 @@ def init_db():
             id TEXT PRIMARY KEY, name TEXT, balance BIGINT DEFAULT 0, taps BIGINT DEFAULT 0,
             phone TEXT, registered BOOLEAN DEFAULT FALSE, updated BIGINT)""")
         cur.execute("""CREATE TABLE IF NOT EXISTS chars(
-            id SERIAL PRIMARY KEY, name TEXT, emoji TEXT, mult REAL DEFAULT 1, active BOOLEAN DEFAULT TRUE)""")
+            id SERIAL PRIMARY KEY, name TEXT, mult REAL DEFAULT 1, image TEXT DEFAULT '', active BOOLEAN DEFAULT TRUE)""")
         cur.execute("ALTER TABLE wolves ADD COLUMN IF NOT EXISTS phone TEXT")
         cur.execute("ALTER TABLE wolves ADD COLUMN IF NOT EXISTS registered BOOLEAN DEFAULT FALSE")
+        cur.execute("ALTER TABLE chars ADD COLUMN IF NOT EXISTS image TEXT DEFAULT ''")
     c.close()
 
 class Sync(BaseModel):
@@ -49,8 +50,8 @@ class Reg(BaseModel):
 
 class CharIn(BaseModel):
     name: str
-    emoji: str = "🐺"
     mult: float = 1.0
+    image: str = ""
 
 @app.on_event("startup")
 def startup():
@@ -122,8 +123,8 @@ def chars():
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("SELECT id,name,emoji,mult FROM chars WHERE active ORDER BY id")
-            rows = [{"id": r[0], "name": r[1], "emoji": r[2], "mult": r[3]} for r in cur.fetchall()]
+            cur.execute("SELECT id,name,mult,image FROM chars WHERE active ORDER BY id")
+            rows = [{"id": r[0], "name": r[1], "mult": r[2], "image": r[3] or ""} for r in cur.fetchall()]
         c.close()
         return {"chars": rows}
     return {"chars": [x for x in MEM["chars"] if x["active"]]}
@@ -134,8 +135,8 @@ def admin_chars(r: Request):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("SELECT id,name,emoji,mult,active FROM chars ORDER BY id")
-            rows = [{"id": r0[0], "name": r0[1], "emoji": r0[2], "mult": r0[3], "active": r0[4]} for r0 in cur.fetchall()]
+            cur.execute("SELECT id,name,mult,image,active FROM chars ORDER BY id")
+            rows = [{"id": r0[0], "name": r0[1], "mult": r0[2], "image": r0[3] or "", "active": r0[4]} for r0 in cur.fetchall()]
         c.close()
         return {"chars": rows}
     return {"chars": MEM["chars"]}
@@ -146,10 +147,10 @@ def add_char(ch: CharIn, r: Request):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("INSERT INTO chars(name,emoji,mult) VALUES(%s,%s,%s)", (ch.name[:20], ch.emoji[:8], ch.mult))
+            cur.execute("INSERT INTO chars(name,mult,image) VALUES(%s,%s,%s)", (ch.name[:20], ch.mult, ch.image))
         c.close()
     else:
-        MEM["chars"].append({"id": MEM["next_char"], "name": ch.name[:20], "emoji": ch.emoji[:8], "mult": ch.mult, "active": True})
+        MEM["chars"].append({"id": MEM["next_char"], "name": ch.name[:20], "mult": ch.mult, "image": ch.image, "active": True})
         MEM["next_char"] += 1
     return {"ok": True}
 
