@@ -8,7 +8,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-:root{--bg:#07070c;--card:rgba(22,22,32,.72);--card2:#1b1b26;--acc:#ff3b3b;--acc2:#ff8a65;--moon:#aab4c4;--text:#f2f2f2;--muted:#7d8590;--line:rgba(255,255,255,.07)}
+:root{--bg:#07070c;--card:rgba(22,22,32,.72);--card2:#1b1b26;--acc:#ff3b3b;--acc2:#ff8a65;--moon:#aab4c4;--gold:#ffd54f;--text:#f2f2f2;--muted:#7d8590;--line:rgba(255,255,255,.07)}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:86px;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
  radial-gradient(1px 1px at 20% 30%,#ffffffaa,transparent),radial-gradient(1px 1px at 40% 70%,#ffffff66,transparent),
@@ -32,17 +32,14 @@ button:active{transform:scale(.96)}
 .btn.ghost{background:var(--card2);box-shadow:none}
 .ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .icf{width:24px;height:24px;fill:currentColor;stroke:none}
-/* logo header */
 .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .logo-row .lw{width:34px;height:34px;color:var(--moon)}
 .logo-t{font-size:20px;font-weight:900;background:linear-gradient(90deg,#fff,#8f98a8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:1px}
-/* overlays */
 #welcome,#regGate{position:fixed;inset:0;background:rgba(7,7,12,.96);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
 #regGate{display:none;z-index:700}
 .ov-logo{width:110px;height:110px;color:var(--moon);filter:drop-shadow(0 0 30px rgba(255,59,59,.4));animation:pop .5s;margin-bottom:12px}
 #welcome h1{font-size:34px}
 #welcome p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:26px}
-/* tap */
 .top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .rank-badge{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:800;font-size:13px}
 .bal{text-align:center;margin:2px 0 8px}
@@ -58,20 +55,24 @@ button:active{transform:scale(.96)}
 .combo{position:absolute;top:2px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--acc),#c62828);color:#fff;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;opacity:0;transition:opacity .2s;box-shadow:0 6px 18px rgba(255,59,59,.4)}
 .combo.on{opacity:1}
 .float{position:absolute;font-weight:900;font-size:22px;color:var(--acc2);pointer-events:none;animation:fl .8s ease-out forwards;text-shadow:0 2px 10px rgba(0,0,0,.7)}
-.float.crit{color:#ffd54f;font-size:30px}
+.float.crit{color:var(--gold);font-size:30px}
 @keyframes fl{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-90px) scale(1.3)}}
 #flash{position:fixed;inset:0;background:radial-gradient(circle,rgba(255,213,79,.3),transparent 62%);opacity:0;pointer-events:none;z-index:50}
 #flash.on{animation:fla .45s ease-out}
 @keyframes fla{from{opacity:1}to{opacity:0}}
-/* chars */
 .chars{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
 .chars::-webkit-scrollbar{display:none}
-.chars button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:86px;font-size:11px;font-weight:700;color:var(--muted);backdrop-filter:blur(10px)}
-.chars .av{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.chars button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:92px;font-size:11px;font-weight:700;color:var(--muted);backdrop-filter:blur(10px)}
+.chars .av{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .chars .av .icf{width:30px;height:30px;color:var(--moon)}
 .chars .av img{width:100%;height:100%;object-fit:cover}
+.chars .lk{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.85);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.chars .lk .ic{width:11px;height:11px}
+.chars .pr{font-size:10px;color:var(--muted);text-align:center;line-height:1.2}
 .chars button.on{border-color:var(--acc);color:#fff;box-shadow:0 0 22px rgba(255,59,59,.35)}
-/* progress */
+.chars button.on .pr{color:#ffb3ab}
+.chars button.can{border-color:var(--gold);color:var(--gold);box-shadow:0 0 18px rgba(255,213,79,.35);animation:glow 1.4s ease-in-out infinite alternate}
+@keyframes glow{from{box-shadow:0 0 10px rgba(255,213,79,.25)}to{box-shadow:0 0 24px rgba(255,213,79,.5)}}
 .prog{height:9px;background:var(--card2);border-radius:999px;overflow:hidden;margin-top:9px}
 .prog .bar{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .3s;position:relative}
 .prog .bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:sh 2.2s linear infinite}
@@ -80,7 +81,6 @@ button:active{transform:scale(.96)}
 .stats-row .card{flex:1;text-align:center;margin-bottom:0}
 .stats-row .v{font-size:20px;font-weight:900}
 .stats-row .t{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px}
-/* top */
 .tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .tx:last-child{border-bottom:none}
 .tx .pos{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;background:var(--card2);color:var(--muted);flex-shrink:0}
@@ -92,12 +92,10 @@ button:active{transform:scale(.96)}
 .tx .n{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tx .n.me{color:var(--acc)}
 .tx .b{font-weight:900}
-/* pack */
 .pack-btn{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:10px;width:100%;text-align:left;font-weight:700;font-size:16px;backdrop-filter:blur(10px)}
 .pack-btn .icw{width:44px;height:44px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc);flex-shrink:0}
 .pack-btn .s{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
 .quote{font-style:italic;line-height:1.6;color:var(--moon);font-size:15px}
-/* nav */
 nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,16,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px}
 nav button .ic{width:22px;height:22px;transition:transform .15s}
@@ -111,11 +109,11 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
 <body>
 
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-<symbol id="wolf" viewBox="0 0 100 100">
+<symbol id="wolfhead" viewBox="0 0 100 100">
  <path fill="currentColor" d="M50 93 C40 83 25 76 19 60 C14 46 15 29 20 11 L36 26 Q50 19 64 26 L80 11 C85 29 86 46 81 60 C75 76 60 83 50 93 Z"/>
  <path fill="#0b0b12" d="M27 22 L36 31 L30 36 Z M73 22 L64 31 L70 36 Z"/>
  <path fill="#ff3b3b" d="M35 47 L47 51 L37 56 Z M65 47 L53 51 L63 56 Z"/>
- <path fill="#0b0b12" d="M50 64 l-6 7 h12 Z M50 71 v8"/>
+ <path fill="#0b0b12" d="M50 64 l-6 7 h12 Z"/>
  <path stroke="#0b0b12" stroke-width="2" d="M50 71 v8" fill="none"/>
 </symbol>
 <symbol id="paw" viewBox="0 0 24 24"><ellipse cx="6.5" cy="8.5" rx="2.4" ry="3.2"/><ellipse cx="12" cy="6.8" rx="2.4" ry="3.2"/><ellipse cx="17.5" cy="8.5" rx="2.4" ry="3.2"/><path d="M12 11.5c-3.6 0-6.8 3.1-6.8 6.2 0 2.1 1.6 3.6 3.7 3.6 1.2 0 2.1-.5 3.1-.5s1.9.5 3.1.5c2.1 0 3.7-1.5 3.7-3.6 0-3.1-3.2-6.2-6.8-6.2z"/></symbol>
@@ -125,17 +123,18 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
 <symbol id="mega" viewBox="0 0 24 24"><path d="M3 10v4l12 4V6L3 10z"/><path d="M15 8a4 4 0 0 1 0 8M7 14v5h3v-4"/></symbol>
 <symbol id="chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></symbol>
 <symbol id="send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
 </svg>
 
 <div id="welcome">
-  <svg class="ov-logo"><use href="#wolf"/></svg>
+  <svg class="ov-logo icf"><use href="#wolfhead"/></svg>
   <h1>ВОЛК ТАП</h1>
-  <p>Ты один? Нас много.<br>Мемная тапалка для одиночек, волков и сигм.<br>Тапай волка → копи ВОЙ → обгоняй стаю.</p>
+  <p>Ты один? Нас много.<br>Мемная тапалка для одиночек, волков и сигм.<br>Тапай волка → копи ВОЙ → открывай персов.</p>
   <button class="btn" id="joinBtn" style="max-width:280px">ВОЙТИ В СТАЮ</button>
 </div>
 
 <div id="regGate">
-  <svg class="ov-logo"><use href="#wolf"/></svg>
+  <svg class="ov-logo icf"><use href="#wolfhead"/></svg>
   <h1>Нужна регистрация</h1>
   <p class="muted" style="margin-bottom:20px">Открой бота и отправь контакт —<br>иначе в стаю не пустим.</p>
   <button class="btn" id="regBtn" style="max-width:260px">Открыть бота</button>
@@ -145,11 +144,11 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
 
 <div class="wrap">
   <div id="tapScreen" class="screen">
-    <div class="logo-row"><svg class="lw icf"><use href="#wolf"/></svg><span class="logo-t">ВОЛК ТАП</span><span class="rank-badge" id="rankBadge" style="margin-left:auto">Щенок</span></div>
+    <div class="logo-row"><svg class="lw icf"><use href="#wolfhead"/></svg><span class="logo-t">ВОЛК ТАП</span><span class="rank-badge" id="rankBadge" style="margin-left:auto">Щенок</span></div>
     <div class="bal"><div class="v" id="balance">0</div><div class="c"><svg class="icf"><use href="#paw"/></svg>ВОЙ</div></div>
     <div class="wolf-zone" id="wolfZone">
       <div class="combo" id="combo">COMBO x1</div>
-      <div id="wolfWrap"><div id="wolf"><svg class="wolfsvg icf"><use href="#wolf"/></svg></div></div>
+      <div id="wolfWrap"><div id="wolf"><svg class="wolfsvg icf"><use href="#wolfhead"/></svg></div></div>
     </div>
     <div class="chars" id="charRow"></div>
     <div class="card">
@@ -179,7 +178,7 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
   <div id="profScreen" class="screen">
     <h1>ПРОФИЛЬ ВОЛКА</h1>
     <div class="card" style="text-align:center">
-      <div id="pAv" style="width:84px;height:84px;border-radius:50%;margin:0 auto 10px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--acc)"><svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolf"/></svg></div>
+      <div id="pAv" style="width:84px;height:84px;border-radius:50%;margin:0 auto 10px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--acc)"><svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolfhead"/></svg></div>
       <div style="font-size:20px;font-weight:900" id="pName">—</div>
       <div class="muted" id="pRank">—</div>
     </div>
@@ -192,7 +191,7 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
 </div>
 
 <nav>
-  <button data-tab="tap" class="active"><svg class="ic"><use href="#wolf"/></svg>ТАП</button>
+  <button data-tab="tap" class="active"><svg class="ic"><use href="#wolfhead"/></svg>ТАП</button>
   <button data-tab="top"><svg class="ic"><use href="#trophy"/></svg>ТОП</button>
   <button data-tab="pack"><svg class="ic"><use href="#moon"/></svg>СТАЯ</button>
   <button data-tab="prof"><svg class="ic"><use href="#user"/></svg>ПРОФИЛЬ</button>
@@ -208,14 +207,15 @@ const BOT_LINK='https://t.me/voystai_bot';
 const RANKS=[['Щенок',0],['Волк',500],['Матёрый',2500],['Альфа',10000],['ОДИНОЧКА',50000]];
 const QUOTES=['Волк не оглядывается на овцу.','Одиночество — это не пустота, это свобода.','Пока все спят, волк тапает.','Сила стаи — в каждом одиночке.','Ты не изгой. Ты разведчик.','Лунный свет не спрашивает разрешения.','Молчание — самый громкий вой.','Сигма не объясняет. Сигма тапает.'];
 let S=JSON.parse(localStorage.getItem('wolftap')||'null');
-if(!S)S={id:'',name:'',bal:0,taps:0,crits:0,best:1,joined:false,char:null};
+if(!S)S={id:'',name:'',bal:0,taps:0,crits:0,best:1,joined:false,char:null,unlocks:[]};
+if(!S.unlocks)S.unlocks=[];
 const $=id=>document.getElementById(id);
 const tgU=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe)?Telegram.WebApp.initDataUnsafe.user:null;
 if(!S.id)S.id=tgU?String(tgU.id):('x'+Math.random().toString(36).slice(2,10));
 if(!S.name&&tgU)S.name=tgU.first_name||'волк';
 function save(){localStorage.setItem('wolftap',JSON.stringify(S))}
 let CHARS=[],CUR_CHAR=S.char||null;
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),1800)}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
 function rankOf(b){let i=0;RANKS.forEach((r,j)=>{if(b>=r[1])i=j});return i}
 function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(tab+'Screen').classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
@@ -227,19 +227,41 @@ fetch('/api/me?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
 $('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
 if(S.joined){$('welcome').style.display='none';if($('regGate').style.display!=='flex')show('tap')}
 $('joinBtn').addEventListener('click',()=>{S.joined=true;save();$('welcome').style.display='none';show('tap');sync();toast('Добро пожаловать в стаю')});
-/* chars */
-function loadChars(){fetch('/api/chars').then(r=>r.json()).then(d=>{CHARS=d.chars||[];renderChars()}).catch(()=>{})}
-function charAv(c,cls){return c.image?`<img src="${c.image}">`:`<svg class="icf ${cls||''}"><use href="#wolf"/></svg>`}
+/* chars + unlocks */
+const priceLabel=c=>c.price>0?c.price.toLocaleString('ru-RU')+(c.cur==='taps'?' тапов':' ВОЙ'):'бесплатно';
+const isUnlocked=c=>!c.price||S.unlocks.includes(c.id);
+const canClaim=c=>!isUnlocked(c)&&(c.cur==='taps'?S.taps>=c.price:S.bal>=c.price);
+function loadChars(){fetch('/api/chars').then(r=>r.json()).then(d=>{CHARS=d.chars||[];
+  if(CUR_CHAR){const f=CHARS.find(c=>c.id===CUR_CHAR.id);CUR_CHAR=f||null}
+  loadUnlocks()}).catch(()=>{})}
+function loadUnlocks(){fetch('/api/unlocks?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
+  S.unlocks=d.unlocks||[];save();renderChars();applyChar()}).catch(()=>{renderChars();applyChar()})}
 function renderChars(){const w=$('charRow');if(!w)return;w.innerHTML='';
   const d0=document.createElement('button');d0.className=!CUR_CHAR?'on':'';
-  d0.innerHTML='<span class="av"><svg class="icf"><use href="#wolf"/></svg></span>Обычный x1';
+  d0.innerHTML='<span class="av"><svg class="icf"><use href="#wolfhead"/></svg></span>Обычный<span class="pr">x1</span>';
   d0.onclick=()=>{CUR_CHAR=null;S.char=null;save();renderChars();applyChar()};w.appendChild(d0);
-  CHARS.forEach(c=>{const b=document.createElement('button');b.className=(CUR_CHAR&&CUR_CHAR.id===c.id)?'on':'';
-    b.innerHTML='<span class="av">'+charAv(c)+'</span>'+c.name+' x'+c.mult;
-    b.onclick=()=>{CUR_CHAR=c;S.char=c;save();renderChars();applyChar();toast(c.name+' выбран')};w.appendChild(b)})}
+  CHARS.forEach(c=>{const un=isUnlocked(c);const b=document.createElement('button');
+    b.dataset.id=c.id;
+    b.className=((CUR_CHAR&&CUR_CHAR.id===c.id)?'on ':'')+(un?'':(canClaim(c)?'can':''));
+    const lock=!un?'<i class="lk"><svg class="ic"><use href="#lock"/></svg></i>':'';
+    const img=c.image?`<img src="${c.image}">`:`<svg class="icf"><use href="#wolfhead"/></svg>`;
+    const pr=un?('x'+c.mult):(canClaim(c)?'ЗАБРАТЬ!':priceLabel(c));
+    b.innerHTML=`<span class="av">${img}${lock}</span>${c.name}<span class="pr">${pr}</span>`;
+    b.onclick=()=>{
+      if(un){CUR_CHAR=c;S.char=c;save();renderChars();applyChar();toast(c.name+' выбран');return}
+      if(!canClaim(c)){
+        const have=c.cur==='taps'?S.taps.toLocaleString('ru-RU')+' тапов':S.bal.toLocaleString('ru-RU')+' ВОЙ';
+        toast('🔒 Нужно '+priceLabel(c)+' · у тебя '+have);return}
+      fetch('/api/unlock',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:S.id,char_id:c.id})}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+          S.unlocks.push(c.id);if(typeof d.balance==='number')S.bal=d.balance;
+          CUR_CHAR=c;S.char=c;save();render();renderChars();applyChar();
+          toast('🎉 Перс «'+c.name+'» открыт!');
+        }).catch(()=>toast('Сервер недоступен, позже'))};
+    w.appendChild(b)})}
 function applyChar(){const w=$('wolf');if(!w)return;
-  w.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img class="wolfimg" src="${CUR_CHAR.image}">`:'<svg class="wolfsvg icf"><use href="#wolf"/></svg>';
-  const p=$('pAv');if(p)p.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img src="${CUR_CHAR.image}" style="width:100%;height:100%;object-fit:cover">`:'<svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolf"/></svg>'}
+  w.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img class="wolfimg" src="${CUR_CHAR.image}">`:'<svg class="wolfsvg icf"><use href="#wolfhead"/></svg>';
+  const p=$('pAv');if(p)p.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img src="${CUR_CHAR.image}" style="width:100%;height:100%;object-fit:cover">`:'<svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolfhead"/></svg>'}
 /* tap */
 let combo=0,lastTap=0;
 $('wolfZone').addEventListener('pointerdown',e=>{
@@ -257,8 +279,12 @@ $('wolfZone').addEventListener('pointerdown',e=>{
   $('wolfZone').appendChild(f);setTimeout(()=>f.remove(),800);
   const cb=$('combo');cb.textContent='COMBO x'+combo;cb.classList.toggle('on',combo>1);
   if(navigator.vibrate)navigator.vibrate(crit?[30,20,30]:12);
-  render();save();
+  render();save();refreshCharStates();
 });
+function refreshCharStates(){document.querySelectorAll('#charRow button[data-id]').forEach(b=>{
+  const c=CHARS.find(x=>x.id==b.dataset.id);if(!c||isUnlocked(c))return;
+  const can=canClaim(c);b.classList.toggle('can',can);
+  const pr=b.querySelector('.pr');if(pr)pr.textContent=can?'ЗАБРАТЬ!':priceLabel(c)})}
 function render(){
   $('balance').textContent=S.bal.toLocaleString('ru-RU');
   const ri=rankOf(S.bal);$('rankBadge').textContent=RANKS[ri][0];$('rankNow').textContent=RANKS[ri][0];
@@ -276,21 +302,21 @@ function loadTop(){fetch('/api/top').then(r=>r.json()).then(d=>{
   w.innerHTML='';d.users.forEach((u,i)=>{
     const div=document.createElement('div');div.className='tx';
     const me=u.id===S.id;
-    div.innerHTML='<div class="pos '+(i===0?'m1':i===1?'m2':i===2?'m3':'')+'">'+(i+1)+'</div><div class="av"><svg class="icf"><use href="#wolf"/></svg></div><div class="n '+(me?'me':'')+'">'+u.name+(me?' (ты)':'')+'</div><div class="b">'+u.balance.toLocaleString('ru-RU')+'</div>';
+    div.innerHTML='<div class="pos '+(i===0?'m1':i===1?'m2':i===2?'m3':'')+'">'+(i+1)+'</div><div class="av"><svg class="icf"><use href="#wolfhead"/></svg></div><div class="n '+(me?'me':'')+'">'+u.name+(me?' (ты)':'')+'</div><div class="b">'+u.balance.toLocaleString('ru-RU')+'</div>';
     w.appendChild(div)});
   }).catch(()=>{$('topList').innerHTML='<div class="muted" style="text-align:center;padding:20px">Топ недоступен офлайн</div>'})}
 $('btnChannel').addEventListener('click',()=>location.href=CHANNEL_URL);
 $('btnChat').addEventListener('click',()=>location.href=CHAT_URL);
-$('btnInvite').addEventListener('click',()=>{const t='Я в стае ВОЛК ТАП 🐺 Тапай волка, копи ВОЙ, обгоняй одиночек: '+BOT_LINK;
+$('btnInvite').addEventListener('click',()=>{const t='Я в стае ВОЛК ТАП 🐺 Тапай волка, копи ВОЙ, открывай персов: '+BOT_LINK;
   if(navigator.share)navigator.share({text:t}).catch(()=>{});else{if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Ссылка скопирована')}});
 $('quote').textContent=QUOTES[new Date().getDate()%QUOTES.length];
 function renderProf(){$('pName').textContent=S.name||'волк-аноним';
   $('pRank').textContent=RANKS[rankOf(S.bal)][0]+' · '+S.bal.toLocaleString('ru-RU')+' ВОЙ';
   $('nameInput').value=S.name||'';applyChar()}
 $('saveName').addEventListener('click',()=>{S.name=$('nameInput').value.trim()||'волк-аноним';save();renderProf();sync();toast('Имя сохранено ✓')});
-$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбежать? Весь прогресс сгорит.')){S={id:S.id,name:S.name,bal:0,taps:0,crits:0,best:1,joined:true,char:null};CUR_CHAR=null;save();render();renderChars();applyChar();sync();toast('Начисто. Новый волк')}});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбежать? Весь прогресс и персы сгорят.')){S={id:S.id,name:S.name,bal:0,taps:0,crits:0,best:1,joined:true,char:null,unlocks:[]};CUR_CHAR=null;save();render();renderChars();applyChar();sync();toast('Начисто. Новый волк')}});
 if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
-render();loadChars();applyChar();
+render();loadChars();
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-"""bot.py — ВОЛК ТАП bot + регистрация + админ с фото-персами"""
+"""bot.py — ВОЛК ТАП bot + регистрация + админ с кастом-персами"""
 import asyncio, logging, base64
 import aiohttp
 from aiogram import Bot, Dispatcher, types, F
@@ -54,7 +54,7 @@ async def welcome(m: types.Message):
     await m.answer(
         f"🌙 {hbold(m.from_user.first_name or 'волк')}, ты в стае.\n\n"
         "🐺 Тапай волка → копи ВОЙ → расти до ОДИНОЧКИ.\n"
-        "🏆 Топ, комбо, криты, персы с фото — всё внутри.\n\n👇 Жми:",
+        "🔓 Открывай персов за тапы и ВОЙ.\n\n👇 Жми:",
         parse_mode="HTML", reply_markup=game_kb(m.from_user.id))
 
 @dp.message(CommandStart())
@@ -85,7 +85,8 @@ async def on_contact(m: types.Message):
 async def help(m: types.Message):
     await m.answer("🐺 ВОЛК ТАП — мемная тапалка для одиночек.\n\n"
                    "• Тапай волка — получай ВОЙ\n• Комбо → шанс КРИТА x5\n"
-                   "• Ранги: Щенок → Волк → Матёрый → Альфа → ОДИНОЧКА 🌙\n• Персы с фото дают множитель тапа")
+                   "• Ранги: Щенок → Волк → Матёрый → Альфа → ОДИНОЧКА 🌙\n"
+                   "• Персы открываются за тапы или ВОЙ и дают множитель")
 
 @dp.message(Command("admin"))
 async def admin(m: types.Message):
@@ -107,7 +108,7 @@ async def photo_flow(m: types.Message):
             return await m.answer("⚠️ Фотка тяжелее 1.5MB — пришли поменьше:")
         f['image'] = 'data:image/jpeg;base64,' + base64.b64encode(raw).decode()
         f['step'] = 'char_mult'
-        await m.answer("📸 Фото принято. Множитель тапа (напр. 2 или 1.5):")
+        await m.answer("📸 Фото принято.\n✖️ Множитель тапа (напр. 2 или 1.5):")
     except Exception:
         await m.answer("Не смог скачать фото. Ещё раз:")
 
@@ -126,21 +127,36 @@ async def text_flow(m: types.Message):
             await m.answer("❌ Неверно. Ещё раз:")
     elif step == 'char_name':
         f['name'] = m.text.strip()[:20]; f['step'] = 'char_photo'
-        await m.answer("📸 Пришли ФОТО перса картинкой\n(или напиши «пропустить» — будет стандартный волк):")
+        await m.answer("📸 Пришли ФОТО перса картинкой\n(или напиши «пропустить»):")
     elif step == 'char_photo':
         if m.text.strip().lower() in ('пропустить', 'нет', '-'):
-            f['image'] = ''; f['step'] = 'char_mult'
-            await m.answer("Множитель тапа (напр. 2 или 1.5):")
-        else:
-            await m.answer("Пришли именно картинкой 📸 (или напиши «пропустить»):")
+            f['image'] = ''
+        f['step'] = 'char_mult'
+        await m.answer("✖️ Множитель тапа (напр. 2 или 1.5):")
     elif step == 'char_mult':
         try:
-            mult = float(m.text.replace(',', '.'))
+            f['mult'] = float(m.text.replace(',', '.'))
         except ValueError:
             return await m.answer("Числом напиши:")
-        await api_post("/api/admin/chars", {"name": f['name'], "mult": mult, "image": f.get('image', '')}, secret=True)
+        f['step'] = 'char_cur'
+        await m.answer("💳 За что открывать перса?\nНапиши: ТАПЫ или ВОЙ")
+    elif step == 'char_cur':
+        t = m.text.strip().lower()
+        f['cur'] = 'balance' if ('вой' in t or 'баланс' in t) else 'taps'
+        f['step'] = 'char_price'
+        await m.answer("💰 Цена открытия (числом, напр. 10000):")
+    elif step == 'char_price':
+        try:
+            f['price'] = int(m.text.replace(' ', ''))
+        except ValueError:
+            return await m.answer("Числом напиши:")
+        await api_post("/api/admin/chars", {
+            "name": f['name'], "mult": f['mult'], "image": f.get('image', ''),
+            "price": f['price'], "cur": f['cur']}, secret=True)
         flow.pop(uid)
-        await m.answer(f"✅ Перс «{f['name']}» x{mult} добавлен в игру!", reply_markup=admin_kb())
+        cur = 'тапов' if f['cur'] == 'taps' else 'ВОЙ'
+        await m.answer(f"✅ Перс «{f['name']}» создан:\n✖️ x{f['mult']} · 🔓 за {f['price']:,} {cur}".replace(',', ' '),
+                       reply_markup=admin_kb())
     elif step == 'bc':
         users = await api_get("/api/admin/users", secret=True)
         sent = 0
@@ -166,7 +182,9 @@ async def adm_cb(c: types.CallbackQuery):
             await c.message.answer("Персов пока нет.")
         else:
             kb = InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text=f"{ch['name']} x{ch['mult']} — удалить", callback_data=f"adm:del:{ch['id']}")]
+                [InlineKeyboardButton(
+                    text=f"{ch['name']} x{ch['mult']} · {ch['price']} {'тапов' if ch['cur']=='taps' else 'ВОЙ'} — удалить",
+                    callback_data=f"adm:del:{ch['id']}")]
                 for ch in chars["chars"]])
             await c.message.answer("📋 Персы:", reply_markup=kb)
     elif act == 'del':
@@ -178,7 +196,7 @@ async def adm_cb(c: types.CallbackQuery):
         await c.message.answer("Текст рассылки:")
     elif act == 'stats':
         st = await api_get("/api/admin/stats", secret=True)
-        await c.message.answer(f"📊 Волков: {st['users']}\nЗарегистрировано: {st['registered']}\nВсего тапов: {st['taps']:,}\nВсего ВОЯ: {st['balance']:,}")
+        await c.message.answer(f"📊 Волков: {st['users']}\nЗарегистрировано: {st['registered']}\nВсего тапов: {st['taps']:,}\nВсего ВОЯ: {st['balance']:,}".replace(',', ' '))
     await c.answer()
 
 async def main():
