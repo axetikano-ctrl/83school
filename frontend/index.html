@@ -3,104 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0d0f12">
+<meta name="theme-color" content="#0b0d10">
 <title>MUG0VE</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0d0f12;--card:#171a1f;--card2:#1f242b;--acc:#aecbfa;--acc2:#8ab4f8;--text:#f1f3f4;--muted:#9aa0a6;--line:rgba(255,255,255,.08)}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:112px}
-.wrap{max-width:560px;margin:0 auto;padding:0 14px}
-.screen{display:none}.screen.active{display:block;animation:fu .3s ease}
-@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+:root{--bg:#0b0d10;--card:#16191e;--card2:#1e232a;--acc:#aecbfa;--acc2:#8ab4f8;--blue:#2f8fd8;--green:#37b56c;--text:#f1f3f4;--muted:#9aa0a6;--line:rgba(255,255,255,.08);--r:20px}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:116px;overflow-x:hidden}
+body::after{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-50%);width:520px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(47,143,216,.16),transparent 65%);pointer-events:none;z-index:0}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px;position:relative;z-index:1}
+.screen{display:none}.screen.active{display:block;animation:fu .34s cubic-bezier(.22,1,.36,1)}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
-button:active{transform:scale(.97)}
-.icb{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px)}
+button:active{transform:scale(.96)}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .icf{width:22px;height:22px;fill:currentColor;stroke:none}
-.hero{position:relative;height:210px;border-radius:0 0 24px 24px;overflow:hidden;margin-bottom:16px;background:linear-gradient(160deg,#173a63,#0e2a47 45%,#0a1a2e)}
-.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 2px,transparent 2px 14px),repeating-linear-gradient(-45deg,rgba(174,203,250,.06) 0 2px,transparent 2px 14px)}
-.hero .top{position:relative;display:flex;justify-content:space-between;padding:16px 14px 0}
+.icb{width:44px;height:44px;border-radius:50%;background:rgba(10,12,16,.6);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(8px)}
+/* hero */
+.hero{position:relative;height:230px;border-radius:0 0 28px 28px;overflow:hidden;margin-bottom:-46px;background:linear-gradient(165deg,#1a4066 0%,#12304f 45%,#0b1e33 100%)}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.045) 0 2px,transparent 2px 16px),repeating-linear-gradient(-45deg,rgba(174,203,250,.05) 0 2px,transparent 2px 16px)}
+.hero::after{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(174,203,250,.25),transparent 65%)}
+.hero .top{position:relative;z-index:2;display:flex;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top)) 14px 0}
+body.fs .hero .top{padding-top:calc(66px + env(safe-area-inset-top))}
 .hero .right{display:flex;gap:10px}
-.spark{width:44px;height:44px;border-radius:50%;background:conic-gradient(#7b5cff,#2f8fd8,#37b56c,#7b5cff);display:flex;align-items:center;justify-content:center}
-.spark i{width:38px;height:38px;border-radius:50%;background:#0d0f12;display:flex;align-items:center;justify-content:center;color:#aecbfa}
-.greet{position:relative;padding:26px 18px 0}
+.spark{width:46px;height:46px;border-radius:50%;background:conic-gradient(#7b5cff,#2f8fd8,#37b56c,#7b5cff);display:flex;align-items:center;justify-content:center;animation:spin 6s linear infinite}
+.spark i{width:40px;height:40px;border-radius:50%;background:#0b0d10;display:flex;align-items:center;justify-content:center;color:var(--acc)}
+.bell .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#ff9800;animation:pulse 2s infinite}
+.greet{position:relative;z-index:2;padding:30px 20px 0}
 .greet .s{font-size:14px;color:#cfe0ff;margin-bottom:4px}
-.greet .n{font-size:28px;font-weight:800}
-.srow{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:none}
+.greet .n{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.over{position:relative;z-index:3;padding-top:60px}
+/* service cards */
+.srow{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 16px;scrollbar-width:none;scroll-snap-type:x proximity}
 .srow::-webkit-scrollbar{display:none}
-.scard{min-width:118px;height:150px;border-radius:20px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:13px;font-weight:700;color:#fff;position:relative;overflow:hidden;text-align:center;line-height:1.25}
-.scard .em{position:absolute;top:14px;left:0;right:0;font-size:34px}
-.g1{background:linear-gradient(160deg,#e8c468,#b98a2f)}.g2{background:linear-gradient(160deg,#37b56c,#1f7a4d)}
-.g3{background:linear-gradient(160deg,#e8eaf0,#b9c2d0);color:#1a1a1a}.g4{background:linear-gradient(160deg,#5a8fd8,#2f5fa8)}.g5{background:linear-gradient(160deg,#8a63d2,#5b3a9e)}
-.sec{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 10px}
-.sec .t{font-size:19px;font-weight:800}
-.sec .acts{display:flex;gap:8px;color:var(--muted)}
-.wrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:none}
+.scard{min-width:122px;height:158px;border-radius:22px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;font-size:13px;font-weight:700;color:#fff;position:relative;overflow:hidden;text-align:center;line-height:1.25;scroll-snap-align:start;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.scard .icw{position:absolute;top:18px;width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center}
+.scard .icw .ic{width:26px;height:26px}
+.scard::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 80% at 80% -10%,rgba(255,255,255,.28),transparent 55%)}
+.g1{background:linear-gradient(160deg,#e8c468,#a97b25)}.g2{background:linear-gradient(160deg,#37b56c,#1c6e46)}
+.g3{background:linear-gradient(160deg,#eef1f6,#b9c2d0);color:#14181f}.g4{background:linear-gradient(160deg,#5a8fd8,#274f92)}.g5{background:linear-gradient(160deg,#8a63d2,#4d2f8f)}
+/* sections */
+.sec{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 12px}
+.sec .t{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.sec .acts{display:flex;gap:10px;color:var(--muted)}
+.sec .link{color:var(--acc);font-weight:700;font-size:14px}
+/* widgets */
+.wrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
 .wrow::-webkit-scrollbar{display:none}
-.wcard{min-width:78%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;scroll-snap-align:center;position:relative}
-.wcard .h{display:flex;align-items:center;gap:10px;font-weight:700}
-.wcard .h .icw{width:34px;height:34px;border-radius:10px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center}
+.wcard{min-width:80%;background:rgba(22,25,30,.85);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:16px;scroll-snap-align:center;position:relative}
+.wcard .h{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+.wcard .icw{width:36px;height:36px;border-radius:12px;background:rgba(174,203,250,.14);color:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .wcard .v{color:var(--muted);margin-top:10px;font-size:14px}
 .wcard .ch{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.dots{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
-.dots i{width:7px;height:7px;border-radius:99px;background:var(--card2)}
-.dots i.on{width:20px;background:var(--acc2)}
-.search{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;color:var(--muted);font-size:15px;margin-bottom:20px}
-.pop{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.dots{display:flex;justify-content:center;gap:6px;margin:12px 0 18px}
+.dots i{width:7px;height:7px;border-radius:99px;background:var(--card2);transition:all .3s}
+.dots i.on{width:22px;background:var(--acc2)}
+/* search */
+.search{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--muted);font-size:15px;margin-bottom:22px;transition:border-color .2s}
+.search:active{border-color:var(--acc2)}
+/* popular */
+.pop{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
 .pop:last-child{border-bottom:none}
-.pop .icw{width:46px;height:46px;border-radius:12px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pop .t{font-size:15px;font-weight:700;line-height:1.3}
-.pop .m{display:flex;gap:14px;color:var(--muted);font-size:12.5px;margin-top:6px}
+.pop .icw{width:48px;height:48px;border-radius:14px;background:rgba(174,203,250,.14);color:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pop .t{font-size:15px;font-weight:700;line-height:1.35}
+.pop .m{display:flex;gap:14px;color:var(--muted);font-size:12.5px;margin-top:7px}
 .pop .m span{display:flex;align-items:center;gap:5px}
+/* services grid */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.gcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;font-weight:700;font-size:14px}
-.gcard .icw{width:40px;height:40px;border-radius:12px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center}
-.qrbox{background:#fff;border-radius:24px;padding:18px;width:230px;margin:30px auto 16px}
-.qrbox img{width:100%;display:block;border-radius:8px}
-.qrnote{text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
-.paycard{background:linear-gradient(135deg,#2f5fa8,#173a63);border-radius:20px;padding:20px;margin-bottom:14px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;font-weight:700;font-size:14px;transition:transform .15s,border-color .2s}
+.gcard:active{border-color:var(--acc2)}
+.gcard .icw{width:42px;height:42px;border-radius:12px;background:rgba(174,203,250,.14);color:var(--acc);display:flex;align-items:center;justify-content:center}
+/* qr */
+.qrcard{width:250px;margin:26px auto 16px;padding:4px;border-radius:28px;background:conic-gradient(from 0deg,var(--blue),#7b5cff,var(--green),var(--blue));animation:spin 8s linear infinite}
+.qrcard .in{background:#fff;border-radius:24px;padding:16px;animation:spin 8s linear infinite reverse}
+.qrcard img{width:100%;display:block;border-radius:10px}
+.qrnote{text-align:center;color:var(--muted);font-size:14px;line-height:1.55}
+/* pay */
+.paycard{position:relative;overflow:hidden;background:linear-gradient(135deg,#2f5fa8,#152c4c);border-radius:22px;padding:22px;margin-bottom:14px}
+.paycard::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%)}
 .paycard .t{font-size:13px;color:#cfe0ff}
-.paycard .v{font-size:30px;font-weight:800;margin-top:6px}
-.phead{display:flex;align-items:center;gap:12px;padding:18px 4px}
-.phead .av{width:52px;height:52px;border-radius:50%;background:var(--card2);overflow:hidden;flex-shrink:0}
+.paycard .v{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-.5px}
+.paycard .n{margin-top:14px;font-size:13px;color:#9fb8dd;letter-spacing:2px}
+/* profile */
+.phead{display:flex;align-items:center;gap:12px;padding:20px 4px 14px}
+.phead .av{width:56px;height:56px;border-radius:50%;background:var(--card2);overflow:hidden;flex-shrink:0;border:2px solid var(--line);cursor:pointer}
 .phead .av img{width:100%;height:100%;object-fit:cover}
-.phead .n{font-size:17px;font-weight:800}
+.phead .n{font-size:18px;font-weight:800}
 .phead .p{color:var(--muted);font-size:14px;margin-top:2px}
 .phead .acts{margin-left:auto;display:flex;gap:8px}
-.pass{border-radius:20px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,#eef3fb,#d7e3f7);color:#12233d;position:relative;overflow:hidden}
-.pass::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(47,95,168,.18),transparent 70%)}
-.pass .h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.pass .logo{width:34px;height:34px;border-radius:10px;background:#173a63;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
-.pass .tt{font-weight:900;letter-spacing:1px;font-size:15px}
-.pass .chip{margin-left:auto;background:rgba(23,58,99,.12);border-radius:99px;padding:5px 10px;font-size:10px;font-weight:800;letter-spacing:1px}
-.pass .body{display:flex;gap:14px}
-.pass .ph{width:92px;height:112px;border-radius:10px;background:#c3d2e8;overflow:hidden;flex-shrink:0}
+.phead .acts .icb{background:var(--card)}
+/* pass card */
+.pass{position:relative;border-radius:22px;padding:20px;margin-bottom:16px;background:linear-gradient(135deg,#f2f6fc 0%,#dbe6f6 55%,#cfdcf0 100%);color:#12233d;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.pass::before{content:'';position:absolute;inset:0;background:repeating-radial-gradient(circle at 85% 20%,rgba(47,143,216,.08) 0 2px,transparent 2px 9px)}
+.pass::after{content:'';position:absolute;right:-50px;bottom:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(47,143,216,.16),transparent 70%)}
+.pass .h{position:relative;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.pass .logo{width:36px;height:36px;border-radius:11px;background:#173a63;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
+.pass .tt{font-weight:900;letter-spacing:1.5px;font-size:15px}
+.pass .chip{margin-left:auto;background:rgba(23,58,99,.12);border-radius:99px;padding:6px 12px;font-size:10px;font-weight:800;letter-spacing:1px}
+.pass .body{position:relative;display:flex;gap:16px}
+.pass .ph{width:96px;height:118px;border-radius:12px;background:#c3d2e8;overflow:hidden;flex-shrink:0;cursor:pointer;box-shadow:0 6px 16px rgba(18,35,61,.25)}
 .pass .ph img{width:100%;height:100%;object-fit:cover}
-.pass .f{font-size:12px;line-height:1.5}
-.pass .f b{display:block;font-size:14px;text-transform:uppercase}
-.pass .note{margin-top:12px;font-size:10px;color:#5b6b84;letter-spacing:.4px}
-.banner{display:flex;align-items:center;gap:12px;background:rgba(174,203,250,.9);color:#12233d;border-radius:16px;padding:14px 16px;font-weight:800;margin-bottom:16px}
-.banner .b{margin-left:auto;background:linear-gradient(90deg,#2f8fd8,#37b56c);color:#fff;border-radius:99px;padding:7px 14px;font-size:13px}
-.mrow{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line)}
-.mrow .icw{width:40px;height:40px;color:var(--acc);display:flex;align-items:center;justify-content:center}
-.mrow .t{font-weight:700;font-size:15px}
-.mrow .s{color:var(--muted);font-size:13px;margin-top:2px}
-.mrow .nb{margin-left:auto;background:linear-gradient(90deg,#2f8fd8,#37b56c);color:#fff;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700}
-.mrow .ch{color:var(--muted);margin-left:10px}
-nav{position:fixed;left:12px;right:12px;bottom:10px;max-width:536px;margin:0 auto;background:rgba(23,26,31,.96);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:28px;display:flex;align-items:center;padding:8px 6px;z-index:100}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);font-weight:600;padding:6px 0}
+.pass .f{font-size:11px;color:#4a5c78;line-height:1.45}
+.pass .f b{display:block;font-size:14.5px;color:#12233d;text-transform:uppercase;letter-spacing:.3px;margin:1px 0 8px}
+.pass .note{position:relative;margin-top:14px;font-size:9.5px;color:#5b6b84;letter-spacing:.6px;font-weight:700}
+.pass.blurred .f b,.pass.blurred .ph img{filter:blur(7px)}
+.banner{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,rgba(174,203,250,.95),rgba(138,180,248,.9));color:#12233d;border-radius:18px;padding:15px 16px;font-weight:800;font-size:15px;margin-bottom:18px}
+.banner .b{margin-left:auto;background:linear-gradient(90deg,var(--blue),var(--green));color:#fff;border-radius:99px;padding:7px 14px;font-size:13px;flex-shrink:0}
+.mrow{display:flex;align-items:center;gap:14px;padding:17px 4px;border-bottom:1px solid var(--line)}
+.mrow .icw{width:42px;height:42px;color:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mrow .icw .ic{width:26px;height:26px}
+.mrow .t{font-weight:700;font-size:15.5px}
+.mrow .s{color:var(--muted);font-size:13px;margin-top:3px}
+.mrow .nb{margin-left:auto;background:linear-gradient(90deg,var(--blue),var(--green));color:#fff;border-radius:99px;padding:6px 13px;font-size:12px;font-weight:700;flex-shrink:0}
+.mrow .ch{color:var(--muted);margin-left:10px;flex-shrink:0}
+.mrow .nb+.ch{margin-left:10px}
+.btn{width:100%;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:15px;font-size:15px;font-weight:700;margin-bottom:10px}
+/* nav */
+nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:536px;margin:0 auto;background:rgba(22,25,30,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:30px;display:flex;align-items:center;padding:8px 6px;z-index:100;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);font-weight:600;padding:7px 0}
 nav button.active{color:var(--acc)}
-nav button.qr{flex:0 0 58px;height:58px;border-radius:20px;background:var(--acc);color:#0d0f12;transform:translateY(-16px);box-shadow:0 10px 24px rgba(174,203,250,.35);font-size:10px}
-nav button.qr.active{color:#0d0f12}
-h1{font-size:24px;font-weight:800;padding:18px 4px 14px}
-.btn{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:14px;font-size:15px;font-weight:700;margin-bottom:10px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;align-items:center;justify-content:center;padding:20px}
+nav button.qr{flex:0 0 60px;height:60px;border-radius:22px;background:var(--acc);color:#0b0d10;transform:translateY(-18px);box-shadow:0 12px 28px rgba(174,203,250,.4);font-size:10px;font-weight:800}
+nav button.qr.active{color:#0b0d10}
+h1{font-size:26px;font-weight:800;padding:calc(20px + env(safe-area-inset-top)) 4px 16px;letter-spacing:-.4px}
+body.fs h1{padding-top:calc(70px + env(safe-area-inset-top))}
+body.fs .toast{top:calc(96px + env(safe-area-inset-top))}
+/* sheet & modal */
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:26px 26px 0 0;z-index:300;padding:24px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .34s cubic-bezier(.22,1,.36,1);max-height:84vh;overflow-y:auto;border-top:1px solid var(--line)}
+.sheet.show{transform:none}
+.sheet h2{font-size:20px;font-weight:800;margin-bottom:16px}
+.sheet .drag{width:44px;height:5px;border-radius:99px;background:var(--card2);margin:0 auto 16px}
+.sheet label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px;font-weight:700;letter-spacing:.4px}
+.sheet input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px;font-size:15px;color:var(--text);font-family:inherit}
+.sheet input:focus{outline:2px solid var(--acc2)}
+.sheet .row2{display:flex;gap:10px}
+.sheet .row2>div{flex:1}
+.sheet .btns{display:flex;gap:10px;margin-top:16px}
+.sheet .btns .btn{margin:0;background:linear-gradient(90deg,var(--blue),var(--green));border:none;color:#fff}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:250}
+.overlay.show{opacity:1;pointer-events:auto}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:400;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
-.modal-c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:400px;width:100%;backdrop-filter:blur(14px)}
+.modal-c{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;max-width:400px;width:100%;animation:pop .25s}
 .modal-t{font-size:18px;font-weight:900;margin-bottom:10px}
 .modal-x{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px}
-.modal-c .btn{background:linear-gradient(90deg,#2f8fd8,#37b56c);border:none;color:#fff}
+.modal-c .btn{margin:0;background:linear-gradient(90deg,var(--blue),var(--green));border:none;color:#fff}
+.toast{position:fixed;top:calc(56px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-14px);background:var(--card2);border:1px solid var(--line);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:500}
+.toast.show{opacity:1;transform:translateX(-50%)}
 </style>
 </head>
 <body>
@@ -113,6 +164,7 @@ h1{font-size:24px;font-weight:800;padding:18px 4px 14px}
 <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></symbol>
 <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol>
 <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10 5.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6A16.7 16.7 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-7h-4v7H5a1 1 0 0 1-1-1z"/></symbol>
 <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
 <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></symbol>
@@ -125,102 +177,141 @@ h1{font-size:24px;font-weight:800;padding:18px 4px 14px}
 <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1-5.6-3-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></symbol>
 <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
 <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
-<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8s-4 0-4-3a2 2 0 0 1 4 0M12 8s4 0 4-3a2 2 0 0 0-4 0"/></symbol>
-<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
-<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></symbol>
 <symbol id="i-sos" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9v.5M19 15v.5"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
 </svg>
 
+<div class="overlay" id="overlay"></div>
+
 <div class="wrap">
+<!-- HOME -->
 <div id="homeScreen" class="screen active">
   <div class="hero">
     <div class="top">
       <button class="icb"><svg class="ic"><use href="#i-menu"/></svg></button>
       <div class="right">
         <button class="spark"><i><svg class="icf" style="width:18px;height:18px"><use href="#i-spark"/></svg></i></button>
-        <button class="icb"><svg class="ic"><use href="#i-bell"/></svg></button>
+        <button class="icb bell" style="position:relative"><svg class="ic"><use href="#i-bell"/></svg><span class="dot"></span></button>
       </div>
     </div>
-    <div class="greet"><div class="s">Добро пожаловать</div><div class="n" id="homeName">MUG0VE</div></div>
+    <div class="greet"><div class="s">Добро пожаловать</div><div class="n" id="homeName">—</div></div>
   </div>
-  <div class="srow">
-    <div class="scard g1"><span class="em">💛</span>Наш день</div>
-    <div class="scard g2"><span class="em">🎁</span>Кешбэк подарков</div>
-    <div class="scard g3"><span class="em">🆘</span>SOS обнимашки</div>
-    <div class="scard g4"><span class="em">💍</span>Свидание</div>
-    <div class="scard g5"><span class="em">🎧</span>Наш плейлист</div>
+  <div class="over">
+    <div class="srow">
+      <div class="scard g1"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span>Мои документы</div>
+      <div class="scard g2"><span class="icw"><svg class="ic"><use href="#i-cash"/></svg></span>Возврат кешбэка</div>
+      <div class="scard g3"><span class="icw"><svg class="ic"><use href="#i-sos"/></svg></span>Отправить SOS</div>
+      <div class="scard g4"><span class="icw"><svg class="ic"><use href="#i-shield"/></svg></span>Страхование</div>
+      <div class="scard g5"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span>Штрафы и баланс</div>
+    </div>
+    <div class="sec"><span class="t">Виджеты</span><span class="acts"><svg class="ic"><use href="#i-refresh"/></svg><svg class="ic"><use href="#i-gear"/></svg></span></div>
+    <div class="wrow">
+      <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span>Цифровые сведения</div><div class="v">Нет данных</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+      <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span>Мой баланс</div><div class="v">0.00 сум</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+      <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span>Мои заявки</div><div class="v">0 активных</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+    </div>
+    <div class="dots"><i></i><i></i><i class="on"></i></div>
+    <div class="search"><svg class="ic"><use href="#i-search"/></svg>Найти услугу</div>
+    <div class="sec"><span class="t">Популярные услуги</span><span class="link">Смотреть все ›</span></div>
+    <div class="pop"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span><div><div class="t">Справка об отсутствии налоговой задолженности</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.65</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>1.0 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>5,46 млн</span></div></div></div>
+    <div class="pop"><span class="icw"><svg class="ic"><use href="#i-cash"/></svg></span><div><div class="t">Начисленная заработная плата</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.8</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>2.0 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>3,1 млн</span></div></div></div>
+    <div class="pop"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span><div><div class="t">Запись на приём</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.7</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>0.8 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>2,4 млн</span></div></div></div>
   </div>
-  <div class="sec"><span class="t">Виджеты</span><span class="acts"><svg class="ic"><use href="#i-refresh"/></svg><svg class="ic"><use href="#i-gear"/></svg></span></div>
-  <div class="wrow">
-    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span>Настроение пары</div><div class="v">Сегодня: 🔥 огонь</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span>Общий бюджет</div><div class="v">Нет данных</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-cal"/></svg></span>Дней вместе</div><div class="v" id="daysTogether">—</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-  </div>
-  <div class="dots"><i></i><i></i><i class="on"></i></div>
-  <div class="search"><svg class="ic"><use href="#i-search"/></svg>Найти услугу</div>
-  <div class="sec"><span class="t">Популярные услуги</span><span style="color:var(--acc);font-weight:700;font-size:14px">Смотреть все ›</span></div>
-  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span><div><div class="t">Справка о совместных планах</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.65</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>1.0 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>5,46 млн</span></div></div></div>
-  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="t">Начисленные обнимашки</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.9</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>0.5 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>12 млн</span></div></div></div>
 </div>
 
+<!-- SERVICES -->
 <div id="servicesScreen" class="screen">
   <h1>Услуги</h1>
   <div class="grid">
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span>Комплимент дня</div>
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span>Подарок-сюрприз</div>
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-cal"/></svg></span>Годовщина</div>
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-music"/></svg></span>Плейлист пары</div>
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-sos"/></svg></span>SOS обнимашки</div>
-    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span>Общий бюджет</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span>Мои документы</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-cash"/></svg></span>Кешбэк</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-sos"/></svg></span>SOS</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-shield"/></svg></span>Страхование</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span>Штрафы</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span>Запись на приём</div>
   </div>
 </div>
 
+<!-- QR -->
 <div id="qrScreen" class="screen">
   <h1 style="text-align:center">Мой код</h1>
-  <div class="qrbox"><img id="qrImg" alt="qr"></div>
-  <div class="qrnote">Покажи код партнёру —<br>он увидит твою карточку MUG0VE</div>
+  <div class="qrcard"><div class="in"><img id="qrImg" alt="qr"></div></div>
+  <div class="qrnote">Покажите код для идентификации<br>в сервисе MUG0VE</div>
 </div>
 
+<!-- PAY -->
 <div id="payScreen" class="screen">
   <h1>Оплата</h1>
-  <div class="paycard"><div class="t">Общий баланс пары</div><div class="v">∞ любви</div></div>
-  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span><div><div class="t">Пополнить обнимашками</div><div class="m"><span>без комиссии</span></div></div></div>
-  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span><div><div class="t">История свиданий</div><div class="m"><span>12 записей</span></div></div></div>
+  <div class="paycard"><div class="t">Баланс MUG0VE</div><div class="v">0.00 сум</div><div class="n">M0 •• •• •• 4821</div></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-cash"/></svg></span><div><div class="t">Пополнить счёт</div><div class="m"><span>без комиссии</span></div></div></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span><div><div class="t">История операций</div><div class="m"><span>нет операций</span></div></div></div>
 </div>
 
+<!-- PROFILE -->
 <div id="profileScreen" class="screen">
   <div class="phead">
-    <div class="av"><img id="avMainImg" alt=""></div>
-    <div><div class="n" id="pName">—</div><div class="p" id="pPhone">+998 (__) ___-__-__</div></div>
-    <div class="acts"><button class="icb" style="background:var(--card)"><svg class="ic"><use href="#i-eye"/></svg></button><button class="icb" style="background:var(--card)" id="editBtn"><svg class="ic"><use href="#i-gear"/></svg></button></div>
+    <div class="av" id="avTap"><img id="avMainImg" alt=""></div>
+    <div><div class="n" id="pName">—</div><div class="p" id="pPhone">—</div></div>
+    <div class="acts">
+      <button class="icb" id="eyeBtn"><svg class="ic" id="eyeIcon"><use href="#i-eye"/></svg></button>
+      <button class="icb" id="editBtn"><svg class="ic"><use href="#i-gear"/></svg></button>
+    </div>
   </div>
-  <div class="pass">
+  <div class="pass" id="passCard">
     <div class="h"><span class="logo">M0</span><span class="tt">MUG0VE PASS</span><span class="chip">DEMO</span></div>
     <div class="body">
-      <div class="ph"><img id="passImg" alt=""></div>
-      <div class="f">Имя партнёра<b id="passName">—</b>Дата пары<b id="passDate">—</b>Номер карты<b id="passNum">M0-000000</b></div>
+      <div class="ph" id="passPhotoTap"><img id="passImg" alt=""></div>
+      <div class="f">
+        Фамилия / Имя<b id="fName">—</b>
+        Дата рождения<b id="fDob">—</b>
+        Номер карты<b id="fNum">—</b>
+        Выдан<b id="fIssue">—</b>
+        Действителен до<b id="fExpiry" style="margin:0">—</b>
+      </div>
     </div>
     <div class="note">ЛИЧНАЯ КАРТА MUG0VE · НЕ ЯВЛЯЕТСЯ ДОКУМЕНТОМ · ДЕМОНСТРАЦИЯ</div>
   </div>
-  <div class="banner"><svg class="ic"><use href="#i-doc"/></svg>Цифровые моменты и сведения<span class="b">Новые</span></div>
+  <div class="banner"><svg class="ic"><use href="#i-doc"/></svg>Цифровые документы и сведения<span class="b">Новые</span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span><div><div class="t">Заявки и отзывы</div><div class="s">История, статус и отслеживание</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span><div><div class="t">Моё здоровье</div><div class="s">Справки, связанные с моим зд…</div></div><span class="nb">Новые</span><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-family"/></svg></span><div><div class="t">Моя семья</div><div class="s">Состав семьи: нас двое 💫</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-family"/></svg></span><div><div class="t">Моя семья</div><div class="s">Состав семьи</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-house"/></svg></span><div><div class="t">Мой дом</div><div class="s">Имущество и кадастр</div></div><span class="nb">Новые</span><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-  <div style="height:14px"></div>
-  <button class="btn" id="photoMeBtn">📷 Моё фото (аватар)</button>
-  <button class="btn" id="photoPartnerBtn">📷 Фото партнёра (карта)</button>
-  <button class="btn" id="nameMeBtn">✏️ Моё имя</button>
-  <button class="btn" id="namePartnerBtn">✏️ Имя партнёра</button>
+  <div style="height:16px"></div>
+  <button class="btn" id="fsBtn" style="display:flex;align-items:center;justify-content:center;gap:10px"><svg class="ic"><use href="#i-expand"/></svg>Полноэкранный режим</button>
   <button class="btn" id="disBtn">⚖️ Дисклеймер: я не несу ответственности</button>
-  <input type="file" id="photoMeInput" accept="image/*" style="display:none">
-  <input type="file" id="photoPartnerInput" accept="image/*" style="display:none">
 </div>
 </div>
 
+<!-- EDIT SHEET -->
+<div class="sheet" id="editSheet">
+  <div class="drag"></div>
+  <h2>Данные профиля и карты</h2>
+  <label>Имя и фамилия (профиль)</label><input id="eName">
+  <label>Телефон</label><input id="ePhone">
+  <label>Фамилия / Имя (карта)</label><input id="ePassName">
+  <div class="row2">
+    <div><label>Дата рождения</label><input id="eDob"></div>
+    <div><label>Номер карты</label><input id="eNum"></div>
+  </div>
+  <div class="row2">
+    <div><label>Выдан</label><input id="eIssue"></div>
+    <div><label>Действителен до</label><input id="eExpiry"></div>
+  </div>
+  <div class="btns">
+    <button class="btn" id="photoMeBtn" style="background:var(--card2)">📷 Моё фото</button>
+    <button class="btn" id="photoPassBtn" style="background:var(--card2)">📷 Фото на карту</button>
+  </div>
+  <div class="btns"><button class="btn" id="saveEdit">Сохранить</button></div>
+</div>
+<input type="file" id="photoMeInput" accept="image/*" style="display:none">
+<input type="file" id="photoPassInput" accept="image/*" style="display:none">
+
 <div class="modal" id="disModal"><div class="modal-c">
 <div class="modal-t">⚖️ Дисклеймер</div>
-<div class="modal-x">MUG0VE — учебный демонстрационный проект, созданный исключительно для обучения и практики.<br><br>Автор НЕ несёт ответственности за действия пользователей и третьих лиц. Автор НИКОГО не призывал и не призывает к каким-либо действиям; весь контент носит развлекательный характер.<br><br>Все данные, карты и «документы» ненастоящие и документами не являются. Используя приложение, вы соглашаетесь, что делаете это добровольно.</div>
+<div class="modal-x">MUG0VE — учебный демонстрационный проект, созданный исключительно для обучения и практики.<br><br>Автор НЕ несёт ответственности за действия пользователей и третьих лиц. Автор НИКОГО не призывал и не призывает к каким-либо действиям.<br><br>Все данные, карты и сведения ненастоящие и документами не являются.</div>
 <button class="btn" id="disOk">Понятно</button>
 </div></div>
 
@@ -231,39 +322,91 @@ h1{font-size:24px;font-weight:800;padding:18px 4px 14px}
   <button data-tab="pay"><svg class="ic"><use href="#i-wallet"/></svg>Оплата</button>
   <button data-tab="profile"><svg class="ic"><use href="#i-user"/></svg>Профиль</button>
 </nav>
+<div class="toast" id="toast"></div>
 
 <script>
 const BOT_LINK='https://t.me/mugu0ve_bot';
 const $=id=>document.getElementById(id);
-const tgU=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe)?Telegram.WebApp.initDataUnsafe.user:null;
-let P=JSON.parse(localStorage.getItem('mugove')||'null')||{
-  me:(tgU&&tgU.first_name)||'Ты', phone:'+998 (__) ___-__-__', partner:'Моя пара',
-  date:'01.01.2026', num:'M0-'+Math.floor(100000+Math.random()*900000), photoMe:'', photoPartner:''};
-function save(){localStorage.setItem('mugove',JSON.stringify(P))}
+const tg=()=>window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
+const tgU=(tg()&&tg().initDataUnsafe)?tg().initDataUnsafe.user:null;
+let P=JSON.parse(localStorage.getItem('mugove2')||'null')||{
+  name:(tgU&&tgU.first_name)||'Пользователь', phone:'+998 (__) ___-__-__',
+  passName:'FAMILYA ISMI', dob:'01.01.2000', num:'M0-000000', issue:'01.01.2026', expiry:'01.01.2036',
+  photoMe:'', photoPass:'', hidden:false};
+function save(){localStorage.setItem('mugove2',JSON.stringify(P))}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),1900)}
 function paint(){
-  $('homeName').textContent=P.me; $('pName').textContent=P.me; $('pPhone').textContent=P.phone;
-  $('passName').textContent=P.partner; $('passDate').textContent=P.date; $('passNum').textContent=P.num;
-  if(P.photoMe)$('avMainImg').src=P.photoMe;
-  if(P.photoPartner)$('passImg').src=P.photoPartner;
+  $('homeName').textContent=P.name; $('pName').textContent=P.name; $('pPhone').textContent=P.phone;
+  $('fName').textContent=P.passName; $('fDob').textContent=P.dob; $('fNum').textContent=P.num;
+  $('fIssue').textContent=P.issue; $('fExpiry').textContent=P.expiry;
+  $('avMainImg').src=P.photoMe||''; $('passImg').src=P.photoPass||'';
+  $('passCard').classList.toggle('blurred',P.hidden);
+  $('eyeIcon').innerHTML='<use href="#i-'+(P.hidden?'eyeoff':'eye')+'"/>';
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $(b.dataset.tab+'Screen').classList.add('active');
-  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b))}));
-function bindPhoto(btnId,inputId,key){$(btnId).addEventListener('click',()=>$(inputId).click());
-  $(inputId).addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();r.onload=()=>{P[key]=r.result;save();paint()};r.readAsDataURL(f)})}
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+  const t=tg();if(t&&t.HapticFeedback){try{t.HapticFeedback.impactOccurred('light')}catch(e){}}
+}));
+/* sheet */
+function openSheet(){$('eName').value=P.name;$('ePhone').value=P.phone;$('ePassName').value=P.passName;
+  $('eDob').value=P.dob;$('eNum').value=P.num;$('eIssue').value=P.issue;$('eExpiry').value=P.expiry;
+  $('editSheet').classList.add('show');$('overlay').classList.add('show')}
+function closeSheet(){$('editSheet').classList.remove('show');$('overlay').classList.remove('show')}
+$('editBtn').addEventListener('click',openSheet);
+$('overlay').addEventListener('click',closeSheet);
+$('saveEdit').addEventListener('click',()=>{
+  P.name=$('eName').value.trim()||P.name; P.phone=$('ePhone').value.trim()||P.phone;
+  P.passName=$('ePassName').value.trim()||P.passName; P.dob=$('eDob').value.trim()||P.dob;
+  P.num=$('eNum').value.trim()||P.num; P.issue=$('eIssue').value.trim()||P.issue;
+  P.expiry=$('eExpiry').value.trim()||P.expiry;
+  save();paint();closeSheet();toast('Сохранено ✓')});
+/* photos */
+function bindPhoto(btn,input,key){$(btn).addEventListener('click',()=>$(input).click());
+  $(input).addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;
+    if(f.size>4000000)return toast('Файл больше 4MB');
+    const r=new FileReader();r.onload=()=>{P[key]=r.result;save();paint();toast('Фото обновлено ✓')};r.readAsDataURL(f)})}
 bindPhoto('photoMeBtn','photoMeInput','photoMe');
-bindPhoto('photoPartnerBtn','photoPartnerInput','photoPartner');
-$('nameMeBtn').addEventListener('click',()=>{const n=prompt('Твоё имя:',P.me);if(n){P.me=n.trim();save();paint()}});
-$('namePartnerBtn').addEventListener('click',()=>{const n=prompt('Имя партнёра:',P.partner);if(n){P.partner=n.trim();save();paint()}});
-$('editBtn').addEventListener('click',()=>{const n=prompt('Телефон для отображения:',P.phone);if(n){P.phone=n.trim();save();paint()}});
+bindPhoto('photoPassBtn','photoPassInput','photoPass');
+$('avTap').addEventListener('click',()=>$('photoMeInput').click());
+$('passPhotoTap').addEventListener('click',()=>$('photoPassInput').click());
+/* eye */
+$('eyeBtn').addEventListener('click',()=>{P.hidden=!P.hidden;save();paint()});
+/* ===== FULLSCREEN ===== */
+function fallbackFs(on){try{
+  if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+  else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+}catch(e){}}
+function syncFsPad(){const t=tg();
+  const active=!!document.fullscreenElement||(t?(t.isFullscreen!==undefined?!!t.isFullscreen:false):false);
+  document.body.classList.toggle('fs',active)}
+function applyFullscreen(on){const t=tg();
+  try{
+    if(on){let done=false;
+      if(t&&typeof t.requestFullscreen==='function'){const p=t.requestFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(true));done=true}
+      if(!done)fallbackFs(true);
+      if(t&&t.expand)t.expand();
+    }else{let done=false;
+      if(t&&typeof t.exitFullscreen==='function'){const p=t.exitFullscreen();if(p&&p.catch)p.catch(()=>fallbackFs(false));done=true}
+      if(!done)fallbackFs(false);}
+  }catch(e){fallbackFs(on)}
+  syncFsPad();setTimeout(syncFsPad,500);
+  toast(on?'Полноэкранный режим включён':'Полноэкранный режим выключен');
+}
+$('fsBtn').addEventListener('click',()=>{const t=tg();
+  const now=!!document.fullscreenElement||(t?(t.isFullscreen!==undefined?!!t.isFullscreen:false):false);
+  applyFullscreen(!now)});
+document.addEventListener('fullscreenchange',syncFsPad);
+const t0=tg();
+if(t0){try{t0.ready();t0.expand();
+  if(t0.onEvent)t0.onEvent('fullscreenChanged',syncFsPad);}catch(e){}}
+/* disclaimer */
 $('disBtn').addEventListener('click',()=>$('disModal').classList.add('show'));
 $('disOk').addEventListener('click',()=>$('disModal').classList.remove('show'));
-$('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=ffffff&color=0d0f12&data='+encodeURIComponent(BOT_LINK);
-const start=new Date('2026-01-01');
-$('daysTogether').textContent=Math.max(1,Math.floor((Date.now()-start)/86400000))+' дн.';
-if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
+/* qr */
+$('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=220x220&bgcolor=ffffff&color=0b0d10&data='+encodeURIComponent(BOT_LINK);
+syncFsPad();
 paint();
 </script>
 </body>
