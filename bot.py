@@ -1,4 +1,4 @@
-"""bot.py — ВОЛК ТАП bot + регистрация + админ с кастом-персами"""
+"""bot.py — ВОЛК ТАП bot + регистрация + админ с кастом-персами + дисклеймер"""
 import asyncio, logging, base64
 import aiohttp
 from aiogram import Bot, Dispatcher, types, F
@@ -54,7 +54,8 @@ async def welcome(m: types.Message):
     await m.answer(
         f"🌙 {hbold(m.from_user.first_name or 'волк')}, ты в стае.\n\n"
         "🐺 Тапай волка → копи ВОЙ → расти до ОДИНОЧКИ.\n"
-        "🔓 Открывай персов за тапы и ВОЙ.\n\n👇 Жми:",
+        "🔓 Открывай персов за тапы и ВОЙ.\n\n"
+        "⚖️ Проект учебный. Автор не несёт ответственности и никого ни к чему не призывает.\n\n👇 Жми:",
         parse_mode="HTML", reply_markup=game_kb(m.from_user.id))
 
 @dp.message(CommandStart())
@@ -86,7 +87,8 @@ async def help(m: types.Message):
     await m.answer("🐺 ВОЛК ТАП — мемная тапалка для одиночек.\n\n"
                    "• Тапай волка — получай ВОЙ\n• Комбо → шанс КРИТА x5\n"
                    "• Ранги: Щенок → Волк → Матёрый → Альфа → ОДИНОЧКА 🌙\n"
-                   "• Персы открываются за тапы или ВОЙ и дают множитель")
+                   "• Персы открываются за тапы или ВОЙ и дают множитель\n\n"
+                   "⚖️ Дисклеймер: проект создан для обучения. Автор не несёт ответственности за действия пользователей и никого не призывал к действиям. Всё ненастоящее.")
 
 @dp.message(Command("admin"))
 async def admin(m: types.Message):
@@ -155,7 +157,7 @@ async def text_flow(m: types.Message):
             "price": f['price'], "cur": f['cur']}, secret=True)
         flow.pop(uid)
         cur = 'тапов' if f['cur'] == 'taps' else 'ВОЙ'
-        await m.answer(f"✅ Перс «{f['name']}» создан:\n✖️ x{f['mult']} · 🔓 за {f['price']:,} {cur}".replace(',', ' '),
+        await m.answer(f"✅ Перс «{f['name']}» создан:\n✖️ x{f['mult']} · 🔓 за {f['price']} {cur}",
                        reply_markup=admin_kb())
     elif step == 'bc':
         users = await api_get("/api/admin/users", secret=True)
@@ -196,7 +198,7 @@ async def adm_cb(c: types.CallbackQuery):
         await c.message.answer("Текст рассылки:")
     elif act == 'stats':
         st = await api_get("/api/admin/stats", secret=True)
-        await c.message.answer(f"📊 Волков: {st['users']}\nЗарегистрировано: {st['registered']}\nВсего тапов: {st['taps']:,}\nВсего ВОЯ: {st['balance']:,}".replace(',', ' '))
+        await c.message.answer(f"📊 Волков: {st['users']}\nЗарегистрировано: {st['registered']}\nВсего тапов: {st['taps']}\nВсего ВОЯ: {st['balance']}")
     await c.answer()
 
 async def main():

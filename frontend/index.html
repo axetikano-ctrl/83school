@@ -104,6 +104,11 @@ nav button.active{color:var(--acc)}
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-14px);background:linear-gradient(135deg,var(--acc),#c62828);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:all .3s;z-index:800;box-shadow:0 8px 24px rgba(255,59,59,.4)}
 .toast.show{opacity:1;transform:translateX(-50%)}
 input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;color:var(--text);margin-bottom:10px;font-family:inherit}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:400px;width:100%;backdrop-filter:blur(14px)}
+.modal-t{font-size:18px;font-weight:900;margin-bottom:10px}
+.modal-x{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px}
 </style>
 </head>
 <body>
@@ -185,16 +190,23 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
     <input id="nameInput" placeholder="Твоё имя в стае">
     <button class="btn ghost" id="saveName">Сохранить имя</button>
     <div style="height:10px"></div>
+    <button class="btn ghost" id="disBtn" style="margin-bottom:10px">⚖️ Дисклеймер: я не несу ответственности</button>
     <button class="btn ghost" id="resetBtn" style="color:#ff6b6b">Сбежать из стаи (сброс)</button>
     <div class="card" style="margin-top:12px"><div class="muted" style="font-size:12px;line-height:1.6">🌙 ВОЛК ТАП — мемный проект для сообщества одиночек. Всё ненастоящее, кроме уважения.</div></div>
   </div>
 </div>
 
+<div class="modal" id="disModal"><div class="modal-c">
+<div class="modal-t">⚖️ Дисклеймер</div>
+<div class="modal-x">ВОЛК ТАП / MUG0VE — учебный мем-проект, созданный исключительно для обучения и практики программирования.<br><br>Автор НЕ несёт ответственности за действия пользователей и третьих лиц. Автор НИКОГО не призывал и не призывает к каким-либо действиям; весь контент носит юмористический характер и не является призывом.<br><br>Все данные, балансы, персонажи и «документы» ненастоящие. Используя приложение, вы соглашаетесь, что делаете это добровольно и в развлекательных целях.</div>
+<button class="btn" id="disOk">Понятно</button>
+</div></div>
+
 <nav>
   <button data-tab="tap" class="active"><svg class="ic"><use href="#wolfhead"/></svg>ТАП</button>
   <button data-tab="top"><svg class="ic"><use href="#trophy"/></svg>ТОП</button>
   <button data-tab="pack"><svg class="ic"><use href="#moon"/></svg>СТАЯ</button>
-  <button data-tab="prof"><svg class="ic"><use href="#user"/></svg>ПРОФИЛЬ</button>
+  <button data-tab="prof"><svg class="ic"><use href="#i-user"/></svg>ПРОФИЛЬ</button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -202,7 +214,7 @@ input{width:100%;background:var(--card2);border:1px solid var(--line);border-rad
 /* ===== ССЫЛКИ ===== */
 const CHANNEL_URL='https://t.me/voystai';
 const CHAT_URL='https://t.me/voystai_chat';
-const BOT_LINK='https://t.me/voystai_bot';
+const BOT_LINK='https://t.me/voystai_bot'; // ← если у НОВОГО бота другой username, замени здесь
 /* ================== */
 const RANKS=[['Щенок',0],['Волк',500],['Матёрый',2500],['Альфа',10000],['ОДИНОЧКА',50000]];
 const QUOTES=['Волк не оглядывается на овцу.','Одиночество — это не пустота, это свобода.','Пока все спят, волк тапает.','Сила стаи — в каждом одиночке.','Ты не изгой. Ты разведчик.','Лунный свет не спрашивает разрешения.','Молчание — самый громкий вой.','Сигма не объясняет. Сигма тапает.'];
@@ -227,7 +239,6 @@ fetch('/api/me?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
 $('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
 if(S.joined){$('welcome').style.display='none';if($('regGate').style.display!=='flex')show('tap')}
 $('joinBtn').addEventListener('click',()=>{S.joined=true;save();$('welcome').style.display='none';show('tap');sync();toast('Добро пожаловать в стаю')});
-/* chars + unlocks */
 const priceLabel=c=>c.price>0?c.price.toLocaleString('ru-RU')+(c.cur==='taps'?' тапов':' ВОЙ'):'бесплатно';
 const isUnlocked=c=>!c.price||S.unlocks.includes(c.id);
 const canClaim=c=>!isUnlocked(c)&&(c.cur==='taps'?S.taps>=c.price:S.bal>=c.price);
@@ -262,7 +273,6 @@ function renderChars(){const w=$('charRow');if(!w)return;w.innerHTML='';
 function applyChar(){const w=$('wolf');if(!w)return;
   w.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img class="wolfimg" src="${CUR_CHAR.image}">`:'<svg class="wolfsvg icf"><use href="#wolfhead"/></svg>';
   const p=$('pAv');if(p)p.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img src="${CUR_CHAR.image}" style="width:100%;height:100%;object-fit:cover">`:'<svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolfhead"/></svg>'}
-/* tap */
 let combo=0,lastTap=0;
 $('wolfZone').addEventListener('pointerdown',e=>{
   const now=Date.now();combo=(now-lastTap<1000)?combo+1:1;lastTap=now;
@@ -314,6 +324,8 @@ function renderProf(){$('pName').textContent=S.name||'волк-аноним';
   $('pRank').textContent=RANKS[rankOf(S.bal)][0]+' · '+S.bal.toLocaleString('ru-RU')+' ВОЙ';
   $('nameInput').value=S.name||'';applyChar()}
 $('saveName').addEventListener('click',()=>{S.name=$('nameInput').value.trim()||'волк-аноним';save();renderProf();sync();toast('Имя сохранено ✓')});
+$('disBtn').addEventListener('click',()=>$('disModal').classList.add('show'));
+$('disOk').addEventListener('click',()=>$('disModal').classList.remove('show'));
 $('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбежать? Весь прогресс и персы сгорят.')){S={id:S.id,name:S.name,bal:0,taps:0,crits:0,best:1,joined:true,char:null,unlocks:[]};CUR_CHAR=null;save();render();renderChars();applyChar();sync();toast('Начисто. Новый волк')}});
 if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
 render();loadChars();
