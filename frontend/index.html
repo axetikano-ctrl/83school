@@ -3,332 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#07070c">
-<title>ВОЛК ТАП 🐺</title>
+<meta name="theme-color" content="#0d0f12">
+<title>MUG0VE</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-:root{--bg:#07070c;--card:rgba(22,22,32,.72);--card2:#1b1b26;--acc:#ff3b3b;--acc2:#ff8a65;--moon:#aab4c4;--gold:#ffd54f;--text:#f2f2f2;--muted:#7d8590;--line:rgba(255,255,255,.07)}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:86px;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
- radial-gradient(1px 1px at 20% 30%,#ffffffaa,transparent),radial-gradient(1px 1px at 40% 70%,#ffffff66,transparent),
- radial-gradient(1.5px 1.5px at 60% 20%,#ffffff77,transparent),radial-gradient(1px 1px at 80% 50%,#ffffff55,transparent),
- radial-gradient(1.5px 1.5px at 10% 80%,#ffffff66,transparent),radial-gradient(1px 1px at 90% 10%,#ffffff77,transparent),
- radial-gradient(1px 1px at 33% 55%,#ffffff44,transparent),radial-gradient(1.5px 1.5px at 70% 85%,#ffffff55,transparent);
- animation:tw 5s ease-in-out infinite alternate}
-@keyframes tw{from{opacity:.45}to{opacity:1}}
-body::after{content:'';position:fixed;top:-140px;right:-140px;width:360px;height:360px;border-radius:50%;z-index:0;pointer-events:none;background:radial-gradient(circle,rgba(170,180,196,.22),transparent 62%)}
-.wrap{max-width:560px;margin:0 auto;padding:16px;position:relative;z-index:1}
-.screen{display:none}.screen.active{display:block;animation:fu .32s ease}
-@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes pop{from{transform:scale(.6)}to{transform:scale(1)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-h1{font-size:24px;font-weight:900;margin-bottom:14px;letter-spacing:.5px}
-.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
-.muted{color:var(--muted)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0d0f12;--card:#171a1f;--card2:#1f242b;--acc:#aecbfa;--acc2:#8ab4f8;--text:#f1f3f4;--muted:#9aa0a6;--line:rgba(255,255,255,.08)}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:112px}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+.screen{display:none}.screen.active{display:block;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
-button:active{transform:scale(.96)}
-.btn{width:100%;background:linear-gradient(135deg,var(--acc),#c62828);color:#fff;border-radius:14px;padding:15px;font-size:16px;font-weight:800;box-shadow:0 8px 24px rgba(255,59,59,.35)}
-.btn.ghost{background:var(--card2);box-shadow:none}
-.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.icf{width:24px;height:24px;fill:currentColor;stroke:none}
-.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.logo-row .lw{width:34px;height:34px;color:var(--moon)}
-.logo-t{font-size:20px;font-weight:900;background:linear-gradient(90deg,#fff,#8f98a8);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:1px}
-#welcome,#regGate{position:fixed;inset:0;background:rgba(7,7,12,.96);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
-#regGate{display:none;z-index:700}
-.ov-logo{width:110px;height:110px;color:var(--moon);filter:drop-shadow(0 0 30px rgba(255,59,59,.4));animation:pop .5s;margin-bottom:12px}
-#welcome h1{font-size:34px}
-#welcome p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:26px}
-.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.rank-badge{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-weight:800;font-size:13px}
-.bal{text-align:center;margin:2px 0 8px}
-.bal .v{font-size:54px;font-weight:900;letter-spacing:-1px;text-shadow:0 0 30px rgba(255,59,59,.35)}
-.bal .c{color:var(--muted);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px}
-.bal .c .icf{width:16px;height:16px;color:var(--acc)}
-.wolf-zone{position:relative;display:flex;align-items:center;justify-content:center;height:270px}
-#wolfWrap{width:225px;height:225px;border-radius:50%;padding:5px;background:conic-gradient(from 0deg,var(--acc),#5a1414,#ff8a65,#5a1414,var(--acc));animation:spin 9s linear infinite;box-shadow:0 0 60px rgba(255,59,59,.25)}
-#wolf{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#232331,#0b0b12);display:flex;align-items:center;justify-content:center;animation:spin 9s linear infinite reverse;cursor:pointer;overflow:hidden}
-#wolf.hit{transform:scale(.93)}
-#wolf .wolfsvg{width:72%;height:72%;color:var(--moon);filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
-#wolf .wolfimg{width:100%;height:100%;object-fit:cover}
-.combo{position:absolute;top:2px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--acc),#c62828);color:#fff;border-radius:999px;padding:6px 18px;font-weight:900;font-size:14px;opacity:0;transition:opacity .2s;box-shadow:0 6px 18px rgba(255,59,59,.4)}
-.combo.on{opacity:1}
-.float{position:absolute;font-weight:900;font-size:22px;color:var(--acc2);pointer-events:none;animation:fl .8s ease-out forwards;text-shadow:0 2px 10px rgba(0,0,0,.7)}
-.float.crit{color:var(--gold);font-size:30px}
-@keyframes fl{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-90px) scale(1.3)}}
-#flash{position:fixed;inset:0;background:radial-gradient(circle,rgba(255,213,79,.3),transparent 62%);opacity:0;pointer-events:none;z-index:50}
-#flash.on{animation:fla .45s ease-out}
-@keyframes fla{from{opacity:1}to{opacity:0}}
-.chars{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
-.chars::-webkit-scrollbar{display:none}
-.chars button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:92px;font-size:11px;font-weight:700;color:var(--muted);backdrop-filter:blur(10px)}
-.chars .av{width:52px;height:52px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.chars .av .icf{width:30px;height:30px;color:var(--moon)}
-.chars .av img{width:100%;height:100%;object-fit:cover}
-.chars .lk{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.85);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold)}
-.chars .lk .ic{width:11px;height:11px}
-.chars .pr{font-size:10px;color:var(--muted);text-align:center;line-height:1.2}
-.chars button.on{border-color:var(--acc);color:#fff;box-shadow:0 0 22px rgba(255,59,59,.35)}
-.chars button.on .pr{color:#ffb3ab}
-.chars button.can{border-color:var(--gold);color:var(--gold);box-shadow:0 0 18px rgba(255,213,79,.35);animation:glow 1.4s ease-in-out infinite alternate}
-@keyframes glow{from{box-shadow:0 0 10px rgba(255,213,79,.25)}to{box-shadow:0 0 24px rgba(255,213,79,.5)}}
-.prog{height:9px;background:var(--card2);border-radius:999px;overflow:hidden;margin-top:9px}
-.prog .bar{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:999px;transition:width .3s;position:relative}
-.prog .bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:sh 2.2s linear infinite}
-@keyframes sh{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.stats-row{display:flex;gap:10px}
-.stats-row .card{flex:1;text-align:center;margin-bottom:0}
-.stats-row .v{font-size:20px;font-weight:900}
-.stats-row .t{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px}
-.tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
-.tx:last-child{border-bottom:none}
-.tx .pos{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;background:var(--card2);color:var(--muted);flex-shrink:0}
-.tx .pos.m1{background:linear-gradient(135deg,#ffd54f,#f57f17);color:#fff}
-.tx .pos.m2{background:linear-gradient(135deg,#e0e0e0,#9e9e9e);color:#fff}
-.tx .pos.m3{background:linear-gradient(135deg,#cd7f32,#8d5524);color:#fff}
-.tx .av{width:42px;height:42px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--moon)}
-.tx .av .icf{width:24px;height:24px}
-.tx .n{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tx .n.me{color:var(--acc)}
-.tx .b{font-weight:900}
-.pack-btn{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:10px;width:100%;text-align:left;font-weight:700;font-size:16px;backdrop-filter:blur(10px)}
-.pack-btn .icw{width:44px;height:44px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc);flex-shrink:0}
-.pack-btn .s{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
-.quote{font-style:italic;line-height:1.6;color:var(--moon);font-size:15px}
-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,16,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0 8px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px}
-nav button .ic{width:22px;height:22px;transition:transform .15s}
-nav button:active .ic{transform:scale(.85)}
+button:active{transform:scale(.97)}
+.icb{width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px)}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.icf{width:22px;height:22px;fill:currentColor;stroke:none}
+.hero{position:relative;height:210px;border-radius:0 0 24px 24px;overflow:hidden;margin-bottom:16px;background:linear-gradient(160deg,#173a63,#0e2a47 45%,#0a1a2e)}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 2px,transparent 2px 14px),repeating-linear-gradient(-45deg,rgba(174,203,250,.06) 0 2px,transparent 2px 14px)}
+.hero .top{position:relative;display:flex;justify-content:space-between;padding:16px 14px 0}
+.hero .right{display:flex;gap:10px}
+.spark{width:44px;height:44px;border-radius:50%;background:conic-gradient(#7b5cff,#2f8fd8,#37b56c,#7b5cff);display:flex;align-items:center;justify-content:center}
+.spark i{width:38px;height:38px;border-radius:50%;background:#0d0f12;display:flex;align-items:center;justify-content:center;color:#aecbfa}
+.greet{position:relative;padding:26px 18px 0}
+.greet .s{font-size:14px;color:#cfe0ff;margin-bottom:4px}
+.greet .n{font-size:28px;font-weight:800}
+.srow{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:none}
+.srow::-webkit-scrollbar{display:none}
+.scard{min-width:118px;height:150px;border-radius:20px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:13px;font-weight:700;color:#fff;position:relative;overflow:hidden;text-align:center;line-height:1.25}
+.scard .em{position:absolute;top:14px;left:0;right:0;font-size:34px}
+.g1{background:linear-gradient(160deg,#e8c468,#b98a2f)}.g2{background:linear-gradient(160deg,#37b56c,#1f7a4d)}
+.g3{background:linear-gradient(160deg,#e8eaf0,#b9c2d0);color:#1a1a1a}.g4{background:linear-gradient(160deg,#5a8fd8,#2f5fa8)}.g5{background:linear-gradient(160deg,#8a63d2,#5b3a9e)}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 10px}
+.sec .t{font-size:19px;font-weight:800}
+.sec .acts{display:flex;gap:8px;color:var(--muted)}
+.wrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:none}
+.wrow::-webkit-scrollbar{display:none}
+.wcard{min-width:78%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;scroll-snap-align:center;position:relative}
+.wcard .h{display:flex;align-items:center;gap:10px;font-weight:700}
+.wcard .h .icw{width:34px;height:34px;border-radius:10px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center}
+.wcard .v{color:var(--muted);margin-top:10px;font-size:14px}
+.wcard .ch{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.dots{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
+.dots i{width:7px;height:7px;border-radius:99px;background:var(--card2)}
+.dots i.on{width:20px;background:var(--acc2)}
+.search{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;color:var(--muted);font-size:15px;margin-bottom:20px}
+.pop{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.pop:last-child{border-bottom:none}
+.pop .icw{width:46px;height:46px;border-radius:12px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pop .t{font-size:15px;font-weight:700;line-height:1.3}
+.pop .m{display:flex;gap:14px;color:var(--muted);font-size:12.5px;margin-top:6px}
+.pop .m span{display:flex;align-items:center;gap:5px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;font-weight:700;font-size:14px}
+.gcard .icw{width:40px;height:40px;border-radius:12px;background:rgba(174,203,250,.15);color:var(--acc);display:flex;align-items:center;justify-content:center}
+.qrbox{background:#fff;border-radius:24px;padding:18px;width:230px;margin:30px auto 16px}
+.qrbox img{width:100%;display:block;border-radius:8px}
+.qrnote{text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
+.paycard{background:linear-gradient(135deg,#2f5fa8,#173a63);border-radius:20px;padding:20px;margin-bottom:14px}
+.paycard .t{font-size:13px;color:#cfe0ff}
+.paycard .v{font-size:30px;font-weight:800;margin-top:6px}
+.phead{display:flex;align-items:center;gap:12px;padding:18px 4px}
+.phead .av{width:52px;height:52px;border-radius:50%;background:var(--card2);overflow:hidden;flex-shrink:0}
+.phead .av img{width:100%;height:100%;object-fit:cover}
+.phead .n{font-size:17px;font-weight:800}
+.phead .p{color:var(--muted);font-size:14px;margin-top:2px}
+.phead .acts{margin-left:auto;display:flex;gap:8px}
+.pass{border-radius:20px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,#eef3fb,#d7e3f7);color:#12233d;position:relative;overflow:hidden}
+.pass::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(47,95,168,.18),transparent 70%)}
+.pass .h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pass .logo{width:34px;height:34px;border-radius:10px;background:#173a63;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
+.pass .tt{font-weight:900;letter-spacing:1px;font-size:15px}
+.pass .chip{margin-left:auto;background:rgba(23,58,99,.12);border-radius:99px;padding:5px 10px;font-size:10px;font-weight:800;letter-spacing:1px}
+.pass .body{display:flex;gap:14px}
+.pass .ph{width:92px;height:112px;border-radius:10px;background:#c3d2e8;overflow:hidden;flex-shrink:0}
+.pass .ph img{width:100%;height:100%;object-fit:cover}
+.pass .f{font-size:12px;line-height:1.5}
+.pass .f b{display:block;font-size:14px;text-transform:uppercase}
+.pass .note{margin-top:12px;font-size:10px;color:#5b6b84;letter-spacing:.4px}
+.banner{display:flex;align-items:center;gap:12px;background:rgba(174,203,250,.9);color:#12233d;border-radius:16px;padding:14px 16px;font-weight:800;margin-bottom:16px}
+.banner .b{margin-left:auto;background:linear-gradient(90deg,#2f8fd8,#37b56c);color:#fff;border-radius:99px;padding:7px 14px;font-size:13px}
+.mrow{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line)}
+.mrow .icw{width:40px;height:40px;color:var(--acc);display:flex;align-items:center;justify-content:center}
+.mrow .t{font-weight:700;font-size:15px}
+.mrow .s{color:var(--muted);font-size:13px;margin-top:2px}
+.mrow .nb{margin-left:auto;background:linear-gradient(90deg,#2f8fd8,#37b56c);color:#fff;border-radius:99px;padding:6px 12px;font-size:12px;font-weight:700}
+.mrow .ch{color:var(--muted);margin-left:10px}
+nav{position:fixed;left:12px;right:12px;bottom:10px;max-width:536px;margin:0 auto;background:rgba(23,26,31,.96);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:28px;display:flex;align-items:center;padding:8px 6px;z-index:100}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);font-weight:600;padding:6px 0}
 nav button.active{color:var(--acc)}
-.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-14px);background:linear-gradient(135deg,var(--acc),#c62828);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:all .3s;z-index:800;box-shadow:0 8px 24px rgba(255,59,59,.4)}
-.toast.show{opacity:1;transform:translateX(-50%)}
-input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;color:var(--text);margin-bottom:10px;font-family:inherit}
+nav button.qr{flex:0 0 58px;height:58px;border-radius:20px;background:var(--acc);color:#0d0f12;transform:translateY(-16px);box-shadow:0 10px 24px rgba(174,203,250,.35);font-size:10px}
+nav button.qr.active{color:#0d0f12}
+h1{font-size:24px;font-weight:800;padding:18px 4px 14px}
+.btn{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:14px;font-size:15px;font-weight:700;margin-bottom:10px}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
 .modal-c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;max-width:400px;width:100%;backdrop-filter:blur(14px)}
 .modal-t{font-size:18px;font-weight:900;margin-bottom:10px}
 .modal-x{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.modal-c .btn{background:linear-gradient(90deg,#2f8fd8,#37b56c);border:none;color:#fff}
 </style>
 </head>
 <body>
-
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
-<symbol id="wolfhead" viewBox="0 0 100 100">
- <path fill="currentColor" d="M50 93 C40 83 25 76 19 60 C14 46 15 29 20 11 L36 26 Q50 19 64 26 L80 11 C85 29 86 46 81 60 C75 76 60 83 50 93 Z"/>
- <path fill="#0b0b12" d="M27 22 L36 31 L30 36 Z M73 22 L64 31 L70 36 Z"/>
- <path fill="#ff3b3b" d="M35 47 L47 51 L37 56 Z M65 47 L53 51 L63 56 Z"/>
- <path fill="#0b0b12" d="M50 64 l-6 7 h12 Z"/>
- <path stroke="#0b0b12" stroke-width="2" d="M50 71 v8" fill="none"/>
-</symbol>
-<symbol id="paw" viewBox="0 0 24 24"><ellipse cx="6.5" cy="8.5" rx="2.4" ry="3.2"/><ellipse cx="12" cy="6.8" rx="2.4" ry="3.2"/><ellipse cx="17.5" cy="8.5" rx="2.4" ry="3.2"/><path d="M12 11.5c-3.6 0-6.8 3.1-6.8 6.2 0 2.1 1.6 3.6 3.7 3.6 1.2 0 2.1-.5 3.1-.5s1.9.5 3.1.5c2.1 0 3.7-1.5 3.7-3.6 0-3.1-3.2-6.2-6.8-6.2z"/></symbol>
-<symbol id="trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 5M17 6h3a3 3 0 0 1-3 5"/></symbol>
-<symbol id="moon" viewBox="0 0 24 24"><path d="M20 14A8 8 0 1 1 10 4a7 7 0 0 0 10 10z"/></symbol>
-<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
-<symbol id="mega" viewBox="0 0 24 24"><path d="M3 10v4l12 4V6L3 10z"/><path d="M15 8a4 4 0 0 1 0 8M7 14v5h3v-4"/></symbol>
-<symbol id="chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></symbol>
-<symbol id="send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
-<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 4v7h-7"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-7h-4v7H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 0 1 0-4h13v3"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><circle cx="16.5" cy="13.5" r="1.4"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6z"/><path d="M14 2v5h5M9 12h6M9 16h6"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></symbol>
+<symbol id="i-family" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3 20a5 5 0 0 1 10 0M13.5 20a4 4 0 0 1 7.5 0"/></symbol>
+<symbol id="i-house" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-7h-4v7H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1-5.6-3-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8s-4 0-4-3a2 2 0 0 1 4 0M12 8s4 0 4-3a2 2 0 0 0-4 0"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="16" r="2.5"/></symbol>
+<symbol id="i-sos" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></symbol>
 </svg>
 
-<div id="welcome">
-  <svg class="ov-logo icf"><use href="#wolfhead"/></svg>
-  <h1>ВОЛК ТАП</h1>
-  <p>Ты один? Нас много.<br>Мемная тапалка для одиночек, волков и сигм.<br>Тапай волка → копи ВОЙ → открывай персов.</p>
-  <button class="btn" id="joinBtn" style="max-width:280px">ВОЙТИ В СТАЮ</button>
-</div>
-
-<div id="regGate">
-  <svg class="ov-logo icf"><use href="#wolfhead"/></svg>
-  <h1>Нужна регистрация</h1>
-  <p class="muted" style="margin-bottom:20px">Открой бота и отправь контакт —<br>иначе в стаю не пустим.</p>
-  <button class="btn" id="regBtn" style="max-width:260px">Открыть бота</button>
-</div>
-
-<div id="flash"></div>
-
 <div class="wrap">
-  <div id="tapScreen" class="screen">
-    <div class="logo-row"><svg class="lw icf"><use href="#wolfhead"/></svg><span class="logo-t">ВОЛК ТАП</span><span class="rank-badge" id="rankBadge" style="margin-left:auto">Щенок</span></div>
-    <div class="bal"><div class="v" id="balance">0</div><div class="c"><svg class="icf"><use href="#paw"/></svg>ВОЙ</div></div>
-    <div class="wolf-zone" id="wolfZone">
-      <div class="combo" id="combo">COMBO x1</div>
-      <div id="wolfWrap"><div id="wolf"><svg class="wolfsvg icf"><use href="#wolfhead"/></svg></div></div>
+<div id="homeScreen" class="screen active">
+  <div class="hero">
+    <div class="top">
+      <button class="icb"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <div class="right">
+        <button class="spark"><i><svg class="icf" style="width:18px;height:18px"><use href="#i-spark"/></svg></i></button>
+        <button class="icb"><svg class="ic"><use href="#i-bell"/></svg></button>
+      </div>
     </div>
-    <div class="chars" id="charRow"></div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"><span id="rankNow">Щенок</span><span id="rankNext" class="muted">→ Волк</span></div>
-      <div class="prog"><div class="bar" id="rankBar" style="width:0%"></div></div>
-    </div>
-    <div class="stats-row">
-      <div class="card"><div class="v" id="stTaps">0</div><div class="t">ТАПОВ</div></div>
-      <div class="card"><div class="v" id="stCrits">0</div><div class="t">КРИТОВ</div></div>
-      <div class="card"><div class="v" id="stBest">x1</div><div class="t">КОМБО</div></div>
-    </div>
+    <div class="greet"><div class="s">Добро пожаловать</div><div class="n" id="homeName">MUG0VE</div></div>
   </div>
+  <div class="srow">
+    <div class="scard g1"><span class="em">💛</span>Наш день</div>
+    <div class="scard g2"><span class="em">🎁</span>Кешбэк подарков</div>
+    <div class="scard g3"><span class="em">🆘</span>SOS обнимашки</div>
+    <div class="scard g4"><span class="em">💍</span>Свидание</div>
+    <div class="scard g5"><span class="em">🎧</span>Наш плейлист</div>
+  </div>
+  <div class="sec"><span class="t">Виджеты</span><span class="acts"><svg class="ic"><use href="#i-refresh"/></svg><svg class="ic"><use href="#i-gear"/></svg></span></div>
+  <div class="wrow">
+    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span>Настроение пары</div><div class="v">Сегодня: 🔥 огонь</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span>Общий бюджет</div><div class="v">Нет данных</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+    <div class="wcard"><div class="h"><span class="icw"><svg class="ic"><use href="#i-cal"/></svg></span>Дней вместе</div><div class="v" id="daysTogether">—</div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  </div>
+  <div class="dots"><i></i><i></i><i class="on"></i></div>
+  <div class="search"><svg class="ic"><use href="#i-search"/></svg>Найти услугу</div>
+  <div class="sec"><span class="t">Популярные услуги</span><span style="color:var(--acc);font-weight:700;font-size:14px">Смотреть все ›</span></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span><div><div class="t">Справка о совместных планах</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.65</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>1.0 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>5,46 млн</span></div></div></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="t">Начисленные обнимашки</div><div class="m"><span><svg class="ic" style="width:14px;height:14px"><use href="#i-star"/></svg>4.9</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>0.5 мин</span><span><svg class="ic" style="width:14px;height:14px"><use href="#i-check"/></svg>12 млн</span></div></div></div>
+</div>
 
-  <div id="topScreen" class="screen">
-    <h1>ТОП СТАИ</h1>
-    <div class="card" id="topList"><div class="muted" style="text-align:center;padding:20px">Загружаем стаю...</div></div>
+<div id="servicesScreen" class="screen">
+  <h1>Услуги</h1>
+  <div class="grid">
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span>Комплимент дня</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span>Подарок-сюрприз</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-cal"/></svg></span>Годовщина</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-music"/></svg></span>Плейлист пары</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-sos"/></svg></span>SOS обнимашки</div>
+    <div class="gcard"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span>Общий бюджет</div>
   </div>
+</div>
 
-  <div id="packScreen" class="screen">
-    <h1>СТАЯ</h1>
-    <button class="pack-btn" id="btnChannel"><span class="icw"><svg class="ic"><use href="#mega"/></svg></span><span>Канал стаи<span class="s">мемы, апдейты, вой</span></span></button>
-    <button class="pack-btn" id="btnChat"><span class="icw"><svg class="ic"><use href="#chat"/></svg></span><span>Чат стаи<span class="s">общаемся, но каждый сам по себе</span></span></button>
-    <button class="pack-btn" id="btnInvite"><span class="icw"><svg class="ic"><use href="#send"/></svg></span><span>Позвать одиночку<span class="s">скинь ссылку другу-волку</span></span></button>
-    <div class="card"><div class="muted" style="font-size:11px;margin-bottom:8px;letter-spacing:1px">МЫСЛЬ ДНЯ</div><div class="quote" id="quote"></div></div>
+<div id="qrScreen" class="screen">
+  <h1 style="text-align:center">Мой код</h1>
+  <div class="qrbox"><img id="qrImg" alt="qr"></div>
+  <div class="qrnote">Покажи код партнёру —<br>он увидит твою карточку MUG0VE</div>
+</div>
+
+<div id="payScreen" class="screen">
+  <h1>Оплата</h1>
+  <div class="paycard"><div class="t">Общий баланс пары</div><div class="v">∞ любви</div></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-wallet"/></svg></span><div><div class="t">Пополнить обнимашками</div><div class="m"><span>без комиссии</span></div></div></div>
+  <div class="pop"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span><div><div class="t">История свиданий</div><div class="m"><span>12 записей</span></div></div></div>
+</div>
+
+<div id="profileScreen" class="screen">
+  <div class="phead">
+    <div class="av"><img id="avMainImg" alt=""></div>
+    <div><div class="n" id="pName">—</div><div class="p" id="pPhone">+998 (__) ___-__-__</div></div>
+    <div class="acts"><button class="icb" style="background:var(--card)"><svg class="ic"><use href="#i-eye"/></svg></button><button class="icb" style="background:var(--card)" id="editBtn"><svg class="ic"><use href="#i-gear"/></svg></button></div>
   </div>
-
-  <div id="profScreen" class="screen">
-    <h1>ПРОФИЛЬ ВОЛКА</h1>
-    <div class="card" style="text-align:center">
-      <div id="pAv" style="width:84px;height:84px;border-radius:50%;margin:0 auto 10px;background:var(--card2);display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--acc)"><svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolfhead"/></svg></div>
-      <div style="font-size:20px;font-weight:900" id="pName">—</div>
-      <div class="muted" id="pRank">—</div>
+  <div class="pass">
+    <div class="h"><span class="logo">M0</span><span class="tt">MUG0VE PASS</span><span class="chip">DEMO</span></div>
+    <div class="body">
+      <div class="ph"><img id="passImg" alt=""></div>
+      <div class="f">Имя партнёра<b id="passName">—</b>Дата пары<b id="passDate">—</b>Номер карты<b id="passNum">M0-000000</b></div>
     </div>
-    <input id="nameInput" placeholder="Твоё имя в стае">
-    <button class="btn ghost" id="saveName">Сохранить имя</button>
-    <div style="height:10px"></div>
-    <button class="btn ghost" id="disBtn" style="margin-bottom:10px">⚖️ Дисклеймер: я не несу ответственности</button>
-    <button class="btn ghost" id="resetBtn" style="color:#ff6b6b">Сбежать из стаи (сброс)</button>
-    <div class="card" style="margin-top:12px"><div class="muted" style="font-size:12px;line-height:1.6">🌙 ВОЛК ТАП — мемный проект для сообщества одиночек. Всё ненастоящее, кроме уважения.</div></div>
+    <div class="note">ЛИЧНАЯ КАРТА MUG0VE · НЕ ЯВЛЯЕТСЯ ДОКУМЕНТОМ · ДЕМОНСТРАЦИЯ</div>
   </div>
+  <div class="banner"><svg class="ic"><use href="#i-doc"/></svg>Цифровые моменты и сведения<span class="b">Новые</span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-doc"/></svg></span><div><div class="t">Заявки и отзывы</div><div class="s">История, статус и отслеживание</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-heart"/></svg></span><div><div class="t">Моё здоровье</div><div class="s">Справки, связанные с моим зд…</div></div><span class="nb">Новые</span><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-family"/></svg></span><div><div class="t">Моя семья</div><div class="s">Состав семьи: нас двое 💫</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-house"/></svg></span><div><div class="t">Мой дом</div><div class="s">Имущество и кадастр</div></div><span class="nb">Новые</span><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div style="height:14px"></div>
+  <button class="btn" id="photoMeBtn">📷 Моё фото (аватар)</button>
+  <button class="btn" id="photoPartnerBtn">📷 Фото партнёра (карта)</button>
+  <button class="btn" id="nameMeBtn">✏️ Моё имя</button>
+  <button class="btn" id="namePartnerBtn">✏️ Имя партнёра</button>
+  <button class="btn" id="disBtn">⚖️ Дисклеймер: я не несу ответственности</button>
+  <input type="file" id="photoMeInput" accept="image/*" style="display:none">
+  <input type="file" id="photoPartnerInput" accept="image/*" style="display:none">
+</div>
 </div>
 
 <div class="modal" id="disModal"><div class="modal-c">
 <div class="modal-t">⚖️ Дисклеймер</div>
-<div class="modal-x">ВОЛК ТАП / MUG0VE — учебный мем-проект, созданный исключительно для обучения и практики программирования.<br><br>Автор НЕ несёт ответственности за действия пользователей и третьих лиц. Автор НИКОГО не призывал и не призывает к каким-либо действиям; весь контент носит юмористический характер и не является призывом.<br><br>Все данные, балансы, персонажи и «документы» ненастоящие. Используя приложение, вы соглашаетесь, что делаете это добровольно и в развлекательных целях.</div>
+<div class="modal-x">MUG0VE — учебный демонстрационный проект, созданный исключительно для обучения и практики.<br><br>Автор НЕ несёт ответственности за действия пользователей и третьих лиц. Автор НИКОГО не призывал и не призывает к каким-либо действиям; весь контент носит развлекательный характер.<br><br>Все данные, карты и «документы» ненастоящие и документами не являются. Используя приложение, вы соглашаетесь, что делаете это добровольно.</div>
 <button class="btn" id="disOk">Понятно</button>
 </div></div>
 
 <nav>
-  <button data-tab="tap" class="active"><svg class="ic"><use href="#wolfhead"/></svg>ТАП</button>
-  <button data-tab="top"><svg class="ic"><use href="#trophy"/></svg>ТОП</button>
-  <button data-tab="pack"><svg class="ic"><use href="#moon"/></svg>СТАЯ</button>
-  <button data-tab="prof"><svg class="ic"><use href="#i-user"/></svg>ПРОФИЛЬ</button>
+  <button data-tab="home" class="active"><svg class="ic"><use href="#i-home"/></svg>Главная</button>
+  <button data-tab="services"><svg class="ic"><use href="#i-grid"/></svg>Услуги</button>
+  <button data-tab="qr" class="qr"><svg class="ic" style="width:26px;height:26px"><use href="#i-qr"/></svg></button>
+  <button data-tab="pay"><svg class="ic"><use href="#i-wallet"/></svg>Оплата</button>
+  <button data-tab="profile"><svg class="ic"><use href="#i-user"/></svg>Профиль</button>
 </nav>
-<div class="toast" id="toast"></div>
 
 <script>
-/* ===== ССЫЛКИ ===== */
-const CHANNEL_URL='https://t.me/voystai';
-const CHAT_URL='https://t.me/voystai_chat';
-const BOT_LINK='https://t.me/voystai_bot'; // ← если у НОВОГО бота другой username, замени здесь
-/* ================== */
-const RANKS=[['Щенок',0],['Волк',500],['Матёрый',2500],['Альфа',10000],['ОДИНОЧКА',50000]];
-const QUOTES=['Волк не оглядывается на овцу.','Одиночество — это не пустота, это свобода.','Пока все спят, волк тапает.','Сила стаи — в каждом одиночке.','Ты не изгой. Ты разведчик.','Лунный свет не спрашивает разрешения.','Молчание — самый громкий вой.','Сигма не объясняет. Сигма тапает.'];
-let S=JSON.parse(localStorage.getItem('wolftap')||'null');
-if(!S)S={id:'',name:'',bal:0,taps:0,crits:0,best:1,joined:false,char:null,unlocks:[]};
-if(!S.unlocks)S.unlocks=[];
+const BOT_LINK='https://t.me/mugu0ve_bot';
 const $=id=>document.getElementById(id);
 const tgU=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe)?Telegram.WebApp.initDataUnsafe.user:null;
-if(!S.id)S.id=tgU?String(tgU.id):('x'+Math.random().toString(36).slice(2,10));
-if(!S.name&&tgU)S.name=tgU.first_name||'волк';
-function save(){localStorage.setItem('wolftap',JSON.stringify(S))}
-let CHARS=[],CUR_CHAR=S.char||null;
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
-function rankOf(b){let i=0;RANKS.forEach((r,j)=>{if(b>=r[1])i=j});return i}
-function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(tab+'Screen').classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  if(tab==='top')loadTop();if(tab==='prof')renderProf()}
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
-fetch('/api/me?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
-  if(!d.registered){$('regGate').style.display='flex';$('welcome').style.display='none'}
-}).catch(()=>{});
-$('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
-if(S.joined){$('welcome').style.display='none';if($('regGate').style.display!=='flex')show('tap')}
-$('joinBtn').addEventListener('click',()=>{S.joined=true;save();$('welcome').style.display='none';show('tap');sync();toast('Добро пожаловать в стаю')});
-const priceLabel=c=>c.price>0?c.price.toLocaleString('ru-RU')+(c.cur==='taps'?' тапов':' ВОЙ'):'бесплатно';
-const isUnlocked=c=>!c.price||S.unlocks.includes(c.id);
-const canClaim=c=>!isUnlocked(c)&&(c.cur==='taps'?S.taps>=c.price:S.bal>=c.price);
-function loadChars(){fetch('/api/chars').then(r=>r.json()).then(d=>{CHARS=d.chars||[];
-  if(CUR_CHAR){const f=CHARS.find(c=>c.id===CUR_CHAR.id);CUR_CHAR=f||null}
-  loadUnlocks()}).catch(()=>{})}
-function loadUnlocks(){fetch('/api/unlocks?id='+encodeURIComponent(S.id)).then(r=>r.json()).then(d=>{
-  S.unlocks=d.unlocks||[];save();renderChars();applyChar()}).catch(()=>{renderChars();applyChar()})}
-function renderChars(){const w=$('charRow');if(!w)return;w.innerHTML='';
-  const d0=document.createElement('button');d0.className=!CUR_CHAR?'on':'';
-  d0.innerHTML='<span class="av"><svg class="icf"><use href="#wolfhead"/></svg></span>Обычный<span class="pr">x1</span>';
-  d0.onclick=()=>{CUR_CHAR=null;S.char=null;save();renderChars();applyChar()};w.appendChild(d0);
-  CHARS.forEach(c=>{const un=isUnlocked(c);const b=document.createElement('button');
-    b.dataset.id=c.id;
-    b.className=((CUR_CHAR&&CUR_CHAR.id===c.id)?'on ':'')+(un?'':(canClaim(c)?'can':''));
-    const lock=!un?'<i class="lk"><svg class="ic"><use href="#lock"/></svg></i>':'';
-    const img=c.image?`<img src="${c.image}">`:`<svg class="icf"><use href="#wolfhead"/></svg>`;
-    const pr=un?('x'+c.mult):(canClaim(c)?'ЗАБРАТЬ!':priceLabel(c));
-    b.innerHTML=`<span class="av">${img}${lock}</span>${c.name}<span class="pr">${pr}</span>`;
-    b.onclick=()=>{
-      if(un){CUR_CHAR=c;S.char=c;save();renderChars();applyChar();toast(c.name+' выбран');return}
-      if(!canClaim(c)){
-        const have=c.cur==='taps'?S.taps.toLocaleString('ru-RU')+' тапов':S.bal.toLocaleString('ru-RU')+' ВОЙ';
-        toast('🔒 Нужно '+priceLabel(c)+' · у тебя '+have);return}
-      fetch('/api/unlock',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({id:S.id,char_id:c.id})}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
-          S.unlocks.push(c.id);if(typeof d.balance==='number')S.bal=d.balance;
-          CUR_CHAR=c;S.char=c;save();render();renderChars();applyChar();
-          toast('🎉 Перс «'+c.name+'» открыт!');
-        }).catch(()=>toast('Сервер недоступен, позже'))};
-    w.appendChild(b)})}
-function applyChar(){const w=$('wolf');if(!w)return;
-  w.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img class="wolfimg" src="${CUR_CHAR.image}">`:'<svg class="wolfsvg icf"><use href="#wolfhead"/></svg>';
-  const p=$('pAv');if(p)p.innerHTML=(CUR_CHAR&&CUR_CHAR.image)?`<img src="${CUR_CHAR.image}" style="width:100%;height:100%;object-fit:cover">`:'<svg class="icf" style="width:48px;height:48px;color:var(--moon)"><use href="#wolfhead"/></svg>'}
-let combo=0,lastTap=0;
-$('wolfZone').addEventListener('pointerdown',e=>{
-  const now=Date.now();combo=(now-lastTap<1000)?combo+1:1;lastTap=now;
-  if(combo>S.best)S.best=combo;
-  const ri=rankOf(S.bal);
-  const crit=combo>=10&&Math.random()<0.12;
-  const gain=Math.round(((crit?5:1)+ri)*(CUR_CHAR?CUR_CHAR.mult:1));
-  S.bal+=gain;S.taps++;if(crit)S.crits++;
-  const w=$('wolf');w.classList.add('hit');setTimeout(()=>w.classList.remove('hit'),90);
-  if(crit){const fl=$('flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on')}
-  const f=document.createElement('div');f.className='float'+(crit?' crit':'');f.textContent=(crit?'КРИТ +':'+')+gain;
-  const z=$('wolfZone').getBoundingClientRect();
-  f.style.left=(e.clientX-z.left-10+(Math.random()*40-20))+'px';f.style.top=(e.clientY-z.top-20)+'px';
-  $('wolfZone').appendChild(f);setTimeout(()=>f.remove(),800);
-  const cb=$('combo');cb.textContent='COMBO x'+combo;cb.classList.toggle('on',combo>1);
-  if(navigator.vibrate)navigator.vibrate(crit?[30,20,30]:12);
-  render();save();refreshCharStates();
-});
-function refreshCharStates(){document.querySelectorAll('#charRow button[data-id]').forEach(b=>{
-  const c=CHARS.find(x=>x.id==b.dataset.id);if(!c||isUnlocked(c))return;
-  const can=canClaim(c);b.classList.toggle('can',can);
-  const pr=b.querySelector('.pr');if(pr)pr.textContent=can?'ЗАБРАТЬ!':priceLabel(c)})}
-function render(){
-  $('balance').textContent=S.bal.toLocaleString('ru-RU');
-  const ri=rankOf(S.bal);$('rankBadge').textContent=RANKS[ri][0];$('rankNow').textContent=RANKS[ri][0];
-  const next=RANKS[ri+1];$('rankNext').textContent=next?('→ '+next[0]):'МАКС';
-  const base=RANKS[ri][1],top=next?next[1]:S.bal;
-  $('rankBar').style.width=(next?Math.min(100,(S.bal-base)/(top-base)*100):100)+'%';
-  $('stTaps').textContent=S.taps.toLocaleString('ru-RU');$('stCrits').textContent=S.crits;$('stBest').textContent='x'+S.best;
+let P=JSON.parse(localStorage.getItem('mugove')||'null')||{
+  me:(tgU&&tgU.first_name)||'Ты', phone:'+998 (__) ___-__-__', partner:'Моя пара',
+  date:'01.01.2026', num:'M0-'+Math.floor(100000+Math.random()*900000), photoMe:'', photoPartner:''};
+function save(){localStorage.setItem('mugove',JSON.stringify(P))}
+function paint(){
+  $('homeName').textContent=P.me; $('pName').textContent=P.me; $('pPhone').textContent=P.phone;
+  $('passName').textContent=P.partner; $('passDate').textContent=P.date; $('passNum').textContent=P.num;
+  if(P.photoMe)$('avMainImg').src=P.photoMe;
+  if(P.photoPartner)$('passImg').src=P.photoPartner;
 }
-function sync(){fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:S.id,name:S.name||'волк-аноним',balance:S.bal,taps:S.taps})}).catch(()=>{})}
-setInterval(sync,5000);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)sync()});
-function loadTop(){fetch('/api/top').then(r=>r.json()).then(d=>{
-  const w=$('topList');
-  if(!d.users||!d.users.length){w.innerHTML='<div class="muted" style="text-align:center;padding:20px">Пока пусто. Ты первый волк</div>';return}
-  w.innerHTML='';d.users.forEach((u,i)=>{
-    const div=document.createElement('div');div.className='tx';
-    const me=u.id===S.id;
-    div.innerHTML='<div class="pos '+(i===0?'m1':i===1?'m2':i===2?'m3':'')+'">'+(i+1)+'</div><div class="av"><svg class="icf"><use href="#wolfhead"/></svg></div><div class="n '+(me?'me':'')+'">'+u.name+(me?' (ты)':'')+'</div><div class="b">'+u.balance.toLocaleString('ru-RU')+'</div>';
-    w.appendChild(div)});
-  }).catch(()=>{$('topList').innerHTML='<div class="muted" style="text-align:center;padding:20px">Топ недоступен офлайн</div>'})}
-$('btnChannel').addEventListener('click',()=>location.href=CHANNEL_URL);
-$('btnChat').addEventListener('click',()=>location.href=CHAT_URL);
-$('btnInvite').addEventListener('click',()=>{const t='Я в стае ВОЛК ТАП 🐺 Тапай волка, копи ВОЙ, открывай персов: '+BOT_LINK;
-  if(navigator.share)navigator.share({text:t}).catch(()=>{});else{if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Ссылка скопирована')}});
-$('quote').textContent=QUOTES[new Date().getDate()%QUOTES.length];
-function renderProf(){$('pName').textContent=S.name||'волк-аноним';
-  $('pRank').textContent=RANKS[rankOf(S.bal)][0]+' · '+S.bal.toLocaleString('ru-RU')+' ВОЙ';
-  $('nameInput').value=S.name||'';applyChar()}
-$('saveName').addEventListener('click',()=>{S.name=$('nameInput').value.trim()||'волк-аноним';save();renderProf();sync();toast('Имя сохранено ✓')});
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(b.dataset.tab+'Screen').classList.add('active');
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b))}));
+function bindPhoto(btnId,inputId,key){$(btnId).addEventListener('click',()=>$(inputId).click());
+  $(inputId).addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=()=>{P[key]=r.result;save();paint()};r.readAsDataURL(f)})}
+bindPhoto('photoMeBtn','photoMeInput','photoMe');
+bindPhoto('photoPartnerBtn','photoPartnerInput','photoPartner');
+$('nameMeBtn').addEventListener('click',()=>{const n=prompt('Твоё имя:',P.me);if(n){P.me=n.trim();save();paint()}});
+$('namePartnerBtn').addEventListener('click',()=>{const n=prompt('Имя партнёра:',P.partner);if(n){P.partner=n.trim();save();paint()}});
+$('editBtn').addEventListener('click',()=>{const n=prompt('Телефон для отображения:',P.phone);if(n){P.phone=n.trim();save();paint()}});
 $('disBtn').addEventListener('click',()=>$('disModal').classList.add('show'));
 $('disOk').addEventListener('click',()=>$('disModal').classList.remove('show'));
-$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбежать? Весь прогресс и персы сгорят.')){S={id:S.id,name:S.name,bal:0,taps:0,crits:0,best:1,joined:true,char:null,unlocks:[]};CUR_CHAR=null;save();render();renderChars();applyChar();sync();toast('Начисто. Новый волк')}});
+$('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=ffffff&color=0d0f12&data='+encodeURIComponent(BOT_LINK);
+const start=new Date('2026-01-01');
+$('daysTogether').textContent=Math.max(1,Math.floor((Date.now()-start)/86400000))+' дн.';
 if(window.Telegram&&Telegram.WebApp){try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}}
-render();loadChars();
+paint();
 </script>
 </body>
 </html>
