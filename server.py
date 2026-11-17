@@ -1,4 +1,4 @@
-"""server.py — GRAM: регистрация (контакт+юзернейм), нули, 24h lock, адресные демо-офферы"""
+"""server.py — GRAM: регистрация (контакт+юзернейм), смена юзернейма, нули, 24h lock, адресные демо-офферы"""
 import os, re, time
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -9,10 +9,11 @@ from pydantic import BaseModel
 DB_URL = os.getenv("DATABASE_URL", "").strip()
 ADMIN_ID = os.getenv("ADMIN_ID", "8062748340")
 MARKET_AGE_SEC = 24 * 3600
+UNAME_RE = re.compile(r"[a-z0-9_]{3,32}")
+LINK_RE = re.compile(r"t\.me/nft/[A-Za-z0-9_-]+-\d+", re.I)
 app = FastAPI(title="GRAM")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 MEM = {"users": {}, "offers": [], "next_offer": 1}
-LINK_RE = re.compile(r"t\.me/nft/[A-Za-z0-9_-]+-\d+", re.I)
 
 def conn():
     if not DB_URL:
@@ -51,6 +52,10 @@ class Reg(BaseModel):
     name: str = "user"
     username: str = ""
 
+class UsernameIn(BaseModel):
+    id: str
+    username: str
+
 class OfferIn(BaseModel):
     to_username: str
     gift_link: str
@@ -84,7 +89,7 @@ def me(id: str):
             c.close()
             return {"registered": False, "balance": 0, "stars": 0, "registered_at": 0, "username": "", "market_unlocks_in": MARKET_AGE_SEC}
         reg_at = int(row[3] or 0)
-        if row[0] and reg_at == 0:  # backfill: старый аккаунт без метки — ставим сейчас и держим 24h
+        if row[0] and reg_at == 0:
             reg_at = now
             with c.cursor() as cur:
                 cur.execute("UPDATE gram_users SET registered_at=%s, updated=%s WHERE id=%s", (now, now, id))
@@ -108,7 +113,7 @@ def register(u: Reg):
             cur.execute("""INSERT INTO gram_users(id,name,phone,username,registered,balance,stars,registered_at,updated)
                            VALUES(%s,%s,%s,%s,TRUE,0,0,%s,%s)
                            ON CONFLICT(id) DO UPDATE SET phone=EXCLUDED.phone, registered=TRUE, name=EXCLUDED.name,
-                           username=EXCLUDED.username, updated=EXCLUDED.updated,
+                           username=EXCLUDED.username, updated=EXCLUDED.username,
                            registered_at=CASE WHEN gram_users.registered_at=0 THEN %s ELSE gram_users.registered_at END""",
                         (u.id, u.name[:40], u.phone, u.username[:32].lstrip('@').lower(), now, now, now))
         c.close()
@@ -118,6 +123,29 @@ def register(u: Reg):
         if not m.get("registered_at"):
             m["registered_at"] = now
     return {"ok": True}
+
+@app.post("/api/gram/username")
+def set_username(u: UsernameIn):
+    uname = (u.username or "").lstrip('@').lower()
+    if not UNAME_RE.fullmatch(uname):
+        raise HTTPException(400, "bad username")
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("SELECT id FROM gram_users WHERE lower(username)=%s AND id<>%s", (uname, u.id))
+            if cur.fetchone():
+                raise HTTPException(409, "taken")
+            cur.execute("UPDATE gram_users SET username=%s, updated=%s WHERE id=%s", (uname, int(time.time()), u.id))
+        c.close()
+    else:
+        for other in MEM["users"].values():
+            if other.get("username") == uname and other["id"] != u.id:
+                raise HTTPException(409, "taken")
+        m = MEM["users"].get(u.id)
+        if not m:
+            raise HTTPException(404, "not registered")
+        m["username"] = uname
+    return {"ok": True, "username": uname}
 
 @app.get("/api/gram/offers")
 def offers(username: str):
