@@ -20,7 +20,6 @@ body::after{content:'';position:fixed;bottom:-200px;right:-120px;width:420px;hei
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
 button:active{transform:scale(.95)}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.icf{width:22px;height:22px;fill:currentColor;stroke:none}
 .head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .head .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--deep),var(--sky));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;box-shadow:0 8px 22px rgba(29,78,216,.5)}
 .head .t{font-size:19px;font-weight:900;letter-spacing:.5px}
@@ -34,7 +33,7 @@ button:active{transform:scale(.95)}
 .bal-card .val{font-size:44px;font-weight:900;letter-spacing:-1.5px;margin:8px 0 4px;position:relative;display:flex;align-items:center;gap:12px}
 .bal-card .val .ton{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:20px;animation:float 3s ease-in-out infinite}
 .bal-card .sub{font-size:13px;color:#bcd6ff;position:relative}
-.bal-card .addr{margin-top:16px;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.28);border-radius:12px;padding:10px 14px;width:fit-content;position:relative;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.bal-card .addr{margin-top:16px;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.28);border-radius:12px;padding:10px 14px;width:fit-content;position:relative;letter-spacing:.5px}
 .acts{display:flex;gap:10px;margin:18px 0}
 .act{flex:1;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px 6px;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11.5px;font-weight:700;color:var(--muted)}
 .act .icw{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff}
@@ -47,12 +46,11 @@ button:active{transform:scale(.95)}
 .sec .link{color:var(--acc2);font-size:13px;font-weight:700}
 .tx{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
 .tx:last-child{border-bottom:none}
-.tx .icw{width:42px;height:42px;border-radius:13px;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tx .in .ic{color:var(--green)}.tx .out .ic{color:var(--red)}.tx .gift .ic{color:var(--gold)}
+.tx .icw{width:42px;height:42px;border-radius:13px;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--muted)}
 .tx .n{font-weight:700;font-size:14.5px}
 .tx .d{font-size:12px;color:var(--muted);margin-top:2px}
-.tx .a{font-weight:800;font-size:14.5px;margin-left:auto;white-space:nowrap}
-.tx .a.plus{color:var(--green)}.tx .a.minus{color:var(--red)}
+.tx .a{font-weight:800;font-size:14.5px;margin-left:auto;white-space:nowrap;color:var(--muted)}
+.empty{ text-align:center;color:var(--muted);padding:26px 0;font-size:14px}
 .gwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .gcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;animation:pop .3s both}
 .gcard .img{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
@@ -64,8 +62,34 @@ button:active{transform:scale(.95)}
 .gcard .in{padding:13px}
 .gcard .nm{font-weight:800;font-size:14px}
 .gcard .no{font-size:11px;color:var(--muted);margin-top:2px}
-.gcard .pr{margin-top:9px;font-weight:900;color:var(--gold);font-size:15px;display:flex;align-items:center;gap:5px}
-.gcard .sell{margin-top:11px;width:100%;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px;font-size:12px;font-weight:700;color:var(--acc2);display:flex;align-items:center;justify-content:center;gap:6px}
+.gcard .pr{margin-top:9px;font-weight:900;color:var(--gold);font-size:15px}
+.gcard .sell{margin-top:11px;width:100%;background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:10px;font-size:12px;font-weight:700;color:var(--acc2)}
+/* lock */
+.lockbox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 20px;text-align:center}
+.lockbox .lk{font-size:52px;margin-bottom:12px}
+.lockbox .tt{font-size:17px;font-weight:800;margin-bottom:8px}
+.lockbox .ds{font-size:13px;color:var(--muted);line-height:1.55}
+.lockbox .cd{margin-top:14px;font-size:26px;font-weight:900;color:var(--acc2);letter-spacing:1px}
+/* offers */
+.offer{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-bottom:14px;animation:pop .3s both}
+.offer .ohead{display:flex;align-items:center;gap:8px;padding:12px 14px;background:linear-gradient(90deg,rgba(29,78,216,.35),rgba(56,189,248,.15));font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--sky)}
+.offer .ohead .ologo{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--deep),var(--sky));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
+.offer .ohead .oid{margin-left:auto;color:var(--muted);font-weight:700}
+.offer .obody{padding:14px}
+.offer .ogift{font-size:16px;font-weight:800;margin-bottom:8px}
+.offer .otext{font-size:14px;line-height:1.5;color:var(--text)}
+.offer .otext .gold{color:var(--gold)}
+.offer .otimer{margin-top:10px;font-size:12.5px;color:var(--muted)}
+.offer .obtns{display:flex;gap:10px;padding:0 14px 14px}
+.offer .obtn{flex:1;border-radius:12px;padding:12px;font-weight:800;font-size:14px}
+.offer .obtn.acc{background:linear-gradient(135deg,#059669,#34d399);color:#04211a}
+.offer .obtn.dec{background:var(--card2);border:1px solid var(--line);color:var(--muted)}
+.offer .owm{background:rgba(245,158,11,.14);color:#fbbf24;font-size:10.5px;font-weight:800;letter-spacing:.6px;text-align:center;padding:8px 10px}
+.adminform{background:var(--card);border:1px dashed rgba(96,165,250,.4);border-radius:20px;padding:16px;margin-bottom:16px}
+.adminform .t{font-size:14px;font-weight:800;color:var(--acc2);margin-bottom:10px}
+.adminform input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;color:var(--text);font-family:inherit;margin-bottom:10px}
+.adminform input:focus{outline:2px solid var(--acc)}
+/* pitch */
 .pitch-hero{border-radius:24px;padding:22px;background:linear-gradient(135deg,#0b2a5b,#1d4ed8 55%,#2563eb);position:relative;overflow:hidden;margin-bottom:16px}
 .pitch-hero::after{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.3),transparent 70%)}
 .pitch-hero .tag{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--sky);position:relative}
@@ -122,13 +146,22 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4v13m0 0l-3-3m3 3l3-3M17 20V7m0 0l-3 3m3-3l3 3"/></symbol>
 <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v9h14v-9M12 8v13M12 8s-4 0-4-3a2 2 0 0 1 4 0M12 8s4 0 4-3a2 2 0 0 0-4 0"/></symbol>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-7h-4v7H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></symbol>
 <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1 1-1 4-1 4s3 0 4-1M9 11a12 12 0 0 1 9-8c1 5-2 9-8 9M9 11l4 4M9 11l-4 1m8 3l1 4"/><circle cx="14" cy="9" r="1.4"/></symbol>
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></symbol>
 <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
 </svg>
+
+<div id="regGate" style="position:fixed;inset:0;background:rgba(6,11,20,.97);z-index:700;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center">
+  <div style="font-size:64px;margin-bottom:12px">📱</div>
+  <h1 style="margin-bottom:8px">Нужна регистрация</h1>
+  <p class="note" style="margin-bottom:20px">Открой бота и отправь контакт —<br>иначе кошелёк не откроется.<br>После регистрации всё по нулям.</p>
+  <button class="big-btn" id="regBtn" style="max-width:260px">💎 Открыть бота</button>
+</div>
 
 <div class="wrap">
 <!-- WALLET -->
@@ -136,24 +169,22 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
   <div class="head">
     <div class="logo">G</div>
     <div class="t">GRAM<small>WALLET & MARKET</small></div>
-    <div class="right"><button class="icb"><svg class="ic"><use href="#i-shield"/></svg></button><button class="icb"><svg class="ic"><use href="#i-chart"/></svg></button></div>
+    <div class="right"><button class="icb" data-go="profile"><svg class="ic"><use href="#i-shield"/></svg></button><button class="icb" data-go="pitch"><svg class="ic"><use href="#i-chart"/></svg></button></div>
   </div>
   <div class="bal-card">
     <div class="lbl">Ваш баланс</div>
-    <div class="val"><span class="ton">💎</span>0.041 <span style="font-size:18px;font-weight:700;color:#cfe0ff">TON</span></div>
-    <div class="sub">≈ 12 480 ₽ · ≈ 140 ⭐ эквивалент</div>
-    <div class="addr">UQAb3x…9fK2 <svg class="ic" style="width:14px;height:14px;opacity:.7"><use href="#i-send"/></svg></div>
+    <div class="val"><span class="ton">💎</span><span id="balTon">0</span> <span style="font-size:18px;font-weight:700;color:#cfe0ff">TON</span></div>
+    <div class="sub" id="balSub">≈ 0 ₽ · 0 ⭐ эквивалент</div>
+    <div class="addr" id="addrLine">UQ… · адрес появится после пополнения</div>
   </div>
   <div class="acts">
     <button class="act a1" data-go="send"><span class="icw"><svg class="ic"><use href="#i-up"/></svg></span>Отправить</button>
     <button class="act a2" data-go="send"><span class="icw"><svg class="ic"><use href="#i-down"/></svg></span>Пополнить</button>
     <button class="act a3" data-go="market"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span>Подарки</button>
-    <button class="act a4" data-go="market"><span class="icw"><svg class="ic"><use href="#i-swap"/></svg></span>Обмен</button>
+    <button class="act a4" data-go="offers"><span class="icw"><svg class="ic"><use href="#i-box"/></svg></span>Офферы</button>
   </div>
   <div class="sec"><span class="t">Последние операции</span><span class="link" data-go="history">Все ›</span></div>
-  <div class="tx"><span class="icw in"><svg class="ic"><use href="#i-down"/></svg></span><div><div class="n">Пополнение</div><div class="d">сегодня 14:02</div></div><div class="a plus">+0.5 TON</div></div>
-  <div class="tx"><span class="icw out"><svg class="ic"><use href="#i-up"/></svg></span><div><div class="n">Перевод @alex</div><div class="d">вчера 19:30</div></div><div class="a minus">−0.2 TON</div></div>
-  <div class="tx"><span class="icw gift"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="n">Snake Box #14046</div><div class="d">3 дня назад</div></div><div class="a plus">получен</div></div>
+  <div id="txMini"><div class="empty">Операций пока нет — баланс 0</div></div>
   <div class="note">💙 ДЕМО-ВИЗУАЛ · данные не настоящие · кнопки не работают</div>
 </div>
 
@@ -161,37 +192,56 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
 <div id="sendScreen" class="screen">
   <span class="demo-tag">DEMO · НЕ РАБОТАЕТ</span>
   <h1>Отправить</h1>
-  <div class="bal-card" style="padding:18px;margin-bottom:16px"><div class="lbl">Доступно</div><div class="val" style="font-size:30px"><span class="ton">💎</span>0.041 TON</div></div>
+  <div class="bal-card" style="padding:18px;margin-bottom:16px"><div class="lbl">Доступно</div><div class="val" style="font-size:30px"><span class="ton">💎</span><span id="balTon2">0</span> TON</div></div>
   <div class="fieldbox"><div class="l">Кому</div><div class="v">UQ… или @username</div></div>
   <div class="fieldbox"><div class="l">Сумма</div><div class="v big">0.00 <span>TON</span></div></div>
   <button class="big-btn"><svg class="ic"><use href="#i-send"/></svg>Отправить</button>
-  <div class="note">В рабочей версии — подпись кошельком и отправка в сеть TON.</div>
+  <div class="note">Баланс 0 — отправка недоступна до пополнения.</div>
+</div>
+
+<!-- MARKET -->
+<div id="marketScreen" class="screen">
+  <span class="demo-tag">DEMO · НЕ РАБОТАЕТ</span>
+  <h1>Маркет подарков</h1>
+  <div id="marketLock" style="display:none">
+    <div class="lockbox">
+      <div class="lk">🔒</div>
+      <div class="tt">Маркет закрыт для вашего аккаунта</div>
+      <div class="ds">Торговля открывается через 24 часа после регистрации — это защита от скама: свежие аккаунты не могут выставлять и покупать подарки.</div>
+      <div class="cd" id="lockLeft">--:--:--</div>
+    </div>
+  </div>
+  <div id="marketOpen" style="display:none">
+    <div class="note" style="text-align:left;margin:0 0 14px;padding:0">Продавцы выставляют <b>свои</b> подарки. Сделка идёт официально через Telegram — напишите продавцу в личку. Никаких «принять/отклонить» от имени системы.</div>
+    <div class="gwrap">
+      <div class="gcard"><div class="img g1"><span class="rar">РЕДКИЙ</span>🐍</div><div class="in"><div class="nm">Snake Box</div><div class="no">#14046</div><div class="pr">1000 ⭐</div><button class="sell">@brooklyn</button></div></div>
+      <div class="gcard"><div class="img g2"><span class="rar">ЭПИК</span>🌙</div><div class="in"><div class="nm">Moon Pendant</div><div class="no">#48365</div><div class="pr">600 ⭐</div><button class="sell">@alex</button></div></div>
+      <div class="gcard"><div class="img g3"><span class="rar">FREE 24H</span>💍</div><div class="in"><div class="nm">Golden Rings</div><div class="no">#22018</div><div class="pr">350 ⭐</div><button class="sell">@mina</button></div></div>
+      <div class="gcard"><div class="img g4"><span class="rar">РЕДКИЙ</span>🎧</div><div class="in"><div class="nm">Neon Helmet</div><div class="no">#90421</div><div class="pr">480 ⭐</div><button class="sell">@leo</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- OFFERS: демо-визуал будущих честных офферов -->
+<div id="offersScreen" class="screen">
+  <span class="demo-tag">DEMO-ОФФЕРЫ · НЕ НАСТОЯЩИЕ</span>
+  <h1>Офферы</h1>
+  <div class="adminform" id="adminForm" style="display:none">
+    <div class="t">🛠 Админка: создать демо-оффер</div>
+    <input id="ofLink" placeholder="Ссылка: t.me/nft/SnakeBox-14046">
+    <input id="ofPrice" placeholder="Цена в звёздах: 1000" inputmode="numeric">
+    <input id="ofBuyer" placeholder="Имя покупателя: @brooklyn">
+    <button class="big-btn" id="ofCreate">Создать демо-оффер</button>
+  </div>
+  <div id="offersList"><div class="empty">Офферов пока нет</div></div>
+  <div class="note">Это прототип интерфейса будущих честных сделок с эскроу внутри GRAM. Кнопки ничего не проводят.</div>
 </div>
 
 <!-- HISTORY -->
 <div id="historyScreen" class="screen">
   <span class="demo-tag">DEMO · НЕ РАБОТАЕТ</span>
   <h1>История</h1>
-  <div class="tx"><span class="icw in"><svg class="ic"><use href="#i-down"/></svg></span><div><div class="n">Пополнение</div><div class="d">сегодня 14:02</div></div><div class="a plus">+0.5 TON</div></div>
-  <div class="tx"><span class="icw out"><svg class="ic"><use href="#i-up"/></svg></span><div><div class="n">Перевод @alex</div><div class="d">вчера 19:30</div></div><div class="a minus">−0.2 TON</div></div>
-  <div class="tx"><span class="icw gift"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="n">Продажа MoonPendant</div><div class="d">2 дня назад</div></div><div class="a plus">+0.8 TON</div></div>
-  <div class="tx"><span class="icw out"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="n">Покупка Snake Box</div><div class="d">3 дня назад</div></div><div class="a minus">−0.3 TON</div></div>
-</div>
-
-<!-- MARKET: честные объявления -->
-<div id="marketScreen" class="screen">
-  <span class="demo-tag">DEMO · НЕ РАБОТАЕТ</span>
-  <h1>Маркет подарков</h1>
-  <div class="note" style="text-align:left;margin:0 0 14px;padding:0">Продавцы выставляют <b>свои</b> подарки. Сделка идёт официально через Telegram — напишите продавцу в личку. Никаких «принять/отклонить» от имени системы.</div>
-  <div class="gwrap">
-    <div class="gcard"><div class="img g1"><span class="rar">РЕДКИЙ</span>🐍</div><div class="in"><div class="nm">Snake Box</div><div class="no">#14046</div><div class="pr">1000 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@brooklyn</button></div></div>
-    <div class="gcard"><div class="img g2"><span class="rar">ЭПИК</span>🌙</div><div class="in"><div class="nm">Moon Pendant</div><div class="no">#48365</div><div class="pr">600 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@alex</button></div></div>
-    <div class="gcard"><div class="img g3"><span class="rar">FREE 24H</span>💍</div><div class="in"><div class="nm">Golden Rings</div><div class="no">#22018</div><div class="pr">350 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@mina</button></div></div>
-    <div class="gcard"><div class="img g4"><span class="rar">РЕДКИЙ</span>🎧</div><div class="in"><div class="nm">Neon Helmet</div><div class="no">#90421</div><div class="pr">480 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@leo</button></div></div>
-    <div class="gcard"><div class="img g5"><span class="rar">ЛЕГЕНД</span>🚀</div><div class="in"><div class="nm">Rocket Pack</div><div class="no">#00777</div><div class="pr">1200 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@nova</button></div></div>
-    <div class="gcard"><div class="img g6"><span class="rar">ЭПИК</span>🎀</div><div class="in"><div class="nm">Pink Bow</div><div class="no">#33120</div><div class="pr">520 ⭐</div><button class="sell"><svg class="ic" style="width:14px;height:14px"><use href="#i-send"/></svg>@kate</button></div></div>
-  </div>
-  <div class="note">В рабочей версии: верификация продавца, отзывы, история сделок, эскроу.</div>
+  <div id="txFull"><div class="empty">Операций пока нет — баланс 0</div></div>
 </div>
 
 <!-- PITCH -->
@@ -200,7 +250,7 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
   <div class="pitch-hero">
     <div class="tag">MUG0VE · GRAM</div>
     <h2>Кошелёк TON + маркетплейс Telegram-подарков</h2>
-    <p>Сейчас подарками торгуют через скам и ручные переводы. Мы даём безопасную витрину с верификацией продавцов, отзывами и эскроу — и кошелёк, где всё это живёт.</p>
+    <p>Сейчас подарками торгуют через скам и ручные переводы. Мы даём безопасную витрину: 24h-лок для новых аккаунтов, верификация продавцов, отзывы и эскроу — и кошелёк, где всё это живёт.</p>
   </div>
   <div class="metrics">
     <div class="metric"><div class="v">2.4M</div><div class="t">РЫНОК ⭐/МЕС</div></div>
@@ -210,23 +260,22 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
   <div class="sec"><span class="t">Roadmap</span><span class="link">v1.0 ›</span></div>
   <div class="road">
     <div class="rstep done"><span class="ln"></span><span class="dot"></span><div><div class="tt">Концепт и визуал</div><div class="ds">UI/UX мини-аппа, кошелёк, витрина</div><div class="ph">ГОТОВО</div></div></div>
-    <div class="rstep now"><span class="ln"></span><span class="dot"></span><div><div class="tt">MVP: кошелёк + объявления</div><div class="ds">TonConnect, баланс, отправка, витрина продавцов</div><div class="ph">СЕЙЧАС</div></div></div>
-    <div class="rstep"><span class="ln"></span><span class="dot"></span><div><div class="tt">Верификация + отзывы</div><div class="ds">Рейтинг продавцов, защита от скама</div><div class="ph">Q2</div></div></div>
-    <div class="rstep"><span class="ln"></span><span class="dot"></span><div><div class="tt">Эскроу-сделки</div><div class="ds">Безопасная передача подарка и звёзд</div><div class="ph">Q3</div></div></div>
+    <div class="rstep now"><span class="ln"></span><span class="dot"></span><div><div class="tt">MVP: регистрация + 24h lock</div><div class="ds">Контакт-регистрация, нули, защита от свежих аккаунтов</div><div class="ph">СЕЙЧАС</div></div></div>
+    <div class="rstep"><span class="ln"></span><span class="dot"></span><div><div class="tt">Офферы с эскроу</div><div class="ds">Честные предложения покупки внутри GRAM, без имитации Telegram</div><div class="ph">Q2</div></div></div>
+    <div class="rstep"><span class="ln"></span><span class="dot"></span><div><div class="tt">Верификация + отзывы</div><div class="ds">Рейтинг продавцов, защита от скама</div><div class="ph">Q3</div></div></div>
     <div class="rstep"><span class="dot"></span><div><div class="tt">Масштаб и монетизация</div><div class="ds">Комиссия 3%, партнёрства, аналитика</div><div class="ph">Q4</div></div></div>
   </div>
-  <div class="note">Питч строится на продукте, который решает реальную боль рынка.</div>
 </div>
 
 <!-- PROFILE -->
 <div id="profileScreen" class="screen">
   <span class="demo-tag">DEMO · НЕ РАБОТАЕТ</span>
   <h1>Профиль</h1>
-  <div class="pcard"><div class="av">A</div><div><div class="n">Арслан</div><div class="u">@arslan · GRAM</div></div><div class="rep"><div class="v">—</div><div class="t">РЕПУТАЦИЯ</div></div></div>
-  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="t">Мои подарки</div><div class="s">1 в инвентаре</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-chart"/></svg></span><div><div class="t">Мои объявления</div><div class="s">0 активных</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="pcard"><div class="av" id="pAv">A</div><div><div class="n" id="pName">—</div><div class="u" id="pAge">аккаунт: —</div></div><div class="rep"><div class="v">0</div><div class="t">РЕПУТАЦИЯ</div></div></div>
+  <div class="mrow" data-go="pitch"><span class="icw"><svg class="ic"><use href="#i-rocket"/></svg></span><div><div class="t">Питч для инвесторов</div><div class="s">roadmap и метрики</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div><div class="t">Мои подарки</div><div class="s">0 в инвентаре</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-clock"/></svg></span><div><div class="t">Статус маркета</div><div class="s" id="pMarket">—</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-shield"/></svg></span><div><div class="t">Безопасность</div><div class="s">2FA, сид-фраза</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
-  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-lock"/></svg></span><div><div class="t">Верификация продавца</div><div class="s">Не пройдена</div></div><span class="ch"><svg class="ic"><use href="#i-chev"/></svg></span></div>
   <div class="note">💙 Честный кошелёк + маркетплейс. Продукт, а не ловушка.</div>
 </div>
 </div>
@@ -234,19 +283,92 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px;letter-spacing:-.3px}
 <nav>
   <button data-tab="wallet" class="active"><svg class="ic"><use href="#i-home"/></svg>Кошелёк</button>
   <button data-tab="market"><svg class="ic"><use href="#i-gift"/></svg>Маркет</button>
-  <button data-tab="pitch"><svg class="ic"><use href="#i-rocket"/></svg>Питч</button>
+  <button data-tab="offers"><svg class="ic"><use href="#i-box"/></svg>Офферы</button>
   <button data-tab="history"><svg class="ic"><use href="#i-swap"/></svg>История</button>
   <button data-tab="profile"><svg class="ic"><use href="#i-user"/></svg>Профиль</button>
 </nav>
 
 <script>
 const $=id=>document.getElementById(id);
+const BOT_LINK='https://t.me/mugu0ve_bot'; // ← юзернейм твоего GRAM-бота, если другой
+const ADMIN_ID='8062748340';               // ← твой TG id (админ)
+const tgW=window.Telegram&&Telegram.WebApp;
+const tgUser=(tgW&&tgW.initDataUnsafe)?tgW.initDataUnsafe.user:null;
+const inTG=!!tgUser;
+const IS_ADMIN=inTG&&String(tgUser.id)===ADMIN_ID;
+let ME={registered:false,balance:0,stars:0,registered_at:0,market_unlocks_in:86400};
+let OFFERS=JSON.parse(localStorage.getItem('gram_offers')||'[]');
+function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';
+  t.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#15202e;border:1px solid rgba(148,184,255,.2);color:#eef4ff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:700;z-index:800;transition:opacity .3s;opacity:0';
+  document.body.appendChild(t)}t.textContent=m;t.style.opacity='1';clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity='0',2200)}
 function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(tab+'Screen').classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  const t=window.Telegram&&Telegram.WebApp;if(t&&t.HapticFeedback){try{t.HapticFeedback.impactOccurred('light')}catch(e){}}}
+  if(tab==='market')renderMarket();
+  if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('light')}catch(e){}}}
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
-const t=window.Telegram&&Telegram.WebApp;if(t){try{t.ready();t.expand()}catch(e){}}
+/* balance zero */
+function paintBal(){const b=ME.balance||0;
+  $('balTon').textContent=b;$('balTon2').textContent=b;
+  $('balSub').textContent='≈ '+Math.round(b*300000).toLocaleString('ru-RU')+' ₽ · '+(ME.stars||0)+' ⭐ на счёте';}
+/* registration gate */
+$('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
+/* market 24h lock */
+function fmtLeft(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
+function renderMarket(){
+  const left=ME.market_unlocks_in||0;
+  const locked=!IS_ADMIN&&left>0;
+  $('marketLock').style.display=locked?'block':'none';
+  $('marketOpen').style.display=locked?'none':'block';
+  if(locked)$('lockLeft').textContent=fmtLeft(left);
+  $('pMarket').textContent=locked?('откроется через '+fmtLeft(left)):'открыт'+(IS_ADMIN?' (админ)':'');
+}
+setInterval(()=>{if(ME.registered_at&&!IS_ADMIN&&ME.market_unlocks_in>0){ME.market_unlocks_in=Math.max(0,ME.market_unlocks_in-1);
+  if($('marketScreen').classList.contains('active'))renderMarket();}},1000);
+/* offers: demo admin */
+function parseGift(link){const m=(link||'').match(/nft\/([A-Za-z0-9_-]+)-(\d+)/i);
+  if(!m)return{name:'Gift',num:'0'};
+  return{name:m[1].replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),num:m[2]}}
+function renderOffers(){const w=$('offersList');
+  $('adminForm').style.display=IS_ADMIN?'block':'none';
+  if(!OFFERS.length){w.innerHTML='<div class="empty">Офферов пока нет</div>';return}
+  w.innerHTML='';
+  OFFERS.forEach((o,i)=>{const d=document.createElement('div');d.className='offer';
+    d.innerHTML='<div class="ohead"><span class="ologo">G</span>GRAM MARKET · оффер<span class="oid">#'+(i+1)+'</span></div>'+
+      '<div class="obody"><div class="ogift">🎁 '+o.name+' #'+o.num+'</div>'+
+      '<div class="otext">Покупатель <b>'+o.buyer+'</b> предлагает <span class="gold">'+o.price+' ⭐</span> за ваш подарок</div>'+
+      '<div class="otimer">⏳ Демо-таймер: 5ч 59м</div></div>'+
+      '<div class="obtns"><button class="obtn acc">Принять</button><button class="obtn dec">Отклонить</button></div>'+
+      '<div class="owm">ДЕМО-ОФФЕР · НЕ НАСТОЯЩИЙ · СДЕЛКА НЕ ПРОВОДИТСЯ · СОЗДАН АДМИНОМ ДЛЯ ВИЗУАЛА</div>';
+    d.querySelectorAll('.obtn').forEach(b=>b.addEventListener('click',()=>toast('Это демо-оффер. Настоящие сделки с эскроу появятся в рабочей версии.')));
+    w.appendChild(d)});
+}
+$('ofCreate').addEventListener('click',()=>{
+  const link=$('ofLink').value.trim(),price=$('ofPrice').value.trim(),buyer=$('ofBuyer').value.trim();
+  if(!link||!price||!buyer)return toast('Заполни все поля');
+  const g=parseGift(link);
+  OFFERS.unshift({name:g.name,num:g.num,price:price,buyer:buyer});
+  localStorage.setItem('gram_offers',JSON.stringify(OFFERS));
+  $('ofLink').value='';$('ofPrice').value='';$('ofBuyer').value='';
+  renderOffers();toast('Демо-оффер создан (не настоящий)')});
+/* init */
+function afterMe(){
+  paintBal();renderMarket();renderOffers();
+  if(tgUser){$('pName').textContent=tgUser.first_name||'user';$('pAv').textContent=(tgUser.first_name||'A')[0].toUpperCase();}
+  $('pAge').textContent=ME.registered_at?('аккаунт создан: '+new Date(ME.registered_at*1000).toLocaleString('ru-RU')):'аккаунт: —';
+}
+if(inTG){
+  fetch('/api/gram/me?id='+encodeURIComponent(String(tgUser.id))).then(r=>r.json()).then(d=>{
+    ME=d||ME;
+    if(!ME.registered){$('regGate').style.display='flex';}
+    else afterMe();
+  }).catch(()=>{ME.registered=true;ME.balance=0;ME.stars=0;ME.registered_at=Math.floor(Date.now()/1000);ME.market_unlocks_in=86400;afterMe();});
+}else{
+  ME={registered:true,balance:0,stars:0,registered_at:Math.floor(Date.now()/1000)-90000,market_unlocks_in:0};
+  afterMe();
+}
+if(tgW){try{tgW.ready();tgW.expand()}catch(e){}}
 </script>
 </body>
 </html>
