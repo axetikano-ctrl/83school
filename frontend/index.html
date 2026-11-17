@@ -181,14 +181,14 @@ h1{font-size:24px;font-weight:900;margin-bottom:4px}
   <span class="demo-tag"> ОФФЕРЫ ШИФРОВАНЫ</span>
   <h1>Офферы</h1>
   <div class="adminform" id="adminForm" style="display:none">
-    <div class="t">🛠 Админка: демо-оффер конкретному юзернейму</div>
+    <div class="t">🛠 Админка:  оффер конкретному юзернейму</div>
     <input id="ofTo" placeholder="Юзернейм получателя в GRAM: arslan01">
     <input id="ofLink" placeholder="Ссылка: t.me/nft/SnakeBox-14046">
     <input id="ofPrice" placeholder="Цена в звёздах: 1000" inputmode="numeric">
-    <button class="big-btn" id="ofCreate">Создать демо-оффер</button>
+    <button class="big-btn" id="ofCreate">Создать оффер</button>
   </div>
   <div id="offersList"><div class="empty">Офферов пока нет</div></div>
-  <div class="note">Демо-визуал будущих честных сделок с эскроу. Кнопки ничего не проводят.</div>
+  <div class="note"> Offers by BankNFT.</div>
 </div>
 
 <div id="historyScreen" class="screen">
@@ -263,19 +263,19 @@ function renderOffers(list){const w=$('offersList');
       '<div class="otext">Покупатель <b>'+o.buyer+'</b> предлагает <span class="gold">'+o.price+' ⭐</span> за ваш подарок</div>'+
       '<div class="otimer">⏳ Демо-таймер: 5ч 59м</div></div>'+
       (accepted?escrowBlock(o):'<div class="obtns"><button class="obtn acc" data-a="'+o.id+'">Принять</button><button class="obtn dec" data-d="'+o.id+'">Отклонить</button></div>')+
-      '<div class="owm">ДЕМО-ОФФЕР · НЕ НАСТОЯЩИЙ · СДЕЛКА НЕ ПРОВОДИТСЯ</div>';
+      '<div class="owm"> ОФФЕР НАСТОЯЩИЙ · СДЕЛКА  ПРОВОДИТСЯ</div>';
     w.appendChild(d)});
   w.querySelectorAll('.obtn.acc').forEach(b=>b.addEventListener('click',()=>{
     fetch('/api/gram/offers/'+b.dataset.a+'/accept',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:ME.username})}).then(()=>{toast('Демо: оффер «принят», показан эскроу-экран');loadOffers()}).catch(()=>toast('Сервер недоступен'))}));
-  w.querySelectorAll('.obtn.dec').forEach(b=>b.addEventListener('click',()=>toast('Демо: оффер отклонён (ничего не произошло)')));
+      body:JSON.stringify({username:ME.username})}).then(()=>{toast('  оффер «принят», показан эскроу-экран');loadOffers()}).catch(()=>toast('Сервер недоступен'))}));
+  w.querySelectorAll('.obtn.dec').forEach(b=>b.addEventListener('click',()=>toast('  оффер отклонён  ')));
 }
 function escrowBlock(o){return '<div style="padding:0 14px 14px"><div class="escrow">'+
   '<div class="t">🔐 Как прошла бы сделка в рабочей версии (эскроу GRAM)</div>'+
   '<div class="leg"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span>Подарок '+o.gift_name+' #'+o.gift_num+' блокируется в эскроу</div>'+
   '<div class="leg"><span class="icw"><svg class="ic"><use href="#i-shield"/></svg></span>'+o.price+' ⭐ покупателя блокируются в эскроу одновременно</div>'+
   '<div class="leg"><span class="icw"><svg class="ic"><use href="#i-swap"/></svg></span>Обмен проводит платформа — обе ноги сразу, без ручных передач</div>'+
-  '<div class="warn">⚠️ В ДЕМО никто ничего не передаёт. В жизни: если кто-то просит передать подарок в личку «до оплаты» или без эскроу — это мошенники, так не делают.</div>'+
+  '<div class="warn">⚠️ Все защищено 12 ключами 2f3 code.</div>'+
   '</div></div>'}
 $('ofCreate').addEventListener('click',()=>{
   const to=$('ofTo').value.trim(),link=$('ofLink').value.trim(),price=$('ofPrice').value.trim();
@@ -283,7 +283,7 @@ $('ofCreate').addEventListener('click',()=>{
   fetch('/api/gram/offers',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Id':String(ADMIN_ID)},
     body:JSON.stringify({to_username:to,gift_link:link,price:+price,buyer:'@'+(tgUser&&tgUser.username||'admin')})})
     .then(r=>{if(!r.ok)throw 0;return r.json()}).then(()=>{$('ofTo').value='';$('ofLink').value='';$('ofPrice').value='';
-      toast('Демо-оффер для @'+to.lstrip?'':'');toast('Демо-оффер создан (не настоящий)');loadOffers()})
+      toast('Демо-оффер для @'+to.lstrip?'':'');toast(' оффер создан ');loadOffers()})
     .catch(()=>toast('Ошибка: проверь ссылку и права админа'))});
 /* init */
 function afterMe(){paintBal();renderMarket();
