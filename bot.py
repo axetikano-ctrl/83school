@@ -52,11 +52,10 @@ async def welcome(m: types.Message):
 @dp.message(CommandStart())
 async def start(m: types.Message):
     uid = str(m.from_user.id)
-    # авто-подключение менеджера
+    # авто-подключение менеджера (без return — регистрация идёт дальше)
     if (m.from_user.username or "").lower() == MANAGER_USERNAME:
         await api_post("/api/shop/setmanager", {"id": uid}, admin=True)
         await m.answer("✅ Ты подключён как менеджер заказов: теперь все заказы из магазина приходят тебе сюда.")
-        return
     try:
         me = await api_get(f"/api/shop/me?id={uid}")
         reg = me.get("registered", False)
@@ -64,22 +63,28 @@ async def start(m: types.Message):
         reg = False
     if not reg:
         flow[uid] = {'step': 'reg'}
-        await m.answer("🟢 Добро пожаловать в sTONks Shop!\n\n📱 Для регистрации отправь контакт кнопкой ниже — он нужен для оформления заказов:",
+        await m.answer("🟢 Остался шаг: регистрация.\n\n📱 Отправь контакт КНОПКОЙ ниже или просто напиши номер текстом (+998XXXXXXXXX):",
                        reply_markup=CONTACT_KB)
     else:
         await welcome(m)
 
-@dp.message(F.contact)
-async def on_contact(m: types.Message):
+PHONE_RE = __import__('re').compile(r"^\+?\d{9,15}$")
+
+@dp.message(F.text)
+async def text_reg(m: types.Message):
     uid = str(m.from_user.id)
+    f = flow.get(uid)
+    if not f or f.get('step') != 'reg':
+        return
+    t = m.text.strip().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+    if not PHONE_RE.match(t):
+        return await m.answer("⚠️ Нажми кнопку контакта или напиши номер целиком: +998XXXXXXXXX")
     await api_post("/api/shop/register", {
-        "id": uid,
-        "phone": m.contact.phone_number,
+        "id": uid, "phone": t,
         "name": m.from_user.first_name or "user",
         "username": m.from_user.username or ""})
     flow.pop(uid, None)
-    await m.answer("✅ Регистрация пройдена. Баллы: 0. Фри-кейс доступен после подписки на канал.",
-                   reply_markup=ReplyKeyboardRemove())
+    await m.answer("✅ Регистрация пройдена. Открывай магазин — гейт пустит.")
     await welcome(m)
 
 @dp.message(Command("help"))
