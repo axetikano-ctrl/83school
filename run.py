@@ -1,22 +1,30 @@
-"""run.py — веб в главном потоке, бот в потоке с авто-рестартом"""
-import os, time, threading, logging
+"""run.py — веб и бот в ОДНОМ главном потоке (совместимо с Render/Linux)"""
+import os, asyncio, logging
 import uvicorn
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('run')
 
-def bot_thread():
-    import asyncio
+async def bot_supervisor():
+    from bot import main as bot_main
     while True:
         try:
-            from bot import main as bot_main
-            asyncio.run(bot_main())
+            await bot_main()
+        except asyncio.CancelledError:
+            raise
         except Exception as e:
             log.error('BOT CRASHED: %r — перезапуск через 15 сек', e)
-            time.sleep(15)
+            await asyncio.sleep(15)
+
+async def main():
+    port = int(os.getenv('PORT', '8000'))
+    config = uvicorn.Config('server:app', host='0.0.0.0', port=port, log_level='info')
+    server = uvicorn.Server(config)
+    bot_task = asyncio.create_task(bot_supervisor())
+    try:
+        await server.serve()
+    finally:
+        bot_task.cancel()
 
 if __name__ == '__main__':
-    threading.Thread(target=bot_thread, daemon=True).start()
-    port = int(os.getenv('PORT', '8000'))
-    log.info('starting web on port %s', port)
-    uvicorn.run('server:app', host='0.0.0.0', port=port, log_level='info')
+    asyncio.run(main())
