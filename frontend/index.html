@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
-:root{--bg:#050807;--card:#0d1512;--card2:#15221c;--acc:#22c55e;--acc2:#4ade80;--gold:#fbbf24;--purple:#a78bfa;--text:#eef7f0;--muted:#7d9488;--line:rgba(74,222,128,.12)}
+:root{--bg:#050807;--card:#0d1512;--card2:#15221c;--acc:#22c55e;--acc2:#4ade80;--gold:#fbbf24;--purple:#a78bfa;--cyan:#22d3ee;--text:#eef7f0;--muted:#7d9488;--line:rgba(74,222,128,.12)}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;padding-bottom:100px;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(90deg,rgba(34,197,94,.04) 0 1px,transparent 1px 60px),repeating-linear-gradient(0deg,rgba(34,197,94,.03) 0 1px,transparent 1px 60px);pointer-events:none;z-index:0}
 body::after{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-50%);width:560px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.18),transparent 65%);pointer-events:none;z-index:0}
@@ -19,6 +19,7 @@ body::after{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-
 @keyframes shake{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(-6px) rotate(-2deg)}40%{transform:translateX(6px) rotate(2deg)}60%{transform:translateX(-4px) rotate(-1deg)}80%{transform:translateX(4px) rotate(1deg)}}
 @keyframes glow{0%,100%{box-shadow:0 0 18px rgba(34,197,94,.25)}50%{box-shadow:0 0 34px rgba(34,197,94,.55)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes shine{from{background-position:-400px 0}to{background-position:400px 0}}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
 button:active{transform:scale(.95)}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -27,50 +28,59 @@ button:active{transform:scale(.95)}
 .head .logo{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#123528,#050807);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;color:var(--acc2);animation:glow 3s infinite}
 .head .t{font-size:20px;font-weight:900;letter-spacing:.5px}
 .head .t small{display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px}
-.balbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 16px;margin-bottom:16px}
-.balbar .icf{color:var(--gold);animation:float 3s infinite}
-.balbar .v{font-size:20px;font-weight:900}
-.balbar .l{font-size:11px;color:var(--muted);letter-spacing:.5px}
-.balbar .demo{margin-left:auto;font-size:10px;font-weight:800;color:var(--acc2);background:rgba(34,197,94,.12);border-radius:8px;padding:4px 8px;letter-spacing:.5px}
+.balbar{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin-bottom:16px;position:relative;overflow:hidden}
+.balbar::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(74,222,128,.08),transparent);background-size:400px 100%;animation:shine 4s linear infinite}
+.balbar .icf{color:var(--gold);animation:float 3s infinite;z-index:1}
+.balbar .v{font-size:22px;font-weight:900;z-index:1}
+.balbar .l{font-size:11px;color:var(--muted);letter-spacing:.5px;z-index:1}
+.balbar .badge{margin-left:auto;font-size:10px;font-weight:800;color:var(--acc2);background:rgba(34,197,94,.14);border-radius:8px;padding:5px 10px;letter-spacing:.5px;z-index:1}
 .sec{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 12px}
 .sec .t{font-size:18px;font-weight:800}
 /* shop */
-.prow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.pcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;animation:pop .3s both}
-.pcard .icw{width:52px;height:52px;border-radius:16px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc2)}
+.prow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pcard{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;animation:pop .3s both}
+.pcard::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.2),transparent 70%)}
+.pcard .icw{width:50px;height:50px;border-radius:14px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc2);position:relative;z-index:1}
 .pcard .icw .ic{width:26px;height:26px}
-.pcard .nm{font-weight:800;font-size:14px;line-height:1.3}
-.pcard .pr{font-size:12px;color:var(--gold);font-weight:800}
-.pcard .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:12px;padding:10px;font-size:12.5px;font-weight:800;color:#04140a}
+.pcard .nm{font-weight:900;font-size:14.5px;line-height:1.25;position:relative;z-index:1}
+.pcard .desc{font-size:11px;color:var(--muted);position:relative;z-index:1}
+.pcard .pr{font-size:13px;color:var(--gold);font-weight:900;display:flex;align-items:center;gap:5px;position:relative;z-index:1}
+.pcard .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:12px;padding:10px;font-size:12.5px;font-weight:900;color:#04140a;position:relative;z-index:1}
+.pcard.featured{border-color:var(--acc);box-shadow:0 8px 24px rgba(34,197,94,.2)}
+.pcard.featured::after{content:'ХИТ';position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#f97316);color:#1a0a00;font-size:10px;font-weight:900;padding:4px 8px;border-radius:6px;z-index:2;letter-spacing:.5px}
 /* cases */
-.casecard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
-.casecard::after{content:'';position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.15),transparent 70%)}
-.casecard .h{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.casecard .box{width:56px;height:56px;border-radius:16px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc2)}
-.casecard .box .ic{width:30px;height:30px}
-.casecard .nm{font-weight:900;font-size:17px}
+.casecard{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.casecard::after{content:'';position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.15),transparent 70%)}
+.casecard .h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.casecard .box{width:60px;height:60px;border-radius:18px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--acc2)}
+.casecard .box .ic{width:32px;height:32px}
+.casecard .nm{font-weight:900;font-size:18px}
 .casecard .sb{font-size:12px;color:var(--muted);margin-top:3px}
-.casecard .open{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:14px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px}
-.casecard .open:disabled{opacity:.45}
-.casecard.free .box{color:var(--acc2);animation:glow 2.5s infinite}
+.casecard .open{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:15px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(34,197,94,.3)}
+.casecard .open:disabled{opacity:.45;box-shadow:none}
+.casecard.free{border-color:var(--acc)}
+.casecard.free .box{background:linear-gradient(135deg,#15803d,#22c55e);color:#04140a;animation:glow 2.5s infinite}
 .prizes{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.pz{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px}
-.pz .icf{width:13px;height:13px;color:var(--gold)}
-.pz .ch{color:var(--acc2);font-weight:800}
-.pz.zero{opacity:.55}
+.pz{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:8px 11px;font-size:12px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.pz .icf{width:14px;height:14px;color:var(--gold)}
+.pz .ch{color:var(--acc2);font-weight:900}
+.pz.top{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border-color:rgba(251,191,36,.35);color:var(--gold)}
+.pz.top .icf{color:var(--gold)}
 /* wheel */
 .wheelwrap{display:flex;flex-direction:column;align-items:center;margin:10px 0 16px}
 .wheelbox{position:relative;width:260px;height:260px}
 .wheelbox .ptr{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:5;color:var(--gold);filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
 #wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--card2);box-shadow:0 0 40px rgba(34,197,94,.25);transition:transform 4.2s cubic-bezier(.12,.8,.08,1)}
-.wheelcenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:var(--card);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;color:var(--acc2);z-index:4}
-/* modal result */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:600;align-items:center;justify-content:center;padding:20px}
+.wheelcenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;color:#04140a;z-index:4;font-size:28px;box-shadow:0 0 24px rgba(34,197,94,.5)}
+.wbtn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:15px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(34,197,94,.3)}
+.wbtn:disabled{opacity:.45;box-shadow:none}
+/* modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
-.modal-c{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;max-width:340px;width:100%;text-align:center;animation:pop .3s}
-.modal-c .big{font-size:56px;margin-bottom:10px;animation:pop .45s}
-.modal-c .t{font-size:20px;font-weight:900;margin-bottom:6px}
-.modal-c .s{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.modal-c{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:26px;padding:28px;max-width:340px;width:100%;text-align:center;animation:pop .3s}
+.modal-c .big{font-size:58px;margin-bottom:10px;animation:pop .45s}
+.modal-c .t{font-size:22px;font-weight:900;margin-bottom:8px}
+.modal-c .s{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:18px}
 .modal-c .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:14px;font-weight:900;color:#04140a}
 .shaking{animation:shake .5s ease-in-out 2}
 /* profile */
@@ -99,69 +109,69 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
 <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-6 5 6 4-4v9H3z"/></symbol>
 <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></symbol>
-<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
 <symbol id="i-chan" viewBox="0 0 24 24"><path d="M3 10v4l12 4V6L3 10z"/><path d="M15 8a4 4 0 0 1 0 8M7 14v5h3v-4"/></symbol>
 </svg>
 
 <div class="wrap">
-<!-- SHOP -->
 <div id="shopScreen" class="screen active">
   <div class="head">
     <div class="logo"><svg class="icf"><use href="#i-bolt"/></svg></div>
     <div class="t">sTONks Shop<small>STARS · PREMIUM · GIFTS</small></div>
   </div>
-  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars">0</div><div class="l">ДЕМО-ЗВЁЗДЫ</div></div><span class="demo">DEMO</span></div>
-  <div class="sec"><span class="t">🛒 Товары</span></div>
+  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars">0</div><div class="l">БАЛЛОВ ЛОЯЛЬНОСТИ</div></div><span class="badge">⭐ LIVE</span></div>
+  <div class="sec"><span class="t">🛒 Каталог</span></div>
   <div class="prow">
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-crown"/></svg></span><div class="nm">Telegram Premium</div><div class="pr">3/6/12 месяцев</div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div class="nm">Telegram Stars</div><div class="pr">от 50 до 5000</div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span><div class="nm">Карточка Грамм</div><div class="pr">пополнение и покупка</div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div class="nm">Подарки</div><div class="pr">15–100 звёзд</div><button class="btn" data-order>Заказать</button></div>
+    <div class="pcard featured"><span class="icw"><svg class="ic"><use href="#i-crown"/></svg></span><div class="nm">Telegram Premium</div><div class="desc">3 / 6 / 12 мес</div><div class="pr">от 85 000 сум</div><button class="btn" data-order>Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div class="nm">Telegram Stars</div><div class="desc">пополнение баланса</div><div class="pr">от 50 ⭐</div><button class="btn" data-order>Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span><div class="nm">Карточка Грамм</div><div class="desc">пополнение / покупка</div><div class="pr">от 0.5 TON</div><button class="btn" data-order>Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div class="nm">Подарки</div><div class="desc">15–100 ⭐</div><div class="pr">от 15 000 сум</div><button class="btn" data-order>Заказать</button></div>
   </div>
-  <div class="note">Заказы реальных товаров оформляет менеджер в Telegram. Оплата на карты Uzcard / Humo. Демо-мини-апп: витрина и игры на демо-звёздах.</div>
+  <div class="sec"><span class="t">🎮 Активности</span></div>
+  <div class="prow">
+    <div class="pcard" style="border-color:var(--acc)"><span class="icw"><svg class="ic"><use href="#i-case"/></svg></span><div class="nm">Фри-кейс</div><div class="desc">раз в 24ч за подписку</div><div class="pr">0 ⭐</div><button class="btn" data-go="cases">Открыть</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-wheel"/></svg></span><div class="nm">Колесо</div><div class="desc">главный розыгрыш</div><div class="pr">50 ⭐</div><button class="btn" data-go="wheel">Крутить</button></div>
+  </div>
+  <div class="note">Баллы лояльности копятся за активность и подписку. Заказы реальных товаров — через менеджера в Telegram.</div>
 </div>
 
-<!-- CASES -->
 <div id="casesScreen" class="screen">
-  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars2">0</div><div class="l">ДЕМО-ЗВЁЗДЫ</div></div><span class="demo">DEMO</span></div>
+  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars2">0</div><div class="l">БАЛЛОВ</div></div><span class="badge">⭐</span></div>
   <div class="casecard free">
-    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">ФРИ-кейс</div><div class="sb">раз в 24 часа · нужна подписка на канал</div></div></div>
+    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">🆓 ФРИ-кейс</div><div class="sb">раз в 24 часа · нужна подписка</div></div></div>
     <div class="prizes" id="pzFree"></div>
     <div style="height:12px"></div>
     <button class="open" id="btnFree"><svg class="ic"><use href="#i-gift"/></svg><span id="btnFreeTxt">Открыть бесплатно</span></button>
   </div>
   <div class="casecard">
-    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">Кейс за 50 ⭐</div><div class="sb">демо-звёзды · шансы открыты</div></div></div>
+    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">💎 Кейс за 50 ⭐</div><div class="sb">крупные призы · равные шансы</div></div></div>
     <div class="prizes" id="pz50"></div>
     <div style="height:12px"></div>
     <button class="open" id="btn50"><svg class="ic"><use href="#i-star"/></svg>Открыть за 50 ⭐</button>
   </div>
-  <div class="note">Шансы подписаны честно на каждом призе. Демо: реальные звёзды не тратятся и не выигрываются.</div>
+  <div class="note">Шансы открыто подписаны на каждом призе. Баллы лояльности — не реальные деньги.</div>
 </div>
 
-<!-- WHEEL -->
 <div id="wheelScreen" class="screen">
-  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars3">0</div><div class="l">ДЕМО-ЗВЁЗДЫ</div></div><span class="demo">DEMO</span></div>
+  <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars3">0</div><div class="l">БАЛЛОВ</div></div><span class="badge">⭐</span></div>
   <div class="wheelwrap">
     <div class="wheelbox">
-      <svg class="ptr" width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l6 9H6z"/></svg>
+      <svg class="ptr" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l6 9H6z"/></svg>
       <canvas id="wheel" width="520" height="520"></canvas>
-      <div class="wheelcenter"><svg class="icf"><use href="#i-wheel"/></svg></div>
+      <div class="wheelcenter">🎯</div>
     </div>
   </div>
   <div class="prizes" id="pzWheel" style="justify-content:center"></div>
-  <div style="height:12px"></div>
-  <button class="open" id="btnWheel" style="width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:14px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px"><svg class="ic"><use href="#i-wheel"/></svg>Крутить за 50 ⭐</button>
-  <div class="note">Мега-приз (NFT) в ротации имеет шанс 0% и помечен честно. Демо-колесо.</div>
+  <div style="height:14px"></div>
+  <button class="wbtn" id="btnWheel"><svg class="ic"><use href="#i-wheel"/></svg>Крутить за 50 ⭐</button>
+  <div class="note">Все шансы равные — 20% на каждый сектор.</div>
 </div>
 
-<!-- PROFILE -->
 <div id="profileScreen" class="screen">
   <h1>Профиль</h1>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-chan"/></svg></span><div><div class="t">Подписка на канал</div><div class="s">@sTONks_shopuzb</div></div><span class="st" id="subStatus">…</span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="t">Фри-кейс доступен</div><div class="s" id="freeStatus">…</div></div></div>
-  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div><div class="t">Демо-баланс</div><div class="s" id="balStatus">0 ⭐</div></div></div>
-  <div class="note">⚖️ ДЕМО-проект: кейсы и колесо работают на демонстрационных звёздах с открытыми шансами. Реальные товары — через менеджера. Бот не имитирует системные сообщения Telegram.</div>
+  <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div><div class="t">Баллы лояльности</div><div class="s" id="balStatus">0</div></div></div>
+  <div class="note">⚖️ Программа лояльности: баллы копятся за активность и подписку. Заказы реальных товаров — через менеджера. Бот не имитирует системные сообщения Telegram.</div>
 </div>
 </div>
 
@@ -169,7 +179,7 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
   <div class="big" id="resIcon">🎁</div>
   <div class="t" id="resTitle">—</div>
   <div class="s" id="resSub">—</div>
-  <button class="btn" id="resOk">Забрать</button>
+  <button class="btn" id="resOk">Окей</button>
 </div></div>
 
 <nav>
@@ -195,10 +205,11 @@ function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.r
   if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('light')}catch(e){}}}
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
 document.querySelectorAll('[data-order]').forEach(b=>b.addEventListener('click',()=>location.href=MANAGER));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 function paintBal(){$('balStars').textContent=ME.stars;$('balStars2').textContent=ME.stars;$('balStars3').textContent=ME.stars;$('balStatus').textContent=ME.stars+' ⭐';}
-function pzHTML(list){return list.map(p=>{const zero=p.chance===0;
-  const name=p.prize==='NFT'?'NFT подарок':p.prize+' ⭐';
-  return '<span class="pz '+(zero?'zero':'')+'">'+(p.prize==='NFT'?'<svg class="icf" style="color:var(--purple)"><use href="#i-gift"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>')+name+' <span class="ch">'+p.chance+'%</span></span>'}).join('')}
+function pzHTML(list){return list.map(p=>{const name=p.prize==='NFT'?'NFT подарок':p.prize+' ⭐';
+  const isTop=p.prize==='NFT'||p.prize>=500;
+  return '<span class="pz '+(isTop?'top':'')+'">'+(p.prize==='NFT'?'<svg class="icf" style="color:var(--purple)"><use href="#i-gift"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>')+name+' <span class="ch">'+p.chance+'%</span></span>'}).join('')}
 function fmtCd(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+'ч '+String(m).padStart(2,'0')+'м'}
 function refreshMe(){fetch('/api/shop/me?id='+encodeURIComponent(UID)).then(r=>r.json()).then(d=>{ME=d;paintBal();
   $('subStatus').textContent=ME.subscribed?'✓ есть':'✗ нет';$('subStatus').className='st '+(ME.subscribed?'ok':'no');
@@ -208,41 +219,42 @@ function refreshMe(){fetch('/api/shop/me?id='+encodeURIComponent(UID)).then(r=>r
 function openResult(icon,title,sub){$('resIcon').textContent=icon;$('resTitle').textContent=title;$('resSub').textContent=sub;$('resModal').classList.add('show');
   if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.notificationOccurred('success')}catch(e){}}}
 $('resOk').addEventListener('click',()=>$('resModal').classList.remove('show'));
-/* free case */
 $('btnFree').addEventListener('click',()=>{const b=$('btnFree');b.classList.add('shaking');
   setTimeout(()=>{b.classList.remove('shaking');
     fetch('/api/shop/case_free',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
-      if(!d.ok){if(d.reason==='not_subscribed'){toast('Подпишись на канал!');location.href=CHANNEL;}else toast('Фри-кейс ещё не готов');refreshMe();return}
-      openResult('🎁','ФРИ-кейс','Выпало: '+d.prize+' ⭐ (демо). Баланс: '+d.stars);refreshMe();
+      if(!d.ok){
+        if(d.reason==='not_subscribed'){
+          const diag=d.diag||{};
+          toast('Подпишись на канал! (статус: '+(diag.status||'?')+')');
+          location.href=CHANNEL;
+        } else if(d.reason==='cooldown') toast('Фри-кейс ещё не готов');
+        else toast('Не получилось');
+        refreshMe();return}
+      openResult('🎁','ФРИ-кейс','Выпало: '+d.prize+' ⭐. Баланс: '+d.stars);refreshMe();
     }).catch(()=>toast('Сервер недоступен'))},1000)});
-/* case 50 */
 $('btn50').addEventListener('click',()=>{fetch('/api/shop/case_50',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
-  if(!d.ok)return toast('Не хватает демо-звёзд');
-  openResult('🧰','Кейс открыт','Выпало: '+d.prize+' ⭐ (демо). Баланс: '+d.stars);refreshMe();}).catch(()=>toast('Сервер недоступен'))});
-/* wheel */
-function drawWheel(){const cv=$('wheel'),ctx=cv.getContext('2d');const segs=CFG.wheel;const tot=segs.reduce((a,b)=>a+Math.max(b.chance,0.6),0);
-  let a=-Math.PI/2;ctx.clearRect(0,0,520,520);
-  const cols=['#123528','#0d2a1f','#15803d','#0f3d2c','#1a4a36','#22c55e'];
-  segs.forEach((s,i)=>{const ang=Math.max(s.chance,0.6)/tot*Math.PI*2;
+  if(!d.ok)return toast('Не хватает баллов');
+  openResult('🧰','Кейс открыт','Выпало: '+d.prize+' ⭐. Баланс: '+d.stars);refreshMe();}).catch(()=>toast('Сервер недоступен'))});
+function drawWheel(){const cv=$('wheel'),ctx=cv.getContext('2d');const segs=CFG.wheel;const tot=segs.length;
+  const ang=Math.PI*2/tot;let a=-Math.PI/2-ang/2;ctx.clearRect(0,0,520,520);
+  const cols=['#15803d','#0d2a1f','#22c55e','#123528','#1a4a36'];
+  segs.forEach((s,i)=>{
     ctx.beginPath();ctx.moveTo(260,260);ctx.arc(260,260,254,a,a+ang);ctx.closePath();
     ctx.fillStyle=cols[i%cols.length];ctx.fill();ctx.strokeStyle='#050807';ctx.lineWidth=3;ctx.stroke();
     ctx.save();ctx.translate(260,260);ctx.rotate(a+ang/2);ctx.textAlign='right';ctx.fillStyle='#eef7f0';ctx.font='bold 22px sans-serif';
-    ctx.fillText((s.prize==='NFT'?'NFT':s.prize+'⭐')+' '+s.chance+'%',236,8);ctx.restore();
+    ctx.fillText((s.prize==='NFT'?'NFT':s.prize+'⭐'),230,8);ctx.restore();
     a+=ang})}
 let wheelAngle=0;
 $('btnWheel').addEventListener('click',()=>{if(spinning)return;spinning=true;
   fetch('/api/shop/wheel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
-    if(!d.ok){spinning=false;return toast('Не хватает демо-звёзд')}
+    if(!d.ok){spinning=false;return toast('Не хватает баллов')}
     const segs=CFG.wheel;let idx=segs.findIndex(s=>String(s.prize)===String(d.prize));if(idx<0)idx=segs.length-1;
-    const tot=segs.reduce((a,b)=>a+Math.max(b.chance,0.6),0);
-    let acc=0;for(let i=0;i<idx;i++)acc+=Math.max(segs[i].chance,0.6);
-    const mid=(acc+Math.max(segs[idx].chance,0.6)/2)/tot*360;
-    const target=360*5+(360-mid-90);
+    const segAng=360/segs.length;const mid=segAng*idx+segAng/2;
+    const target=360*5+(360-mid);
     wheelAngle+=target;$('wheel').style.transform='rotate('+wheelAngle+'deg)';
     setTimeout(()=>{spinning=false;
-      openResult(d.prize==='NFT'?'💎':'⭐',d.prize==='NFT'?'Мега-приз (демо)':'Колесо','Выпало: '+(d.prize==='NFT'?'NFT подарок':d.prize+' ⭐')+' (демо). Баланс: '+d.stars);
+      openResult(d.prize==='NFT'?'💎':'⭐',d.prize==='NFT'?'Мега-приз':'Колесо','Выпало: '+(d.prize==='NFT'?'NFT подарок':d.prize+' ⭐')+'. Баланс: '+d.stars);
       refreshMe()},4300);}).catch(()=>{spinning=false;toast('Сервер недоступен')})});
-/* init */
 fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;
   $('pzFree').innerHTML=pzHTML(c.case_free);$('pz50').innerHTML=pzHTML(c.case_50);$('pzWheel').innerHTML=pzHTML(c.wheel);
   drawWheel();refreshMe();setInterval(refreshMe,15000);}).catch(()=>toast('Сервер недоступен'));
