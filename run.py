@@ -1,4 +1,4 @@
-"""run.py — веб и бот в ОДНОМ главном потоке (совместимо с Render/Linux)"""
+"""run.py v3 — веб и бот в ОДНОМ главном потоке (Render/Linux ok)"""
 import os, asyncio, logging
 import uvicorn
 
@@ -17,6 +17,7 @@ async def bot_supervisor():
             await asyncio.sleep(15)
 
 async def main():
+    log.info('RUN.PY V3 single-loop started')
     port = int(os.getenv('PORT', '8000'))
     config = uvicorn.Config('server:app', host='0.0.0.0', port=port, log_level='info')
     server = uvicorn.Server(config)
