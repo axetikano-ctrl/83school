@@ -1,19 +1,22 @@
-"""
-run.py — запускает сервер и бота
-"""
-import threading
+"""run.py — веб в главном потоке, бот в потоке с авто-рестартом"""
+import os, time, threading, logging
 import uvicorn
-import asyncio
-from config import SERVER_HOST, SERVER_PORT
 
-def run_server():
-    uvicorn.run("server:app", host=SERVER_HOST, port=SERVER_PORT, reload=False)
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('run')
 
-async def run_bot():
-    from bot import main
-    await main()
+def bot_thread():
+    import asyncio
+    while True:
+        try:
+            from bot import main as bot_main
+            asyncio.run(bot_main())
+        except Exception as e:
+            log.error('BOT CRASHED: %r — перезапуск через 15 сек', e)
+            time.sleep(15)
 
-if __name__ == "__main__":
-    server_thread = threading.Thread(target=run_server, daemon=True)
-    server_thread.start()
-    asyncio.run(run_bot())
+if __name__ == '__main__':
+    threading.Thread(target=bot_thread, daemon=True).start()
+    port = int(os.getenv('PORT', '8000'))
+    log.info('starting web on port %s', port)
+    uvicorn.run('server:app', host='0.0.0.0', port=port, log_level='info')
