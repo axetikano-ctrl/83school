@@ -20,9 +20,8 @@ body::after{content:'';position:fixed;top:-180px;left:50%;transform:translateX(-
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes shine{from{background-position:-400px 0}to{background-position:400px 0}}
 @keyframes glow{0%,100%{box-shadow:0 0 18px rgba(34,197,94,.25)}50%{box-shadow:0 0 34px rgba(34,197,94,.55)}}
-@keyframes cshake{0%,100%{transform:translateX(0) rotate(0)}15%{transform:translateX(-8px) rotate(-3deg)}30%{transform:translateX(8px) rotate(3deg)}45%{transform:translateX(-6px) rotate(-2deg)}60%{transform:translateX(6px) rotate(2deg)}75%{transform:translateX(-3px) rotate(-1deg)}90%{transform:translateX(3px) rotate(1deg)}}
-@keyframes cfall{to{transform:translateY(360px) rotate(560deg);opacity:0}}
-@keyframes prizein{0%{transform:scale(.2) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(6deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes cfall{to{transform:translateY(380px) rotate(560deg);opacity:0}}
+@keyframes winpulse{0%,100%{box-shadow:0 0 18px rgba(251,191,36,.4)}50%{box-shadow:0 0 34px rgba(251,191,36,.8)}}
 button{font-family:inherit;border:none;cursor:pointer;background:none;color:var(--text)}
 button:active{transform:scale(.95)}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -41,7 +40,6 @@ button:active{transform:scale(.95)}
 .sec{display:flex;align-items:center;gap:8px;margin:6px 2px 12px}
 .sec .ic{color:var(--acc2)}
 .sec .t{font-size:18px;font-weight:800}
-/* shop */
 .prow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 .pcard{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;animation:pop .3s both}
 .pcard::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.2),transparent 70%)}
@@ -54,7 +52,6 @@ button:active{transform:scale(.95)}
 .pcard .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:12px;padding:10px;font-size:12.5px;font-weight:900;color:#04140a;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px}
 .pcard.featured{border-color:var(--acc);box-shadow:0 8px 24px rgba(34,197,94,.2)}
 .pcard.featured::after{content:'ХИТ';position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#f59e0b,#f97316);color:#1a0a00;font-size:10px;font-weight:900;padding:4px 8px;border-radius:6px;z-index:2;letter-spacing:.5px}
-/* cases */
 .casecard{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
 .casecard::after{content:'';position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.15),transparent 70%)}
 .casecard .h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -62,8 +59,7 @@ button:active{transform:scale(.95)}
 .casecard .box .ic{width:32px;height:32px}
 .casecard .nm{font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px}
 .casecard .nm .freeb{background:linear-gradient(135deg,#15803d,#22c55e);color:#04140a;font-size:10px;font-weight:900;padding:4px 8px;border-radius:6px;letter-spacing:.5px}
-.casecard .sb{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px}
-.casecard .sb .icf{width:12px;height:12px;color:var(--gold)}
+.casecard .sb{font-size:12px;color:var(--muted);margin-top:3px}
 .casecard .open{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:15px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(34,197,94,.3)}
 .casecard .open:disabled{opacity:.45;box-shadow:none}
 .casecard.free{border-color:var(--acc)}
@@ -73,40 +69,39 @@ button:active{transform:scale(.95)}
 .pz .icf{width:14px;height:14px;color:var(--gold)}
 .pz .ch{color:var(--acc2);font-weight:900}
 .pz.top{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border-color:rgba(251,191,36,.35);color:var(--gold)}
+/* CS reel */
+.reelwrap{position:relative;height:112px;overflow:hidden;border-radius:16px;background:#0a120d;border:1px solid var(--line);margin:14px 0}
+.reelwrap::before,.reelwrap::after{content:'';position:absolute;top:0;bottom:0;width:56px;z-index:4;pointer-events:none}
+.reelwrap::before{left:0;background:linear-gradient(90deg,#0a120d,transparent)}
+.reelwrap::after{right:0;background:linear-gradient(-90deg,#0a120d,transparent)}
+.reelptr{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--gold);z-index:5;box-shadow:0 0 14px var(--gold)}
+.reelptr::before,.reelptr::after{content:'';position:absolute;left:50%;transform:translateX(-50%);border:6px solid transparent}
+.reelptr::before{top:0;border-top-color:var(--gold)}
+.reelptr::after{bottom:0;border-bottom-color:var(--gold)}
+.reel{display:flex;gap:8px;position:absolute;top:9px;left:50%;will-change:transform}
+.rtile{width:76px;height:94px;border-radius:12px;background:linear-gradient(160deg,#15221c,#0d1512);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;flex-shrink:0}
+.rtile .icf{width:30px;height:30px;color:var(--gold)}
+.rtile.nft .icf{color:var(--purple)}
+.rtile .v{font-size:11px;font-weight:800;color:var(--muted)}
+.rtile.win{border-color:var(--gold);animation:winpulse 1s infinite}
 /* wheel */
 .wheelwrap{display:flex;flex-direction:column;align-items:center;margin:10px 0 16px}
-.wheelbox{position:relative;width:260px;height:260px}
-.wheelbox .ptr{position:absolute;top:-6px;left:50%;transform:translateX(-50%);z-index:5;color:var(--gold);filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
-#wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--card2);box-shadow:0 0 40px rgba(34,197,94,.25);transition:transform 4.2s cubic-bezier(.12,.8,.08,1)}
-.wheelcenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#15803d,#22c55e);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;color:#04140a;z-index:4;box-shadow:0 0 24px rgba(34,197,94,.5)}
-.wheelcenter .icf{width:30px;height:30px}
+.wheelbox{position:relative;width:280px;height:280px}
+.wheelbox .ptr{position:absolute;top:-4px;left:50%;transform:translateX(-50%);z-index:5;color:var(--gold);filter:drop-shadow(0 2px 6px rgba(0,0,0,.7))}
+#wheel{width:100%;height:100%;border-radius:50%;transition:transform 4.2s cubic-bezier(.12,.8,.08,1);filter:drop-shadow(0 0 30px rgba(34,197,94,.25))}
 .wbtn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:15px;font-weight:900;font-size:15px;color:#04140a;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(34,197,94,.3)}
 .wbtn:disabled{opacity:.45;box-shadow:none}
-/* case open modal + animation */
+/* modals */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:600;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
-.modal-c{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:26px;padding:28px;max-width:340px;width:100%;text-align:center;animation:pop .3s;position:relative;overflow:hidden}
-.animzone{position:relative;height:210px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
-.rays{position:absolute;width:340px;height:340px;border-radius:50%;background:repeating-conic-gradient(rgba(74,222,128,.4) 0 10deg,transparent 10deg 30deg);opacity:0;transition:opacity .5s;animation:spin 7s linear infinite;pointer-events:none}
-.rays.on{opacity:1}
-.casesvg{width:150px;height:150px;filter:drop-shadow(0 10px 30px rgba(34,197,94,.35));position:relative;z-index:2}
-.casesvg.shaking{animation:cshake .55s ease-in-out 2}
-.casesvg .lid{transform-box:fill-box;transform-origin:15% 90%;transition:transform .5s cubic-bezier(.2,1.5,.4,1)}
-.casesvg.open .lid{transform:translateY(-26px) rotate(-30deg)}
-.casesvg.open .beam{opacity:1;transition:opacity .4s}
-.casesvg .beam{opacity:0}
-.casesvg.gone{transform:scale(.2);opacity:0;transition:all .3s}
-.prizebox{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:3}
-.prizebox.on{display:flex}
-.prizebox .pic{width:96px;height:96px;border-radius:26px;background:linear-gradient(135deg,#15803d,#22c55e);display:flex;align-items:center;justify-content:center;color:#04140a;animation:prizein .6s cubic-bezier(.2,1.4,.4,1);box-shadow:0 0 50px rgba(34,197,94,.6)}
-.prizebox .pic .icf{width:52px;height:52px}
-.prizebox .pic.nft{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;box-shadow:0 0 50px rgba(167,139,250,.6)}
-.prizebox .pv{margin-top:14px;font-size:30px;font-weight:900;display:flex;align-items:center;gap:8px;animation:pop .5s .15s both}
-.prizebox .pv .icf{width:26px;height:26px;color:var(--gold)}
-.cf{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;z-index:4;animation:cfall 1.5s ease-in forwards;pointer-events:none}
+.modal-c{background:linear-gradient(160deg,#0d1512,#15221c);border:1px solid var(--line);border-radius:26px;padding:24px;max-width:380px;width:100%;text-align:center;animation:pop .3s;position:relative;overflow:hidden}
 .modal-c .t{font-size:20px;font-weight:900;margin-bottom:6px}
-.modal-c .s{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:16px}
-.modal-c .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:14px;font-weight:900;color:#04140a}
+.modal-c .s{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+.modal-c .btn{width:100%;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:14px;padding:14px;font-weight:900;color:#04140a;margin-top:8px}
+.modal-c .btn.ghost{background:var(--card2);color:var(--muted)}
+.modal-c input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;color:var(--text);font-family:inherit;margin-top:6px}
+.modal-c input:focus{outline:2px solid var(--acc)}
+.cf{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;z-index:6;animation:cfall 1.5s ease-in forwards;pointer-events:none}
 /* profile */
 .mrow{display:flex;align-items:center;gap:14px;padding:15px 4px;border-bottom:1px solid var(--line)}
 .mrow .icw{width:40px;height:40px;border-radius:12px;background:var(--card2);color:var(--acc2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -137,7 +132,17 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
 <symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 4h16l1 5H3z"/><path d="M4 9v11h16V9M9 20v-6h6v6"/></symbol>
 <symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M16 11h.5M18 13h.5"/></symbol>
 <symbol id="i-diamond" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 6 3-6M12 21L9 9M12 21l3-12"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10 5.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6A16.7 16.7 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
 </svg>
+
+<div id="regGate" style="position:fixed;inset:0;background:rgba(5,8,7,.97);z-index:700;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center">
+  <svg class="icf" style="width:64px;height:64px;color:var(--acc2);margin-bottom:12px"><use href="#i-bolt"/></svg>
+  <h1 style="margin-bottom:8px">Нужна регистрация</h1>
+  <p class="note" style="margin-bottom:20px">Открой бота и отправь контакт —<br>он нужен для оформления заказов.</p>
+  <button class="wbtn" id="regBtn" style="max-width:260px">Открыть бота</button>
+</div>
 
 <div class="wrap">
 <div id="shopScreen" class="screen active">
@@ -148,17 +153,17 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
   <div class="balbar"><svg class="icf"><use href="#i-star"/></svg><div><div class="v" id="balStars">0</div><div class="l">БАЛЛОВ ЛОЯЛЬНОСТИ</div></div><span class="badge"><svg class="icf"><use href="#i-bolt"/></svg>LIVE</span></div>
   <div class="sec"><svg class="ic"><use href="#i-shop"/></svg><span class="t">Каталог</span></div>
   <div class="prow">
-    <div class="pcard featured"><span class="icw"><svg class="ic"><use href="#i-crown"/></svg></span><div class="nm">Telegram Premium</div><div class="desc">3 / 6 / 12 мес</div><div class="pr">от 85 000 сум</div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div class="nm">Telegram Stars</div><div class="desc">пополнение баланса</div><div class="pr">от 50 <svg class="icf"><use href="#i-star"/></svg></div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span><div class="nm">Карточка Грамм</div><div class="desc">пополнение / покупка</div><div class="pr">от 0.5 TON</div><button class="btn" data-order>Заказать</button></div>
-    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div class="nm">Подарки</div><div class="desc">номинал 15–100</div><div class="pr">от 15 000 сум</div><button class="btn" data-order>Заказать</button></div>
+    <div class="pcard featured"><span class="icw"><svg class="ic"><use href="#i-crown"/></svg></span><div class="nm">Telegram Premium</div><div class="desc">3 / 6 / 12 мес</div><div class="pr">от 185 000 сум</div><button class="btn" data-order data-product="Telegram Premium">Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div class="nm">Telegram Stars</div><div class="desc">пополнение баланса</div><div class="pr">от 50 <svg class="icf"><use href="#i-star"/></svg></div><button class="btn" data-order data-product="Telegram Stars">Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-card"/></svg></span><div class="nm">Карточка Грамм</div><div class="desc">пополнение / покупка</div><div class="pr">от 0.5 TON</div><button class="btn" data-order data-product="Карточка Грамм">Заказать</button></div>
+    <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-gift"/></svg></span><div class="nm">Подарки</div><div class="desc">номинал 15–100</div><div class="pr">от 15 000 сум</div><button class="btn" data-order data-product="Подарок Telegram">Заказать</button></div>
   </div>
   <div class="sec"><svg class="ic"><use href="#i-game"/></svg><span class="t">Активности</span></div>
   <div class="prow">
     <div class="pcard" style="border-color:var(--acc)"><span class="icw"><svg class="ic"><use href="#i-case"/></svg></span><div class="nm">Фри-кейс</div><div class="desc">раз в 24ч за подписку</div><div class="pr">0 <svg class="icf"><use href="#i-star"/></svg></div><button class="btn" data-go="cases">Открыть</button></div>
     <div class="pcard"><span class="icw"><svg class="ic"><use href="#i-wheel"/></svg></span><div class="nm">Колесо фортуны</div><div class="desc">главный розыгрыш</div><div class="pr">50 <svg class="icf"><use href="#i-star"/></svg></div><button class="btn" data-go="wheel">Крутить</button></div>
   </div>
-  <div class="note">Баллы лояльности копятся за активность и подписку. Заказы реальных товаров — через менеджера в Telegram.</div>
+  <div class="note">Баллы лояльности копятся за активность и подписку. Заказы уходят менеджеру в Telegram автоматически.</div>
 </div>
 
 <div id="casesScreen" class="screen">
@@ -170,12 +175,12 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
     <button class="open" id="btnFree"><svg class="ic"><use href="#i-gift"/></svg><span id="btnFreeTxt">Открыть бесплатно</span></button>
   </div>
   <div class="casecard">
-    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">Кейс за 50 <svg class="icf" style="width:16px;height:16px;color:var(--gold)"><use href="#i-star"/></svg></div><div class="sb">крупные призы · равные шансы</div></div></div>
+    <div class="h"><span class="box"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="nm">Кейс за 50 <svg class="icf" style="width:16px;height:16px;color:var(--gold)"><use href="#i-star"/></svg></div><div class="sb">крупные призы · открытие как в CS</div></div></div>
     <div class="prizes" id="pz50"></div>
     <div style="height:12px"></div>
     <button class="open" id="btn50"><svg class="ic"><use href="#i-star"/></svg>Открыть за 50</button>
   </div>
-  <div class="note">Шансы открыто подписаны на каждом призе. Баллы лояльности — не реальные деньги.</div>
+  <div class="note">Шансы скрыты по умолчанию — посмотреть можно в профиле.</div>
 </div>
 
 <div id="wheelScreen" class="screen">
@@ -183,14 +188,13 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
   <div class="wheelwrap">
     <div class="wheelbox">
       <svg class="ptr" width="28" height="28" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l6 9H6z"/></svg>
-      <canvas id="wheel" width="520" height="520"></canvas>
-      <div class="wheelcenter"><svg class="icf"><use href="#i-wheel"/></svg></div>
+      <canvas id="wheel" width="560" height="560"></canvas>
     </div>
   </div>
   <div class="prizes" id="pzWheel" style="justify-content:center"></div>
   <div style="height:14px"></div>
   <button class="wbtn" id="btnWheel"><svg class="ic"><use href="#i-wheel"/></svg>Крутить за 50</button>
-  <div class="note">Все шансы равные — по 20% на каждый сектор.</div>
+  <div class="note">Сектора равные — по 20% каждый.</div>
 </div>
 
 <div id="profileScreen" class="screen">
@@ -198,31 +202,26 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-chan"/></svg></span><div><div class="t">Подписка на канал</div><div class="s">@sTONks_shopuzb</div></div><span class="st" id="subStatus">…</span></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-case"/></svg></span><div><div class="t">Фри-кейс доступен</div><div class="s" id="freeStatus">…</div></div></div>
   <div class="mrow"><span class="icw"><svg class="ic"><use href="#i-star"/></svg></span><div><div class="t">Баллы лояльности</div><div class="s" id="balStatus">0</div></div></div>
-  <div class="note">Программа лояльности: баллы копятся за активность и подписку. Заказы реальных товаров — через менеджера. Бот не имитирует системные сообщения Telegram.</div>
+  <div class="mrow" id="probRow"><span class="icw"><svg class="ic" id="probIcon"><use href="#i-eyeoff"/></svg></span><div><div class="t">Показывать шансы</div><div class="s">скрыты, чтобы не засорять интерфейс</div></div><span class="st no" id="probState">выкл</span></div>
+  <div class="note">Программа лояльности: баллы за активность и подписку. Заказы уходят менеджеру @logistickon через бота.</div>
 </div>
 </div>
 
-<!-- CASE ANIMATION MODAL -->
+<!-- CS-style case modal -->
 <div class="modal" id="caseModal"><div class="modal-c">
-  <div class="animzone" id="animZone">
-    <div class="rays" id="rays"></div>
-    <svg class="casesvg" id="caseSvg" viewBox="0 0 120 120">
-      <defs>
-        <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#15803d"/><stop offset="1" stop-color="#0d2a1f"/></linearGradient>
-        <linearGradient id="gLid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#15803d"/></linearGradient>
-      </defs>
-      <g class="beam"><path d="M60 55 L20 5 L40 5 Z M60 55 L80 5 L100 5 Z M60 55 L60 0 L70 0 Z" fill="rgba(251,191,36,.55)"/></g>
-      <g class="lid"><rect x="16" y="28" width="88" height="26" rx="9" fill="url(#gLid)"/><rect x="50" y="20" width="20" height="16" rx="5" fill="#fbbf24"/></g>
-      <g class="bod"><rect x="16" y="50" width="88" height="50" rx="11" fill="url(#gBody)"/><rect x="50" y="50" width="20" height="22" rx="4" fill="#fbbf24"/><rect x="24" y="60" width="72" height="4" rx="2" fill="rgba(255,255,255,.12)"/></g>
-    </svg>
-    <div class="prizebox" id="prizeBox">
-      <div class="pic" id="prizeIcon"><svg class="icf"><use href="#i-star"/></svg></div>
-      <div class="pv" id="prizeVal">0<svg class="icf"><use href="#i-star"/></svg></div>
-    </div>
-  </div>
-  <div class="t" id="caseTitle">Открываем...</div>
-  <div class="s" id="caseSub">Держим кулаки</div>
+  <div class="t" id="caseTitle">Открываем кейс</div>
+  <div class="reelwrap"><div class="reelptr"></div><div class="reel" id="reel"></div></div>
+  <div class="s" id="caseSub">Лента крутится...</div>
   <button class="btn" id="caseOk" style="display:none">Забрать</button>
+</div></div>
+
+<!-- order modal -->
+<div class="modal" id="orderModal"><div class="modal-c">
+  <div class="t" id="ordTitle">Заказ</div>
+  <div class="s">Заявка уйдёт менеджеру в Telegram. Он ответит по оплате и выдаче.</div>
+  <input id="ordComment" placeholder="Комментарий (необязательно)">
+  <button class="btn" id="ordSend"><span style="display:flex;align-items:center;justify-content:center;gap:8px"><svg class="ic"><use href="#i-send"/></svg>Отправить заявку</span></button>
+  <button class="btn ghost" id="ordCancel">Отмена</button>
 </div></div>
 
 <nav>
@@ -234,12 +233,14 @@ h1{font-size:24px;font-weight:900;margin-bottom:12px}
 
 <script>
 const $=id=>document.getElementById(id);
-const MANAGER='https://t.me/logistickon';
+const BOT_LINK='@sTONksUZ_bot'; // ← замени на юзернейм твоего магазин-бота
 const CHANNEL='https://t.me/sTONks_shopuzb';
 const tgW=window.Telegram&&Telegram.WebApp;
 const tgUser=(tgW&&tgW.initDataUnsafe)?tgW.initDataUnsafe.user:null;
 const UID=tgUser?String(tgUser.id):('x'+Math.random().toString(36).slice(2,10));
-let CFG=null,ME={stars:0,subscribed:false,free_in:0},spinning=false,busy=false;
+let CFG=null,ME={stars:0,subscribed:false,registered:false,free_in:0},spinning=false,busy=false;
+let SHOW_PROB=localStorage.getItem('stonks_prob')==='1';
+let curProduct='';
 function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';
   t.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#15221c;border:1px solid rgba(74,222,128,.25);color:#eef7f0;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:700;z-index:800;transition:opacity .3s;opacity:0';
   document.body.appendChild(t)}t.textContent=m;t.style.opacity='1';clearTimeout(t._h);t._h=setTimeout(()=>t.style.opacity='0',2200)}
@@ -247,49 +248,60 @@ function show(tab){document.querySelectorAll('.screen').forEach(s=>s.classList.r
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('light')}catch(e){}}}
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
-document.querySelectorAll('[data-order]').forEach(b=>b.addEventListener('click',()=>location.href=MANAGER));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
 function paintBal(){$('balStars').textContent=ME.stars;$('balStars2').textContent=ME.stars;$('balStars3').textContent=ME.stars;$('balStatus').textContent=ME.stars+' баллов';}
 function pzHTML(list){return list.map(p=>{const name=p.prize==='NFT'?'NFT':p.prize;
   const isTop=p.prize==='NFT'||p.prize>=500;
-  return '<span class="pz '+(isTop?'top':'')+'">'+(p.prize==='NFT'?'<svg class="icf" style="color:var(--purple)"><use href="#i-diamond"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>')+name+' <span class="ch">'+p.chance+'%</span></span>'}).join('')}
+  return '<span class="pz '+(isTop?'top':'')+'">'+(p.prize==='NFT'?'<svg class="icf" style="color:var(--purple)"><use href="#i-diamond"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>')+name+(SHOW_PROB?' <span class="ch">'+p.chance+'%</span>':'')+'</span>'}).join('')}
+function renderPrizes(){if(!CFG)return;$('pzFree').innerHTML=pzHTML(CFG.case_free);$('pz50').innerHTML=pzHTML(CFG.case_50);$('pzWheel').innerHTML=pzHTML(CFG.wheel);}
 function fmtCd(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h+'ч '+String(m).padStart(2,'0')+'м'}
 function refreshMe(){fetch('/api/shop/me?id='+encodeURIComponent(UID)).then(r=>r.json()).then(d=>{ME=d;paintBal();
+  if(!ME.registered&&tgUser){$('regGate').style.display='flex';}
   $('subStatus').textContent=ME.subscribed?'есть':'нет';$('subStatus').className='st '+(ME.subscribed?'ok':'no');
   $('freeStatus').textContent=ME.free_in>0?('через '+fmtCd(ME.free_in)):'сейчас';
   $('btnFree').disabled=ME.free_in>0;
   $('btnFreeTxt').textContent=ME.free_in>0?('Жди '+fmtCd(ME.free_in)):'Открыть бесплатно';}).catch(()=>{})}
-/* ===== CASE ANIMATION ===== */
+$('regBtn').addEventListener('click',()=>location.href=BOT_LINK);
+/* prob toggle */
+function paintProb(){$('probState').textContent=SHOW_PROB?'вкл':'выкл';$('probState').className='st '+(SHOW_PROB?'ok':'no');
+  $('probIcon').innerHTML='<use href="#i-'+(SHOW_PROB?'eye':'eyeoff')+'"/>';}
+$('probRow').addEventListener('click',()=>{SHOW_PROB=!SHOW_PROB;localStorage.setItem('stonks_prob',SHOW_PROB?'1':'0');paintProb();renderPrizes();toast(SHOW_PROB?'Шансы показаны':'Шансы скрыты')});
+/* ===== CS-REEL ===== */
+function tileHTML(p){const isNft=p==='NFT';
+  return '<div class="rtile'+(isNft?' nft':'')+'">'+(isNft?'<svg class="icf"><use href="#i-diamond"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>')+'<span class="v">'+(isNft?'NFT':p)+'</span></div>'}
+function weightedPick(table){const tot=table.reduce((a,b)=>a+b.chance,0);let r=Math.random()*tot;
+  for(const it of table){r-=it.chance;if(r<=0)return it.prize}return table[table.length-1].prize}
 function confetti(zone){const cols=['#22c55e','#fbbf24','#22d3ee','#a78bfa','#4ade80'];
-  for(let i=0;i<26;i++){const c=document.createElement('span');c.className='cf';
+  for(let i=0;i<30;i++){const c=document.createElement('span');c.className='cf';
     c.style.left=(5+Math.random()*90)+'%';c.style.background=cols[i%cols.length];
-    c.style.animationDelay=(Math.random()*.5)+'s';c.style.transform='rotate('+Math.random()*360+'deg)';
-    zone.appendChild(c);setTimeout(()=>c.remove(),2200)}}
-function playCaseAnim(title,prize,stars,done){
-  const m=$('caseModal'),svg=$('caseSvg'),rays=$('rays'),pb=$('prizeBox'),pi=$('prizeIcon'),pv=$('prizeVal');
-  m.classList.add('show');
-  svg.className='casesvg shaking';rays.classList.remove('on');pb.classList.remove('on');svg.classList.remove('gone','open');
-  $('caseOk').style.display='none';
-  $('caseTitle').textContent=title;$('caseSub').textContent='Держим кулаки...';
-  if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('medium')}catch(e){}}
-  setTimeout(()=>{svg.classList.remove('shaking');svg.classList.add('open');rays.classList.add('on');
-    if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('heavy')}catch(e){}}},1250);
-  setTimeout(()=>{svg.classList.add('gone');
+    c.style.animationDelay=(Math.random()*.6)+'s';zone.appendChild(c);setTimeout(()=>c.remove(),2400)}}
+function playReel(title,table,prize,stars,done){
+  const m=$('caseModal'),reel=$('reel');
+  m.classList.add('show');$('caseOk').style.display='none';
+  $('caseTitle').textContent=title;$('caseSub').textContent='Лента крутится...';
+  const N=64,WIN=56,STEP=84;
+  let html='';
+  for(let i=0;i<N;i++){html+=tileHTML(i===WIN?prize:weightedPick(table))}
+  reel.innerHTML=html;reel.style.transition='none';reel.style.transform='translateX(0)';
+  const jit=(Math.random()*44-22);
+  const offset=WIN*STEP+38+jit;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    reel.style.transition='transform 5.2s cubic-bezier(.1,.75,.15,1)';
+    reel.style.transform='translateX('+(-offset)+'px)';
+    if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.impactOccurred('medium')}catch(e){}}
+  }));
+  setTimeout(()=>{
+    reel.children[WIN].classList.add('win');
+    confetti(m.querySelector('.modal-c'));
     const isNft=prize==='NFT';
-    pi.className='pic'+(isNft?' nft':'');
-    pi.innerHTML=isNft?'<svg class="icf"><use href="#i-diamond"/></svg>':'<svg class="icf"><use href="#i-star"/></svg>';
-    pv.innerHTML=(isNft?'NFT':prize)+(isNft?'':'<svg class="icf"><use href="#i-star"/></svg>');
-    pb.classList.add('on');confetti($('animZone'));
-    $('caseTitle').textContent=isNft?'Мега-приз':'Выигрыш';
     $('caseSub').textContent=(isNft?'NFT подарок':prize+' баллов')+' · Баланс: '+stars;
     $('caseOk').style.display='block';
     if(tgW&&tgW.HapticFeedback){try{tgW.HapticFeedback.notificationOccurred('success')}catch(e){}}
     if(done)done();
-  },1850);
+  },5450);
 }
 $('caseOk').addEventListener('click',()=>$('caseModal').classList.remove('show'));
-/* ===== actions ===== */
-$('btnFree').addEventListener('click',()=>{if(busy)return;busy=true;const b=$('btnFree');
+$('btnFree').addEventListener('click',()=>{if(busy)return;busy=true;
   fetch('/api/shop/case_free',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
     busy=false;
     if(!d.ok){
@@ -297,24 +309,47 @@ $('btnFree').addEventListener('click',()=>{if(busy)return;busy=true;const b=$('b
       else if(d.reason==='cooldown')toast('Фри-кейс ещё не готов');
       else toast('Не получилось');
       refreshMe();return}
-    playCaseAnim('ФРИ-кейс',d.prize,d.stars,refreshMe);
+    playReel('ФРИ-кейс',CFG.case_free,d.prize,d.stars,refreshMe);
   }).catch(()=>{busy=false;toast('Сервер недоступен')})});
 $('btn50').addEventListener('click',()=>{if(busy)return;busy=true;
   fetch('/api/shop/case_50',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
     busy=false;
     if(!d.ok)return toast('Не хватает баллов');
-    playCaseAnim('Кейс за 50',d.prize,d.stars,refreshMe);
+    playReel('Кейс за 50',CFG.case_50,d.prize,d.stars,refreshMe);
   }).catch(()=>{busy=false;toast('Сервер недоступен')})});
-/* wheel */
-function drawWheel(){const cv=$('wheel'),ctx=cv.getContext('2d');const segs=CFG.wheel;const tot=segs.length;
-  const ang=Math.PI*2/tot;let a=-Math.PI/2-ang/2;ctx.clearRect(0,0,520,520);
-  const cols=['#15803d','#0d2a1f','#22c55e','#123528','#1a4a36'];
+/* ===== WHEEL (детализированное) ===== */
+function drawStar(ctx,x,y,r,color){ctx.save();ctx.translate(x,y);ctx.beginPath();
+  for(let i=0;i<10;i++){const rr=i%2?r*.45:r;const a=-Math.PI/2+i*Math.PI/5;ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}
+  ctx.closePath();ctx.fillStyle=color;ctx.fill();ctx.restore()}
+function drawWheel(){const cv=$('wheel'),ctx=cv.getContext('2d');const C=280;
+  const segs=CFG.wheel,n=segs.length,ang=2*Math.PI/n;
+  ctx.clearRect(0,0,560,560);
+  ctx.beginPath();ctx.arc(C,C,276,0,7);ctx.fillStyle='#0a120d';ctx.fill();
+  for(let i=0;i<28;i++){const a=i/28*2*Math.PI;
+    ctx.beginPath();ctx.arc(C+Math.cos(a)*262,C+Math.sin(a)*262,6,0,7);
+    ctx.fillStyle=i%2?'#fbbf24':'#22c55e';ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0}
+  let a0=-Math.PI/2-ang/2;
+  const cols=[['#1c7a44','#0a2417'],['#0d2a1f','#071a12'],['#22c55e','#0f3d2c'],['#123528','#0a2417'],['#1a4a36','#0d2a1f']];
   segs.forEach((s,i)=>{
-    ctx.beginPath();ctx.moveTo(260,260);ctx.arc(260,260,254,a,a+ang);ctx.closePath();
-    ctx.fillStyle=cols[i%cols.length];ctx.fill();ctx.strokeStyle='#050807';ctx.lineWidth=3;ctx.stroke();
-    ctx.save();ctx.translate(260,260);ctx.rotate(a+ang/2);ctx.textAlign='right';ctx.fillStyle='#eef7f0';ctx.font='bold 22px sans-serif';
-    ctx.fillText((s.prize==='NFT'?'NFT':s.prize),230,8);ctx.restore();
-    a+=ang})}
+    const g=ctx.createRadialGradient(C,C,50,C,C,246);g.addColorStop(0,cols[i%5][1]);g.addColorStop(1,cols[i%5][0]);
+    ctx.beginPath();ctx.moveTo(C,C);ctx.arc(C,C,246,a0,a0+ang);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=2;ctx.stroke();
+    for(let t=1;t<4;t++){const ta=a0+ang*t/4;
+      ctx.beginPath();ctx.moveTo(C+Math.cos(ta)*236,C+Math.sin(ta)*236);ctx.lineTo(C+Math.cos(ta)*246,C+Math.sin(ta)*246);
+      ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.stroke()}
+    ctx.save();ctx.translate(C,C);ctx.rotate(a0+ang/2);
+    ctx.textAlign='right';ctx.fillStyle='#eef7f0';ctx.font='bold 26px sans-serif';
+    ctx.fillText(s.prize==='NFT'?'NFT':String(s.prize),206,9);
+    if(s.prize!=='NFT')drawStar(ctx,222,0,11,'#fbbf24');
+    else{ctx.beginPath();ctx.moveTo(222,-11);ctx.lineTo(232,0);ctx.lineTo(222,11);ctx.lineTo(212,0);ctx.closePath();ctx.fillStyle='#a78bfa';ctx.fill()}
+    ctx.restore();
+    a0+=ang});
+  ctx.beginPath();ctx.arc(C,C,58,0,7);
+  const hg=ctx.createRadialGradient(C-18,C-18,6,C,C,58);hg.addColorStop(0,'#22c55e');hg.addColorStop(1,'#0d2a1f');
+  ctx.fillStyle=hg;ctx.fill();ctx.strokeStyle='#4ade80';ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle='#04140a';ctx.beginPath();
+  ctx.moveTo(C+8,C-30);ctx.lineTo(C-14,C+5);ctx.lineTo(C-3,C+5);ctx.lineTo(C-8,C+30);ctx.lineTo(C+14,C-5);ctx.lineTo(C+3,C-5);
+  ctx.closePath();ctx.fill()}
 let wheelAngle=0;
 $('btnWheel').addEventListener('click',()=>{if(spinning||busy)return;spinning=true;
   fetch('/api/shop/wheel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
@@ -322,12 +357,24 @@ $('btnWheel').addEventListener('click',()=>{if(spinning||busy)return;spinning=tr
     const segs=CFG.wheel;let idx=segs.findIndex(s=>String(s.prize)===String(d.prize));if(idx<0)idx=segs.length-1;
     const segAng=360/segs.length;const mid=segAng*idx+segAng/2;
     wheelAngle+=360*5+(360-mid);$('wheel').style.transform='rotate('+wheelAngle+'deg)';
-    setTimeout(()=>{spinning=false;playCaseAnim('Колесо фортуны',d.prize,d.stars,refreshMe)},4300);
+    setTimeout(()=>{spinning=false;playReel('Колесо фортуны',CFG.wheel,d.prize,d.stars,refreshMe)},4300);
   }).catch(()=>{spinning=false;toast('Сервер недоступен')})});
+/* ===== ORDERS ===== */
+document.querySelectorAll('[data-order]').forEach(b=>b.addEventListener('click',()=>{
+  curProduct=b.dataset.product;$('ordTitle').textContent='Заказ: '+curProduct;
+  $('ordComment').value='';$('orderModal').classList.add('show')}));
+$('ordCancel').addEventListener('click',()=>$('orderModal').classList.remove('show'));
+$('ordSend').addEventListener('click',()=>{
+  fetch('/api/shop/order',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({id:UID,product:curProduct,comment:$('ordComment').value.trim()})})
+    .then(r=>{if(!r.ok)return r.json().then(d=>{throw d});return r.json()})
+    .then(()=>{$('orderModal').classList.remove('show');toast('Заявка отправлена менеджеру')})
+    .catch(d=>{$('orderModal').classList.remove('show');
+      toast(d&&d.detail==='not registered'?'Сначала регистрация в боте':(d&&d.detail==='manager not connected'?'Менеджер ещё не подключён':'Ошибка отправки'))})});
 /* init */
-fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;
-  $('pzFree').innerHTML=pzHTML(c.case_free);$('pz50').innerHTML=pzHTML(c.case_50);$('pzWheel').innerHTML=pzHTML(c.wheel);
-  drawWheel();refreshMe();setInterval(refreshMe,15000);}).catch(()=>toast('Сервер недоступен'));
+fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;renderPrizes();drawWheel();refreshMe();setInterval(refreshMe,15000);})
+  .catch(()=>toast('Сервер недоступен'));
+paintProb();
 if(tgW){try{tgW.ready();tgW.expand()}catch(e){}}
 </script>
 </body>
