@@ -44,6 +44,7 @@ def init_db():
             id TEXT PRIMARY KEY, name TEXT, phone TEXT, username TEXT,
             registered BOOLEAN DEFAULT FALSE,
             stars BIGINT DEFAULT 0, free_ready_at BIGINT DEFAULT 0, updated BIGINT)""")
+        cur.execute("ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS name TEXT")
         cur.execute("ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS phone TEXT")
         cur.execute("ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS username TEXT")
         cur.execute("ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS registered BOOLEAN DEFAULT FALSE")
