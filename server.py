@@ -246,3 +246,9 @@ def prob():
     return {"case_free": MEM["conf"]["case_free"], "case_50": MEM["conf"]["case_50"], "wheel": MEM["conf"]["wheel"]}
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/{full_path:path}")
+def fallback(full_path: str):
+    if full_path.startswith("api/"):
+        raise HTTPException(404)
+    return FileResponse("frontend/index.html")
