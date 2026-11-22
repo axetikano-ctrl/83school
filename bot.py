@@ -1,8 +1,7 @@
-"""bot.py — sTONks Shop: команды ДО текстового хендлера, безопасные api-вызовы"""
+"""bot.py — sTONks Shop: команды ДО текстового хендлера, безопасные api-вызовы, без SkipHandler"""
 import asyncio, logging, re
 import aiohttp
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.exceptions import SkipHandler
 from aiogram.filters import CommandStart, Command
 from aiogram.types import (InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo,
                            MenuButtonWebApp, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove)
@@ -63,7 +62,7 @@ async def welcome(m: types.Message):
         "⚖️ Программа лояльности: баллы за активность и подписку, шансы открыты в профиле.\n\n👇 Открывай:",
         parse_mode="HTML", reply_markup=kb())
 
-# ========== КОМАНДЫ (обязательно ДО текстового хендлера) ==========
+# ========== КОМАНДЫ (строго ДО текстового хендлера) ==========
 @dp.message(CommandStart())
 async def start(m: types.Message):
     uid = str(m.from_user.id)
@@ -183,15 +182,16 @@ async def on_contact(m: types.Message):
 @dp.message(F.forward_from)
 async def fwd_id(m: types.Message):
     if m.from_user.id != ADMIN_ID:
-        raise SkipHandler
+        return
     await m.answer(f"🆔 ID отправителя пересланного: <code>{m.forward_from.id}</code>\nИмя: {m.forward_from.first_name}", parse_mode="HTML")
 
+# ========== ТЕКСТ: только последний, только для регистрации ==========
 @dp.message(F.text)
 async def text_reg(m: types.Message):
     uid = str(m.from_user.id)
     f = flow.get(uid)
     if not f or f.get('step') != 'reg':
-        raise SkipHandler
+        return
     t = m.text.strip().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
     if not PHONE_RE.match(t):
         return await m.answer("⚠️ Нажми кнопку контакта или напиши номер целиком: +998XXXXXXXXX")
