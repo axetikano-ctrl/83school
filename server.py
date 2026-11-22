@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: регистрация по контакту, заказы менеджеру, кейсы/колесо, админ %"""
+"""server.py — sTONks Shop: регистрация, заказы менеджеру, кейсы/колесо, админ %, moveid"""
 import os, re, time, random
 import aiohttp
 from fastapi import FastAPI, Request, HTTPException
@@ -33,8 +33,11 @@ MEM = {"users": {}, "meta": {}, "conf": {k: [dict(x) for x in v] if isinstance(v
 
 def conn():
     if not DB_URL: return None
-    import psycopg
-    return psycopg.connect(DB_URL, autocommit=True)
+    try:
+        import psycopg
+        return psycopg.connect(DB_URL, autocommit=True)
+    except Exception:
+        return None
 
 def init_db():
     c = conn()
@@ -56,12 +59,20 @@ class AddIn(BaseModel): id: str; amount: int
 class ProbIn(BaseModel): key: str; chances: list
 class RegIn(BaseModel): id: str; phone: str = ""; name: str = "user"; username: str = ""
 class OrderIn(BaseModel): id: str; product: str; comment: str = ""
+class MoveIn(BaseModel): old: str; new: str
 
 @app.on_event("startup")
-def startup(): init_db()
+def startup():
+    try:
+        init_db()
+    except Exception as e:
+        print("init_db failed, MEM mode:", e)
 
 @app.get("/")
 def index(): return FileResponse("frontend/index.html")
+
+@app.get("/api/health")
+def health(): return {"ok": True}
 
 @app.get("/api/shop/config")
 def config():
@@ -89,7 +100,7 @@ def set_meta(key, val):
         MEM["meta"][key] = val
 
 async def check_sub(uid: str):
-    if not BOT_TOKEN: return {"subscribed": False, "error": "BOT_TOKEN не задан"}
+    if not BOT_TOKEN: return {"subscribed": False, "error": "BOT_TOKEN не задан", "status": "?"}
     chat = CHANNEL_ID or CHANNEL
     try:
         async with aiohttp.ClientSession() as s:
@@ -102,6 +113,8 @@ async def check_sub(uid: str):
         return {"subscribed": status in ("member", "administrator", "creator", "restricted"), "status": status}
     except Exception as e:
         return {"subscribed": False, "error": str(e), "status": "?"}
+
+EMPTY_USER = {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
 
 def get_user(uid):
     c = conn()
@@ -133,7 +146,7 @@ def save_user(uid, u):
 
 @app.get("/api/shop/me")
 async def me(id: str):
-    u = get_user(id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    u = get_user(id) or dict(EMPTY_USER)
     sub = await check_sub(id)
     now = int(time.time())
     return {"stars": u["stars"], "subscribed": sub["subscribed"], "registered": bool(u["registered"]),
@@ -141,7 +154,7 @@ async def me(id: str):
 
 @app.post("/api/shop/register")
 def register(r: RegIn):
-    u = get_user(r.id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    u = get_user(r.id) or dict(EMPTY_USER)
     u.update(phone=r.phone, username=r.username.lstrip('@').lower(), name=r.name[:40], registered=True)
     save_user(r.id, u)
     return {"ok": True}
@@ -190,7 +203,7 @@ def roll(table):
 @app.post("/api/shop/case_free")
 async def case_free(u: IdIn):
     now = int(time.time())
-    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    user = get_user(u.id) or dict(EMPTY_USER)
     if now < user["free_ready_at"]:
         return {"ok": False, "reason": "cooldown", "wait": user["free_ready_at"] - now}
     sub = await check_sub(u.id)
@@ -204,7 +217,7 @@ async def case_free(u: IdIn):
 
 @app.post("/api/shop/case_50")
 def case_50(u: IdIn):
-    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    user = get_user(u.id) or dict(EMPTY_USER)
     cost = MEM["conf"]["case_50_cost"]
     if user["stars"] < cost: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= cost
@@ -215,7 +228,7 @@ def case_50(u: IdIn):
 
 @app.post("/api/shop/wheel")
 def wheel(u: IdIn):
-    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    user = get_user(u.id) or dict(EMPTY_USER)
     cost = MEM["conf"]["wheel_cost"]
     if user["stars"] < cost: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= cost
@@ -226,7 +239,7 @@ def wheel(u: IdIn):
 
 @app.post("/api/shop/addstars")
 def addstars(a: AddIn):
-    user = get_user(a.id) or {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+    user = get_user(a.id) or dict(EMPTY_USER)
     user["stars"] = max(0, user["stars"] + a.amount)
     save_user(a.id, user)
     return {"ok": True, "stars": user["stars"]}
@@ -244,6 +257,34 @@ def setprob(p: ProbIn, r: Request):
 @app.get("/api/shop/prob")
 def prob():
     return {"case_free": MEM["conf"]["case_free"], "case_50": MEM["conf"]["case_50"], "wheel": MEM["conf"]["wheel"]}
+
+@app.post("/api/shop/moveid")
+def moveid(m: MoveIn, r: Request):
+    if r.headers.get("X-Admin-Id") != ADMIN_ID: raise HTTPException(403, "admin only")
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("SELECT stars, free_ready_at, registered FROM shop_users WHERE id=%s", (m.old,))
+            old = cur.fetchone()
+            if not old: raise HTTPException(404, "old id not found")
+            cur.execute("SELECT stars FROM shop_users WHERE id=%s", (m.new,))
+            if cur.fetchone():
+                cur.execute("UPDATE shop_users SET stars=stars+%s, free_ready_at=GREATEST(free_ready_at,%s), registered=registered OR %s WHERE id=%s",
+                            (old[0], old[1], old[2], m.new))
+                cur.execute("DELETE FROM shop_users WHERE id=%s", (m.old,))
+            else:
+                cur.execute("UPDATE shop_users SET id=%s WHERE id=%s", (m.new, m.old))
+        c.close()
+    else:
+        old = MEM["users"].pop(m.old, None)
+        if not old: raise HTTPException(404, "old id not found")
+        if m.new in MEM["users"]:
+            MEM["users"][m.new]["stars"] += old["stars"]
+            MEM["users"][m.new]["free_ready_at"] = max(MEM["users"][m.new]["free_ready_at"], old["free_ready_at"])
+            MEM["users"][m.new]["registered"] = MEM["users"][m.new]["registered"] or old["registered"]
+        else:
+            MEM["users"][m.new] = old
+    return {"ok": True}
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
