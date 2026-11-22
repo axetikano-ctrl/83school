@@ -1,19 +1,32 @@
-"""server.py — GRAM: регистрация (контакт+юзернейм), смена юзернейма, нули, 24h lock, адресные демо-офферы"""
-import os, re, time
-from fastapi import FastAPI, Request, HTTPException
+"""server.py — sTONks Shop: витрина + кейсы + колесо (ДЕМО-звёзды, честные шансы)"""
+import os, time, random
+import aiohttp
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 DB_URL = os.getenv("DATABASE_URL", "").strip()
-ADMIN_ID = os.getenv("ADMIN_ID", "8062748340")
-MARKET_AGE_SEC = 24 * 3600
-UNAME_RE = re.compile(r"[a-z0-9_]{3,32}")
-LINK_RE = re.compile(r"t\.me/nft/[A-Za-z0-9_-]+-\d+", re.I)
-app = FastAPI(title="GRAM")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+CHANNEL = os.getenv("CHANNEL", "@sTONks_shopuzb")
+FREE_CD = 24 * 3600
+
+# конфиг призов: (приз, шанс %) — шансы ПОКАЗЫВАЮТСЯ пользователю как есть
+CASE_FREE = [{"prize": 100, "chance": 0}, {"prize": 50, "chance": 1},
+             {"prize": 25, "chance": 1}, {"prize": 0, "chance": 98}]
+CASE_50 = [{"prize": 1000, "chance": 0}, {"prize": 500, "chance": 0},
+           {"prize": 200, "chance": 1}, {"prize": 150, "chance": 1},
+           {"prize": 15, "chance": 98}]
+CASE_50_COST = 50
+WHEEL = [{"prize": "NFT", "chance": 0}, {"prize": 1000, "chance": 0},
+         {"prize": 200, "chance": 1}, {"prize": 150, "chance": 1},
+         {"prize": 15, "chance": 98}]
+WHEEL_COST = 50
+
+app = FastAPI(title="sTONks Shop")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-MEM = {"users": {}, "offers": [], "next_offer": 1}
+MEM = {}
 
 def conn():
     if not DB_URL:
@@ -26,44 +39,16 @@ def init_db():
     if not c:
         return
     with c.cursor() as cur:
-        cur.execute("""CREATE TABLE IF NOT EXISTS gram_users(
-            id TEXT PRIMARY KEY, name TEXT, phone TEXT, username TEXT,
-            balance REAL DEFAULT 0, stars BIGINT DEFAULT 0,
-            registered BOOLEAN DEFAULT FALSE, registered_at BIGINT DEFAULT 0, updated BIGINT)""")
-        cur.execute("ALTER TABLE gram_users ADD COLUMN IF NOT EXISTS username TEXT")
-        cur.execute("ALTER TABLE gram_users ADD COLUMN IF NOT EXISTS stars BIGINT DEFAULT 0")
-        cur.execute("ALTER TABLE gram_users ADD COLUMN IF NOT EXISTS registered_at BIGINT DEFAULT 0")
-        cur.execute("""CREATE TABLE IF NOT EXISTS gram_offers(
-            id SERIAL PRIMARY KEY, to_username TEXT, gift_name TEXT, gift_num TEXT,
-            price BIGINT, buyer TEXT, status TEXT DEFAULT 'new', created BIGINT)""")
+        cur.execute("""CREATE TABLE IF NOT EXISTS shop_users(
+            id TEXT PRIMARY KEY, stars BIGINT DEFAULT 0, free_ready_at BIGINT DEFAULT 0, updated BIGINT)""")
     c.close()
 
-def parse_gift(link):
-    m = LINK_RE.search(link or "")
-    if not m:
-        return "Gift", "0"
-    tail = m.group(0).split("nft/", 1)[1]
-    name_part, _, num = tail.rpartition("-")
-    return (name_part.replace("-", " ").title() or "Gift"), num
-
-class Reg(BaseModel):
+class IdIn(BaseModel):
     id: str
-    phone: str = ""
-    name: str = "user"
-    username: str = ""
 
-class UsernameIn(BaseModel):
+class AddIn(BaseModel):
     id: str
-    username: str
-
-class OfferIn(BaseModel):
-    to_username: str
-    gift_link: str
-    price: int
-    buyer: str
-
-class AcceptIn(BaseModel):
-    username: str
+    amount: int
 
 @app.on_event("startup")
 def startup():
@@ -73,124 +58,111 @@ def startup():
 def index():
     return FileResponse("frontend/index.html")
 
-@app.get("/api/health")
-def health():
-    return {"ok": True}
+@app.get("/api/shop/config")
+def config():
+    return {"case_free": CASE_FREE, "case_50": CASE_50, "case_50_cost": CASE_50_COST,
+            "wheel": WHEEL, "wheel_cost": WHEEL_COST, "channel": CHANNEL, "free_cd": FREE_CD}
 
-@app.get("/api/gram/me")
-def me(id: str):
-    now = int(time.time())
+def get_user(uid):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("SELECT registered, balance, stars, registered_at, username FROM gram_users WHERE id=%s", (id,))
+            cur.execute("SELECT stars, free_ready_at FROM shop_users WHERE id=%s", (uid,))
             row = cur.fetchone()
-        if not row:
-            c.close()
-            return {"registered": False, "balance": 0, "stars": 0, "registered_at": 0, "username": "", "market_unlocks_in": MARKET_AGE_SEC}
-        reg_at = int(row[3] or 0)
-        if row[0] and reg_at == 0:
-            reg_at = now
-            with c.cursor() as cur:
-                cur.execute("UPDATE gram_users SET registered_at=%s, updated=%s WHERE id=%s", (now, now, id))
         c.close()
-        left = max(0, MARKET_AGE_SEC - (now - reg_at)) if reg_at else MARKET_AGE_SEC
-        return {"registered": bool(row[0]), "balance": float(row[1] or 0), "stars": int(row[2] or 0),
-                "registered_at": reg_at, "username": row[4] or "", "market_unlocks_in": left}
-    u = MEM["users"].get(id)
-    if not u:
-        return {"registered": False, "balance": 0, "stars": 0, "registered_at": 0, "username": "", "market_unlocks_in": MARKET_AGE_SEC}
-    left = max(0, MARKET_AGE_SEC - (now - u["registered_at"])) if u["registered_at"] else MARKET_AGE_SEC
-    return {"registered": bool(u.get("registered")), "balance": float(u.get("balance", 0)), "stars": int(u.get("stars", 0)),
-            "registered_at": u.get("registered_at", 0), "username": u.get("username", ""), "market_unlocks_in": left}
+        if row:
+            return {"stars": int(row[0] or 0), "free_ready_at": int(row[1] or 0)}
+        return None
+    return MEM.get(uid)
 
-@app.post("/api/gram/register")
-def register(u: Reg):
+def save_user(uid, u):
     now = int(time.time())
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("""INSERT INTO gram_users(id,name,phone,username,registered,balance,stars,registered_at,updated)
-                           VALUES(%s,%s,%s,%s,TRUE,0,0,%s,%s)
-                           ON CONFLICT(id) DO UPDATE SET phone=EXCLUDED.phone, registered=TRUE, name=EXCLUDED.name,
-                           username=EXCLUDED.username, updated=EXCLUDED.username,
-                           registered_at=CASE WHEN gram_users.registered_at=0 THEN %s ELSE gram_users.registered_at END""",
-                        (u.id, u.name[:40], u.phone, u.username[:32].lstrip('@').lower(), now, now, now))
+            cur.execute("""INSERT INTO shop_users(id,stars,free_ready_at,updated) VALUES(%s,%s,%s,%s)
+                           ON CONFLICT(id) DO UPDATE SET stars=EXCLUDED.stars, free_ready_at=EXCLUDED.free_ready_at, updated=EXCLUDED.updated""",
+                        (uid, u["stars"], u["free_ready_at"], now))
         c.close()
     else:
-        m = MEM["users"].setdefault(u.id, {"id": u.id, "name": u.name[:40], "balance": 0, "stars": 0})
-        m.update(phone=u.phone, registered=True, name=u.name[:40], username=u.username[:32].lstrip('@').lower())
-        if not m.get("registered_at"):
-            m["registered_at"] = now
-    return {"ok": True}
+        MEM[uid] = u
 
-@app.post("/api/gram/username")
-def set_username(u: UsernameIn):
-    uname = (u.username or "").lstrip('@').lower()
-    if not UNAME_RE.fullmatch(uname):
-        raise HTTPException(400, "bad username")
-    c = conn()
-    if c:
-        with c.cursor() as cur:
-            cur.execute("SELECT id FROM gram_users WHERE lower(username)=%s AND id<>%s", (uname, u.id))
-            if cur.fetchone():
-                raise HTTPException(409, "taken")
-            cur.execute("UPDATE gram_users SET username=%s, updated=%s WHERE id=%s", (uname, int(time.time()), u.id))
-        c.close()
-    else:
-        for other in MEM["users"].values():
-            if other.get("username") == uname and other["id"] != u.id:
-                raise HTTPException(409, "taken")
-        m = MEM["users"].get(u.id)
-        if not m:
-            raise HTTPException(404, "not registered")
-        m["username"] = uname
-    return {"ok": True, "username": uname}
-
-@app.get("/api/gram/offers")
-def offers(username: str):
-    uname = username.lstrip('@').lower()
-    c = conn()
-    if c:
-        with c.cursor() as cur:
-            cur.execute("SELECT id,to_username,gift_name,gift_num,price,buyer,status FROM gram_offers WHERE lower(to_username)=%s ORDER BY id DESC", (uname,))
-            rows = [{"id": r[0], "to_username": r[1], "gift_name": r[2], "gift_num": r[3], "price": int(r[4]), "buyer": r[5], "status": r[6]} for r in cur.fetchall()]
-        c.close()
-        return {"offers": rows}
-    return {"offers": [o for o in MEM["offers"] if o["to_username"] == uname]}
-
-@app.post("/api/gram/offers")
-def create_offer(o: OfferIn, r: Request):
-    if r.headers.get("X-Admin-Id") != ADMIN_ID:
-        raise HTTPException(403, "admin only")
-    if not LINK_RE.search(o.gift_link):
-        raise HTTPException(400, "bad link")
-    name, num = parse_gift(o.gift_link)
+@app.get("/api/shop/me")
+async def me(id: str):
+    u = get_user(id) or {"stars": 0, "free_ready_at": 0}
+    sub = False
+    if BOT_TOKEN:
+        try:
+            async with aiohttp.ClientSession() as s:
+                async with s.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getChatMember",
+                                 params={"chat_id": CHANNEL, "user_id": int(id)}) as r:
+                    d = await r.json()
+            sub = d.get("result", {}).get("status") in ("member", "administrator", "creator")
+        except Exception:
+            sub = False
     now = int(time.time())
-    c = conn()
-    if c:
-        with c.cursor() as cur:
-            cur.execute("INSERT INTO gram_offers(to_username,gift_name,gift_num,price,buyer,status,created) VALUES(%s,%s,%s,%s,%s,'new',%s)",
-                        (o.to_username.lstrip('@').lower(), name, num, o.price, o.buyer[:40], now))
-        c.close()
-    else:
-        MEM["offers"].append({"id": MEM["next_offer"], "to_username": o.to_username.lstrip('@').lower(),
-                              "gift_name": name, "gift_num": num, "price": o.price, "buyer": o.buyer[:40], "status": "new"})
-        MEM["next_offer"] += 1
-    return {"ok": True}
+    return {"stars": u["stars"], "subscribed": sub,
+            "free_in": max(0, u["free_ready_at"] - now)}
 
-@app.post("/api/gram/offers/{oid}/accept")
-def accept_offer(oid: int, a: AcceptIn):
-    uname = a.username.lstrip('@').lower()
-    c = conn()
-    if c:
-        with c.cursor() as cur:
-            cur.execute("UPDATE gram_offers SET status='accepted' WHERE id=%s AND lower(to_username)=%s", (oid, uname))
-        c.close()
-    else:
-        for o in MEM["offers"]:
-            if o["id"] == oid and o["to_username"] == uname:
-                o["status"] = "accepted"
-    return {"ok": True}
+def roll(table):
+    r = random.randint(1, 100)
+    acc = 0
+    for item in table:
+        acc += item["chance"]
+        if r <= acc:
+            return item["prize"]
+    return table[-1]["prize"]
+
+@app.post("/api/shop/case_free")
+async def case_free(u: IdIn):
+    now = int(time.time())
+    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0}
+    if now < user["free_ready_at"]:
+        return {"ok": False, "reason": "cooldown", "wait": user["free_ready_at"] - now}
+    if BOT_TOKEN:
+        try:
+            async with aiohttp.ClientSession() as s:
+                async with s.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getChatMember",
+                                 params={"chat_id": CHANNEL, "user_id": int(u.id)}) as r:
+                    d = await r.json()
+            if d.get("result", {}).get("status") not in ("member", "administrator", "creator"):
+                return {"ok": False, "reason": "not_subscribed"}
+        except Exception:
+            return {"ok": False, "reason": "not_subscribed"}
+    prize = roll(CASE_FREE)
+    user["stars"] += prize
+    user["free_ready_at"] = now + FREE_CD
+    save_user(u.id, user)
+    return {"ok": True, "prize": prize, "stars": user["stars"]}
+
+@app.post("/api/shop/case_50")
+def case_50(u: IdIn):
+    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0}
+    if user["stars"] < CASE_50_COST:
+        return {"ok": False, "reason": "no_stars"}
+    user["stars"] -= CASE_50_COST
+    prize = roll(CASE_50)
+    user["stars"] += prize
+    save_user(u.id, user)
+    return {"ok": True, "prize": prize, "stars": user["stars"]}
+
+@app.post("/api/shop/wheel")
+def wheel(u: IdIn):
+    user = get_user(u.id) or {"stars": 0, "free_ready_at": 0}
+    if user["stars"] < WHEEL_COST:
+        return {"ok": False, "reason": "no_stars"}
+    user["stars"] -= WHEEL_COST
+    prize = roll(WHEEL)
+    if prize != "NFT":
+        user["stars"] += prize
+    save_user(u.id, user)
+    return {"ok": True, "prize": prize, "stars": user["stars"]}
+
+@app.post("/api/shop/addstars")
+def addstars(a: AddIn):
+    user = get_user(a.id) or {"stars": 0, "free_ready_at": 0}
+    user["stars"] = max(0, user["stars"] + a.amount)
+    save_user(a.id, user)
+    return {"ok": True, "stars": user["stars"]}
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
