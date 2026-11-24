@@ -1,5 +1,5 @@
-"""server.py — sTONks Shop: кейс 300, честные шансы, промокоды, пополнение, менеджер-стафф"""
-import os, re, time, random
+"""server.py — sTONks Shop: магазин, кейсы, рулетка, апгрейдер, мины, промо, заказы"""
+import os, re, time, random, uuid
 import aiohttp
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +14,7 @@ CHANNEL_ID = os.getenv("CHANNEL_ID", "")
 ADMIN_ID = os.getenv("ADMIN_ID", "8062748340")
 FREE_CD = 24 * 3600
 POINTS_PER_STAR = 100
+HOUSE = 0.97
 
 CONF = {
     "case_free": [{"prize": 100, "chance": 0}, {"prize": 50, "chance": 1},
@@ -26,12 +27,13 @@ CONF = {
                   {"prize": 200, "chance": 0}, {"prize": 150, "chance": 0},
                   {"prize": 15, "chance": 99}],
     "wheel_cost": 50,
+    "upgrader_mults": [1.5, 2, 5, 10],
 }
 
 app = FastAPI(title="sTONks Shop")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-MEM = {"users": {}, "meta": {}, "promos": {}, "redemptions": set(),
-       "conf": {k: [dict(x) for x in v] if isinstance(v, list) else v for k, v in CONF.items()}}
+MEM = {"users": {}, "meta": {}, "promos": {}, "redemptions": set(), "mines": {},
+       "conf": {k: ([dict(x) for x in v] if isinstance(v, list) and v and isinstance(v[0], dict) else v) for k, v in CONF.items()}}
 
 def conn():
     if not DB_URL: return None
@@ -52,10 +54,10 @@ def init_db():
         for col in ("name TEXT", "phone TEXT", "username TEXT", "registered BOOLEAN DEFAULT FALSE"):
             cur.execute(f"ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS {col}")
         cur.execute("CREATE TABLE IF NOT EXISTS shop_meta(key TEXT PRIMARY KEY, value TEXT)")
-        cur.execute("""CREATE TABLE IF NOT EXISTS shop_promos(
-            code TEXT PRIMARY KEY, reward BIGINT, max_uses INT, uses INT DEFAULT 0)""")
-        cur.execute("""CREATE TABLE IF NOT EXISTS shop_redemptions(
-            code TEXT, user_id TEXT, PRIMARY KEY(code, user_id))""")
+        cur.execute("CREATE TABLE IF NOT EXISTS shop_promos(code TEXT PRIMARY KEY, reward BIGINT, max_uses INT, uses INT DEFAULT 0)")
+        cur.execute("CREATE TABLE IF NOT EXISTS shop_redemptions(code TEXT, user_id TEXT, PRIMARY KEY(code, user_id))")
+        cur.execute("""CREATE TABLE IF NOT EXISTS shop_mines(
+            gid TEXT PRIMARY KEY, uid TEXT, bet BIGINT, mines TEXT, picks TEXT, state TEXT, created BIGINT)""")
     c.close()
 
 class IdIn(BaseModel): id: str
@@ -66,6 +68,10 @@ class OrderIn(BaseModel): id: str; product: str; options: str = ""; comment: str
 class MoveIn(BaseModel): old: str; new: str
 class PromoIn(BaseModel): id: str; code: str
 class PromoCreate(BaseModel): code: str; reward: int; max_uses: int
+class UpIn(BaseModel): id: str; stake: int; mult: float
+class MinesStart(BaseModel): id: str; bet: int; mines: int
+class MinesCell(BaseModel): id: str; gid: str; cell: int
+class MinesCash(BaseModel): id: str; gid: str
 
 @app.on_event("startup")
 def startup():
@@ -81,19 +87,18 @@ def health(): return {"ok": True}
 @app.get("/api/shop/config")
 def config():
     c = MEM["conf"]
-    return {"case_free": c["case_free"], "case_paid": c["case_paid"],
-            "case_paid_cost": c["case_paid_cost"], "wheel": c["wheel"],
-            "wheel_cost": c["wheel_cost"], "channel": CHANNEL, "free_cd": FREE_CD,
-            "points_per_star": POINTS_PER_STAR}
+    return {"case_free": c["case_free"], "case_paid": c["case_paid"], "case_paid_cost": c["case_paid_cost"],
+            "wheel": c["wheel"], "wheel_cost": c["wheel_cost"], "upgrader_mults": c["upgrader_mults"],
+            "channel": CHANNEL, "free_cd": FREE_CD, "points_per_star": POINTS_PER_STAR}
 
 def get_meta(key):
     c = conn()
     if c:
         with c.cursor() as cur:
             cur.execute("SELECT value FROM shop_meta WHERE key=%s", (key,))
-            row = cur.fetchone()
+            r = cur.fetchone()
         c.close()
-        return row[0] if row else None
+        return r[0] if r else None
     return MEM["meta"].get(key)
 
 def set_meta(key, val):
@@ -111,18 +116,17 @@ def is_staff(req: Request):
     return bool(sid) and sid == get_meta("manager_id")
 
 async def check_sub(uid: str):
-    if not BOT_TOKEN: return {"subscribed": False, "error": "no token", "status": "?"}
+    if not BOT_TOKEN: return {"subscribed": False, "status": "?"}
     try:
         async with aiohttp.ClientSession() as s:
             async with s.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getChatMember",
                              params={"chat_id": CHANNEL_ID or CHANNEL, "user_id": int(uid)}) as r:
                 d = await r.json()
-        if not d.get("ok"):
-            return {"subscribed": False, "error": d.get("description", "api"), "status": "?"}
+        if not d.get("ok"): return {"subscribed": False, "status": "?"}
         st = d.get("result", {}).get("status", "")
         return {"subscribed": st in ("member", "administrator", "creator", "restricted"), "status": st}
-    except Exception as e:
-        return {"subscribed": False, "error": str(e), "status": "?"}
+    except Exception:
+        return {"subscribed": False, "status": "?"}
 
 EMPTY = {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
 
@@ -175,8 +179,7 @@ def setmanager(r: IdIn, req: Request):
     return {"ok": True}
 
 @app.get("/api/shop/manager")
-def manager():
-    return {"id": get_meta("manager_id") or ""}
+def manager(): return {"id": get_meta("manager_id") or ""}
 
 @app.post("/api/shop/order")
 async def order(o: OrderIn):
@@ -184,11 +187,10 @@ async def order(o: OrderIn):
     if not u or not u.get("registered"): raise HTTPException(400, "not registered")
     mgr = get_meta("manager_id")
     if not mgr: raise HTTPException(400, "manager not connected")
-    text = (f"🟢 <b>Новый заказ</b>\n\n🛒 Товар: <b>{o.product}</b>\n"
-            f"⚙️ Параметры: {o.options or '—'}\n"
-            f"👤 От: {u.get('name','?')} (@{u.get('username','без_юза')})\n"
-            f"🆔 id: <code>{o.id}</code>\n📱 Контакт: <code>{u.get('phone','нет')}</code>\n"
-            f"💬 Комментарий: {o.comment or '—'}\n🕐 {time.strftime('%d.%m.%Y %H:%M')}")
+    text = (f"🟣 <b>Новый заказ</b>\n\n🛒 Товар: <b>{o.product}</b>\n⚙️ Параметры: {o.options or '—'}\n"
+            f"👤 От: {u.get('name','?')} (@{u.get('username','без_юза')})\n🆔 id: <code>{o.id}</code>\n"
+            f"📱 Контакт: <code>{u.get('phone','нет')}</code>\n💬 Комментарий: {o.comment or '—'}\n"
+            f"🕐 {time.strftime('%d.%m.%Y %H:%M')}")
     async with aiohttp.ClientSession() as s:
         async with s.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
                           json={"chat_id": int(mgr), "text": text, "parse_mode": "HTML"}) as r:
@@ -196,58 +198,53 @@ async def order(o: OrderIn):
     if not d.get("ok"): raise HTTPException(500, d.get("description", "send failed"))
     return {"ok": True}
 
-def normalize(table):
-    tot = sum(x["chance"] for x in table)
+def normalize(t):
+    tot = sum(x["chance"] for x in t)
     if tot <= 0:
-        table[-1]["chance"] = 100
-        return table
+        t[-1]["chance"] = 100; return t
     if tot != 100:
         acc = 0
-        for i, x in enumerate(table):
-            if i == len(table) - 1:
-                x["chance"] = max(0, 100 - acc)
+        for i, x in enumerate(t):
+            if i == len(t)-1: x["chance"] = max(0, 100-acc)
             else:
-                x["chance"] = round(x["chance"] * 100 / tot)
-                acc += x["chance"]
-    return table
+                x["chance"] = round(x["chance"]*100/tot); acc += x["chance"]
+    return t
 
-def roll(table):
-    r = random.randint(1, 100)
-    acc = 0
-    for it in table:
+def roll(t):
+    r = random.randint(1, 100); acc = 0
+    for it in t:
         acc += it["chance"]
         if r <= acc: return it["prize"]
-    return table[-1]["prize"]
+    return t[-1]["prize"]
 
 @app.post("/api/shop/case_free")
 async def case_free(u: IdIn):
     now = int(time.time())
     user = get_user(u.id) or dict(EMPTY)
-    if now < user["free_ready_at"]:
-        return {"ok": False, "reason": "cooldown", "wait": user["free_ready_at"] - now}
+    if not user.get("registered"): raise HTTPException(400, "not registered")
+    if now < user["free_ready_at"]: return {"ok": False, "reason": "cooldown"}
     sub = await check_sub(u.id)
-    if not sub["subscribed"]:
-        return {"ok": False, "reason": "not_subscribed", "diag": sub}
+    if not sub["subscribed"]: return {"ok": False, "reason": "not_subscribed", "diag": sub}
     prize = roll(MEM["conf"]["case_free"])
-    user["stars"] += prize
-    user["free_ready_at"] = now + FREE_CD
+    user["stars"] += prize; user["free_ready_at"] = now + FREE_CD
     save_user(u.id, user)
     return {"ok": True, "prize": prize, "stars": user["stars"]}
 
 @app.post("/api/shop/case_paid")
 def case_paid(u: IdIn):
     user = get_user(u.id) or dict(EMPTY)
+    if not user.get("registered"): raise HTTPException(400, "not registered")
     cost = MEM["conf"]["case_paid_cost"]
     if user["stars"] < cost: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= cost
-    prize = roll(MEM["conf"]["case_paid"])
-    user["stars"] += prize
+    prize = roll(MEM["conf"]["case_paid"]); user["stars"] += prize
     save_user(u.id, user)
     return {"ok": True, "prize": prize, "stars": user["stars"]}
 
 @app.post("/api/shop/wheel")
 def wheel(u: IdIn):
     user = get_user(u.id) or dict(EMPTY)
+    if not user.get("registered"): raise HTTPException(400, "not registered")
     cost = MEM["conf"]["wheel_cost"]
     if user["stars"] < cost: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= cost
@@ -275,8 +272,7 @@ def setprob(p: ProbIn, req: Request):
     return {"ok": True, "table": t}
 
 @app.get("/api/shop/prob")
-def prob():
-    return {k: MEM["conf"][k] for k in ("case_free", "case_paid", "wheel")}
+def prob(): return {k: MEM["conf"][k] for k in ("case_free", "case_paid", "wheel")}
 
 @app.post("/api/shop/moveid")
 def moveid(m: MoveIn, req: Request):
@@ -297,13 +293,11 @@ def moveid(m: MoveIn, req: Request):
     else:
         old = MEM["users"].pop(m.old, None)
         if not old: raise HTTPException(404, "old id not found")
-        if m.new in MEM["users"]:
-            MEM["users"][m.new]["stars"] += old["stars"]
-        else:
-            MEM["users"][m.new] = old
+        if m.new in MEM["users"]: MEM["users"][m.new]["stars"] += old["stars"]
+        else: MEM["users"][m.new] = old
     return {"ok": True}
 
-# ===== ПРОМОКОДЫ =====
+# ===== промокоды =====
 def get_promo(code):
     c = conn()
     if c:
@@ -358,11 +352,99 @@ def promo_activate(p: PromoIn):
         c.close()
     else:
         if (code, p.id) in MEM["redemptions"]: raise HTTPException(400, "already used")
-        MEM["redemptions"].add((code, p.id))
-        pr["uses"] += 1
-    u["stars"] += pr["reward"]
-    save_user(p.id, u)
+        MEM["redemptions"].add((code, p.id)); pr["uses"] += 1
+    u["stars"] += pr["reward"]; save_user(p.id, u)
     return {"ok": True, "reward": pr["reward"], "stars": u["stars"]}
+
+# ===== АПГРЕЙДЕР =====
+@app.post("/api/shop/upgrade")
+def upgrade(u: UpIn):
+    user = get_user(u.id) or dict(EMPTY)
+    if not user.get("registered"): raise HTTPException(400, "not registered")
+    if u.mult not in MEM["conf"]["upgrader_mults"]: raise HTTPException(400, "bad mult")
+    if u.stake < 10: raise HTTPException(400, "stake too small")
+    if user["stars"] < u.stake: return {"ok": False, "reason": "no_stars"}
+    chance = round(95 / u.mult)
+    user["stars"] -= u.stake
+    win = random.randint(1, 100) <= chance
+    payout = int(u.stake * u.mult) if win else 0
+    user["stars"] += payout
+    save_user(u.id, user)
+    return {"ok": True, "win": win, "chance": chance, "payout": payout, "stars": user["stars"]}
+
+# ===== МИНЫ =====
+def mines_mult(mines, k):
+    m = HOUSE
+    for i in range(k): m *= (25 - i) / (25 - mines - i)
+    return m
+
+def mines_get(gid):
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("SELECT uid, bet, mines, picks, state FROM shop_mines WHERE gid=%s", (gid,))
+            r = cur.fetchone()
+        c.close()
+        if r: return {"uid": r[0], "bet": int(r[1]), "mines": [int(x) for x in r[2].split(",")],
+                      "picks": [int(x) for x in r[3].split(",")] if r[3] else [], "state": r[4]}
+        return None
+    return MEM["mines"].get(gid)
+
+def mines_save(gid, g):
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("""INSERT INTO shop_mines(gid,uid,bet,mines,picks,state,created) VALUES(%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(gid) DO UPDATE SET picks=EXCLUDED.picks, state=EXCLUDED.state""",
+                (gid, g["uid"], g["bet"], ",".join(map(str, g["mines"])), ",".join(map(str, g["picks"])), g["state"], int(time.time())))
+        c.close()
+    else:
+        MEM["mines"][gid] = g
+
+@app.post("/api/shop/mines_start")
+def mines_start(m: MinesStart):
+    user = get_user(m.id) or dict(EMPTY)
+    if not user.get("registered"): raise HTTPException(400, "not registered")
+    if m.mines not in (3, 5, 10): raise HTTPException(400, "bad mines")
+    if m.bet < 10: raise HTTPException(400, "bet too small")
+    if user["stars"] < m.bet: return {"ok": False, "reason": "no_stars"}
+    user["stars"] -= m.bet; save_user(m.id, user)
+    gid = uuid.uuid4().hex[:12]
+    g = {"uid": m.id, "bet": m.bet, "mines": random.sample(range(25), m.mines), "picks": [], "state": "active"}
+    mines_save(gid, g)
+    return {"ok": True, "gid": gid, "bet": m.bet, "mines_count": m.mines, "stars": user["stars"]}
+
+@app.post("/api/shop/mines_reveal")
+def mines_reveal(m: MinesCell):
+    g = mines_get(m.gid)
+    if not g or g["uid"] != m.id: raise HTTPException(404, "game not found")
+    if g["state"] != "active": raise HTTPException(400, "game over")
+    if not (0 <= m.cell <= 24) or m.cell in g["picks"]: raise HTTPException(400, "bad cell")
+    if m.cell in g["mines"]:
+        g["state"] = "lost"; mines_save(m.gid, g)
+        return {"ok": True, "safe": False, "mines": g["mines"], "stars": get_user(m.id)["stars"]}
+    g["picks"].append(m.cell)
+    k = len(g["picks"]); mult = mines_mult(len(g["mines"]), k)
+    payout = int(g["bet"] * mult)
+    if k == 25 - len(g["mines"]):
+        g["state"] = "won"; mines_save(m.gid, g)
+        u = get_user(m.id); u["stars"] += payout; save_user(m.id, u)
+        return {"ok": True, "safe": True, "auto": True, "mult": round(mult, 2), "payout": payout, "mines": g["mines"], "stars": u["stars"]}
+    mines_save(m.gid, g)
+    nxt = mines_mult(len(g["mines"]), k + 1)
+    return {"ok": True, "safe": True, "auto": False, "mult": round(mult, 2), "payout": payout,
+            "next_mult": round(nxt, 2), "next_payout": int(g["bet"] * nxt), "picked": g["picks"]}
+
+@app.post("/api/shop/mines_cashout")
+def mines_cashout(m: MinesCash):
+    g = mines_get(m.gid)
+    if not g or g["uid"] != m.id: raise HTTPException(404, "game not found")
+    if g["state"] != "active" or not g["picks"]: raise HTTPException(400, "nothing to cash")
+    mult = mines_mult(len(g["mines"]), len(g["picks"]))
+    payout = int(g["bet"] * mult)
+    g["state"] = "won"; mines_save(m.gid, g)
+    u = get_user(m.id); u["stars"] += payout; save_user(m.id, u)
+    return {"ok": True, "payout": payout, "mult": round(mult, 2), "mines": g["mines"], "stars": u["stars"]}
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
