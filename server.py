@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: магазин, кейсы, рулетка, апгрейдер, мины, промо, заказы, баннеры"""
+"""server.py — sTONks Shop: магазин, игры, промо, заказы, баннеры (auto-inject banners.js)"""
 import os, re, time, random, uuid
 from pathlib import Path
 import aiohttp
@@ -83,7 +83,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=3"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -457,3 +457,7 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 def fallback(full_path: str):
     if full_path.startswith("api/"): raise HTTPException(404)
     return serve_index()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8000")))
