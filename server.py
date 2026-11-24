@@ -1,9 +1,10 @@
-"""server.py — sTONks Shop: магазин, кейсы, рулетка, апгрейдер, мины, промо, заказы"""
+"""server.py — sTONks Shop: магазин, кейсы, рулетка, апгрейдер, мины, промо, заказы, баннеры"""
 import os, re, time, random, uuid
+from pathlib import Path
 import aiohttp
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -15,6 +16,7 @@ ADMIN_ID = os.getenv("ADMIN_ID", "8062748340")
 FREE_CD = 24 * 3600
 POINTS_PER_STAR = 100
 HOUSE = 0.97
+INDEX = Path("frontend/index.html")
 
 CONF = {
     "case_free": [{"prize": 100, "chance": 0}, {"prize": 50, "chance": 1},
@@ -78,8 +80,14 @@ def startup():
     try: init_db()
     except Exception as e: print("init_db failed, MEM mode:", e)
 
+def serve_index():
+    html = INDEX.read_text(encoding="utf-8")
+    if "banners.js" not in html:
+        html = html.replace("</body>", '<script src="/static/banners.js"></script></body>')
+    return HTMLResponse(html)
+
 @app.get("/")
-def index(): return FileResponse("frontend/index.html")
+def index(): return serve_index()
 
 @app.get("/api/health")
 def health(): return {"ok": True}
@@ -297,7 +305,6 @@ def moveid(m: MoveIn, req: Request):
         else: MEM["users"][m.new] = old
     return {"ok": True}
 
-# ===== промокоды =====
 def get_promo(code):
     c = conn()
     if c:
@@ -356,7 +363,6 @@ def promo_activate(p: PromoIn):
     u["stars"] += pr["reward"]; save_user(p.id, u)
     return {"ok": True, "reward": pr["reward"], "stars": u["stars"]}
 
-# ===== АПГРЕЙДЕР =====
 @app.post("/api/shop/upgrade")
 def upgrade(u: UpIn):
     user = get_user(u.id) or dict(EMPTY)
@@ -372,7 +378,6 @@ def upgrade(u: UpIn):
     save_user(u.id, user)
     return {"ok": True, "win": win, "chance": chance, "payout": payout, "stars": user["stars"]}
 
-# ===== МИНЫ =====
 def mines_mult(mines, k):
     m = HOUSE
     for i in range(k): m *= (25 - i) / (25 - mines - i)
@@ -451,4 +456,4 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 @app.get("/{full_path:path}")
 def fallback(full_path: str):
     if full_path.startswith("api/"): raise HTTPException(404)
-    return FileResponse("frontend/index.html")
+    return serve_index()
