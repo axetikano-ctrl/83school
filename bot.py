@@ -1,4 +1,4 @@
-"""bot.py — sTONks Shop: менеджер-стафф, промокоды, welcome-баннер"""
+"""bot.py — sTONks Shop: welcome-баннер (png/jpg/webp), менеджер-стафф, промокоды"""
 import asyncio, logging, re
 from pathlib import Path
 import aiohttp
@@ -16,12 +16,19 @@ MANAGER_USERNAME = 'logistickon'
 ADMIN_ID = 8062748340
 PHONE_RE = re.compile(r"^\+?\d{9,15}$")
 TIMEOUT = aiohttp.ClientTimeout(total=15)
-WELCOME_IMG = Path('frontend/banners/welcome.jpg')
+BANNER_DIR = Path('frontend/banners')
+WELCOME_NAMES = ['welcome.png', 'welcome.jpg', 'welcome.jpeg', 'welcome.webp']
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('stonks-bot')
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 flow = {}
+
+def welcome_file():
+    for n in WELCOME_NAMES:
+        p = BANNER_DIR / n
+        if p.exists(): return p
+    return None
 
 async def api_get(path):
     try:
@@ -60,14 +67,17 @@ CONTACT_KB = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True,
                                  keyboard=[[KeyboardButton(text="Отправить контакт", request_contact=True)]])
 
 async def welcome(m: types.Message):
-    if WELCOME_IMG.exists():
+    wf = welcome_file()
+    if wf:
         try:
-            await m.answer_photo(FSInputFile(WELCOME_IMG), caption='🟣 sTONks — кейсы, рулетка, апгрейдер и мины. Жми «Открыть магазин».', reply_markup=kb())
+            await m.answer_photo(FSInputFile(wf),
+                caption='🟢 sTONks — кейсы, рулетка, апгрейдер и мины. Жми «Открыть магазин».',
+                reply_markup=kb())
             return
         except Exception as e:
             log.warning('welcome photo failed: %s', e)
     await m.answer(
-        f"🟣 {hbold(m.from_user.first_name or 'друг')}, ты в sTONks Shop!\n\n"
+        f"🟢 {hbold(m.from_user.first_name or 'друг')}, ты в sTONks Shop!\n\n"
         "⭐ Stars · Premium · Карточка Грамм · Подарки\n"
         "🧰 Кейсы и колесо фортуны — в мини-аппе\n"
         "🎟 Промокоды и пополнение баланса — внутри\n"
@@ -83,7 +93,7 @@ async def start(m: types.Message):
     me = await api_get(f"/api/shop/me?id={uid}")
     if not (me and me.get("registered")):
         flow[uid] = {'step': 'reg'}
-        await m.answer("🟣 Остался шаг: регистрация.\n\n📱 Отправь контакт КНОПКОЙ ниже или напиши номер текстом (+998XXXXXXXXX):",
+        await m.answer("🟢 Остался шаг: регистрация.\n\n📱 Отправь контакт КНОПКОЙ ниже или напиши номер текстом (+998XXXXXXXXX):",
                        reply_markup=CONTACT_KB)
     else:
         await welcome(m)
@@ -91,7 +101,7 @@ async def start(m: types.Message):
 @dp.message(Command("help"))
 async def help(m: types.Message):
     role, _ = await staff_id(m)
-    txt = ("🟣 sTONks Shop\n\n/start — регистрация\n/id — свой ID\n/subcheck — подписка\n\n")
+    txt = ("🟢 sTONks Shop\n\n/start — регистрация\n/id — свой ID\n/subcheck — подписка\n\n")
     if role:
         txt += ("🛠 Стафф (админ + менеджер):\n"
                 "/addstars [id] N — начислить баллы\n"
