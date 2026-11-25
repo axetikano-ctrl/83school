@@ -1,7 +1,7 @@
  {
   "pvp": "pvp.png",
   "play": "play.png",
-  "playhub": "playhub.png",
+  "playhub": "play.png",
   "free24": "free.png",
   "free": "free.png",
   "farm": "farm.png",
@@ -12,6 +12,6 @@
   "mines": "mines.png",
   "plinko": "plinko.png",
   "stars": "stars.png",
-  "premium": "premium.png",
+  "premium": "premiun.png",
   "welcome": "welcome.png"
 }
