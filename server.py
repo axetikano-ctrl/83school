@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: магазин, игры, промо, заказы, баннеры"""
+"""server.py — sTONks Shop: магазин, игры (дропы выше 15 = 1%), промо, заказы, баннеры"""
 import os, re, time, random, uuid
 from pathlib import Path
 import aiohttp
@@ -21,15 +21,15 @@ UP_BASE_PER = 100.0 / 18.0
 INDEX = Path("frontend/index.html")
 
 CONF = {
-    "case_free": [{"prize": 100, "chance": 0}, {"prize": 50, "chance": 1},
-                  {"prize": 25, "chance": 1}, {"prize": 0, "chance": 98}],
-    "case_paid": [{"prize": 1000, "chance": 1}, {"prize": 500, "chance": 0},
-                  {"prize": 200, "chance": 0}, {"prize": 150, "chance": 0},
-                  {"prize": 25, "chance": 49}, {"prize": 15, "chance": 50}],
+    "case_free": [{"prize": 100, "chance": 1}, {"prize": 50, "chance": 1},
+                  {"prize": 25, "chance": 1}, {"prize": 0, "chance": 97}],
+    "case_paid": [{"prize": 1000, "chance": 1}, {"prize": 500, "chance": 1},
+                  {"prize": 200, "chance": 1}, {"prize": 150, "chance": 1},
+                  {"prize": 25, "chance": 46}, {"prize": 15, "chance": 50}],
     "case_paid_cost": 300,
-    "wheel":     [{"prize": "NFT", "chance": 0}, {"prize": 1000, "chance": 1},
-                  {"prize": 200, "chance": 0}, {"prize": 150, "chance": 0},
-                  {"prize": 15, "chance": 99}],
+    "wheel":     [{"prize": "NFT", "chance": 1}, {"prize": 1000, "chance": 1},
+                  {"prize": 200, "chance": 1}, {"prize": 150, "chance": 1},
+                  {"prize": 15, "chance": 96}],
     "wheel_cost": 50,
     "upgrader_mults": [1.5, 2, 5, 10],
 }
@@ -89,7 +89,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js?v=9"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=11"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -369,7 +369,6 @@ def promo_activate(p: PromoIn):
     u["stars"] += pr["reward"]; save_user(p.id, u)
     return {"ok": True, "reward": pr["reward"], "stars": u["stars"]}
 
-# ===== АПГРЕЙДЕР: x1.5≈7%, x2≈6%, x5≈2%, x10≈1% (в 3 ниже прежнего, падает с множителем) =====
 @app.post("/api/shop/upgrade")
 def upgrade(u: UpIn):
     user = get_user(u.id) or dict(EMPTY)
@@ -385,7 +384,6 @@ def upgrade(u: UpIn):
     save_user(u.id, user)
     return {"ok": True, "win": win, "chance": chance, "payout": payout, "stars": user["stars"]}
 
-# ===== МИНЫ: 1 выигрышная игра на 6 =====
 def mines_mult(mines, k):
     m = HOUSE
     for i in range(k): m *= (25 - i) / (25 - mines - i)

@@ -32,7 +32,6 @@ button:active{transform:scale(.97)}
 input,select{font-family:inherit}
 .ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .icf{width:20px;height:20px;fill:currentColor;stroke:none}
-/* unified muted-blur treatment for every banner image */
 img.bimg,img.pimg,img.himg,img.cimg{filter:blur(1.6px) brightness(.82) saturate(.9);transform:scale(1.04);transition:opacity .4s}
 #splash{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
 #splash.out{opacity:0;visibility:hidden}
@@ -194,7 +193,7 @@ body.fs header{top:calc(56px + env(safe-area-inset-top))}
 .rtile.zero .icf{color:var(--muted)}
 .rtile .v{font-size:10.5px;font-weight:700;color:var(--muted)}
 .rtile.win{border-color:var(--amber);background:var(--amberD)}
-.wheelwrap{display:flex;justify-content:center;margin:8px 0 14px}
+.wheelwrap{display:flex;justify-content:center;margin:8px 0 10px}
 .wheelbox{position:relative;width:min(280px,78vw);height:min(280px,78vw)}
 .wheelbox .ptr{position:absolute;top:-3px;left:50%;transform:translateX(-50%);z-index:5;color:var(--amber)}
 #wheel{width:100%;height:100%;border-radius:50%;transition:transform 4.2s cubic-bezier(.12,.8,.08,1)}
@@ -209,7 +208,7 @@ body.fs header{top:calc(56px + env(safe-area-inset-top))}
 .gauge .hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:var(--card2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--text);font-weight:800;font-size:15px;transition:border-color .3s,color .3s}
 .gauge .hub.win{border-color:var(--green);color:var(--green)}
 .gauge .hub.lose{border-color:var(--red);color:var(--red)}
-.upres{text-align:center;font-size:15px;font-weight:800;min-height:22px;margin-bottom:8px}
+.upres{text-align:center;font-size:15px;font-weight:800;min-height:22px;margin:6px 0 8px}
 .upres.win{color:var(--green)}.upres.lose{color:var(--red)}
 .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:12px 0}
 .mcell{aspect-ratio:1/1;border-radius:9px;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:border-color .15s}
@@ -402,7 +401,7 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
     <div class="sec"><span class="t" data-i18n="playT">Плей</span></div>
     <div class="playgrid">
       <div class="pgame pg1" data-search="кейсы cases" data-game="cases"><div class="bg"></div><img class="pimg" data-b="cases" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-case"/></svg><div class="nm" data-i18n="gCases">Кейсы</div><div class="sb" data-i18n="gCasesS">фри раз в 24ч · платный 300</div><div class="go" data-i18n="play">Играть</div></div>
-      <div class="pgame pg2" data-search="рулетка колесо wheel" data-game="wheel"><div class="bg"></div><img class="pimg" data-b="wheel" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-wheel"/></svg><div class="nm" data-i18n="gWheel">Рулетка</div><div class="sb" data-i18n="gWheelS">колесо фортуны · 50 баллов</div><div class="go" data-i18n="play">Играть</div></div>
+      <div class="pgame pg2" data-search="рулетка колесо wheel" data-game="wheel"><div class="bg"></div><img class="pimg" data-b="wheel" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-wheel"/></svg><div class="nm" data-i18n="gWheel">Рулетка</div><div class="sb" data-i18n="gWheelS">равные сектора · дроп выше 15 = 1%</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg3" data-search="апгрейдер upgrade" data-game="upgrade"><div class="bg"></div><img class="pimg" data-b="up" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-up"/></svg><div class="nm" data-i18n="gUp">Апгрейдер</div><div class="sb" data-i18n="gUpS">зона = доля множителя · x2 = половина</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg4" data-search="мины mines" data-game="mines"><div class="bg"></div><img class="pimg" data-b="mines" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-mine"/></svg><div class="nm" data-i18n="gMines">Мины</div><div class="sb" data-i18n="gMinesS">5×5 · забирай до взрыва</div><div class="go" data-i18n="play">Играть</div></div>
     </div>
@@ -425,6 +424,7 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
   <div id="gameWheel" style="display:none">
     <button class="gback" data-hub><svg class="ic" style="width:16px;height:16px"><use href="#i-back"/></svg><span data-i18n="back">Назад</span></button>
     <div class="wheelwrap"><div class="wheelbox"><svg class="ptr" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l6 9H6z"/></svg><canvas id="wheel" width="560" height="560"></canvas></div></div>
+    <div class="upres" id="wheelRes"></div>
     <div class="prizes" id="pzWheel" style="justify-content:center"></div><div style="height:12px"></div>
     <button class="bigbtn" id="btnWheel"><svg class="ic"><use href="#i-wheel"/></svg><span id="btnWheelTxt">Крутить за 50</span></button>
     <div class="hist" id="wheelHist" style="justify-content:center"></div>
@@ -505,7 +505,7 @@ let soundOn=localStorage.getItem('stonks_sound')!=='0';
 let busy=false,spinning=false,upBusy=false;
 let curProduct='',curKind='',ordChoice='',topupStars=50,comboChoice='';
 let upMult=2,upAngle=0,upHistory=[],caseHistory=[],wheelHistory=[],minesHistory=[];
-let mGame=null,mMines=3,mPayout=0;
+let mGame=null,mMines=3,mPayout=0,wheelHL=-1;
 let sessionWon=0,sessionGames=0;
 let AC=null;
 function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
@@ -520,8 +520,8 @@ setTimeout(()=>{beep(520,.1,'sine',.05);setTimeout(()=>beep(780,.14,'sine',.05),
 setTimeout(hideSplash,2150);
 $('splash').addEventListener('click',hideSplash);
 const I18N={
- ru:{search:'Поиск игр и товаров...',railT:'Баннеры и хабы',hero1t:'Донат в игры',hero1s:'PUBG Mobile, Free Fire и другие игры без лишних шагов',heroCta:'В каталог',hero2t:'Кейсы и рулетка',hero2s:'Открывай кейсы как в CS и крути колесо фортуны',hero2cta:'Играть',hero3t:'Апгрейдер и мины',hero3s:'Умножай баллы или рискуй — играй осознанно',hero3cta:'Попробовать',f1t:'Звёзды: 5–15 минут',f1s:'донаты в игры: до 24 часов',f2t:'24 часа',f2s:'гарантия',f3t:'3%',f3s:'кэшбэк',f4t:'24/7',f4s:'поддержка',stOnline:'онлайн сейчас',stWins:'выигрышей сегодня',stCases:'кейсов открыто',stMax:'макс выигрыш',catT:'Каталог игр и сервисов',combo:'Комбо-пакеты',cStars:'Звёзды',nothing:'Ничего не найдено',jackT:'Джекпот недели',jackS:'баллов · растёт с каждой игрой в магазине',jackCta:'Крутить колесо',feedT:'Лента дропов',hotT:'Горячее сейчас',hot1:'Платный кейс',hot2:'Колесо фортуны',hot3:'Апгрейдер',hot4:'Мины',hotCta:'Открыть кейс',ftPrivacy:'Политика конфиденциальности',ftTerms:'Условия',ftSupport:'Поддержка',ftChannel:'Наш Telegram-канал',points:'БАЛЛОВ',topup:'Пополнить',playT:'Плей',gCases:'Кейсы',gCasesS:'фри раз в 24ч · платный 300',gWheel:'Рулетка',gWheelS:'колесо фортуны · 50 баллов',gUp:'Апгрейдер',gUpS:'зона = доля множителя · x2 = половина',gMines:'Мины',gMinesS:'5×5 · забирай до взрыва',play:'Играть',playNote:'Баллы — внутренняя валюта магазина. Играй осознанно.',back:'Назад',freeCase:'ФРИ-кейс',paidCase:'Платный кейс',openFree:'Открыть бесплатно',upgrade:'Апгрейдить',current:'Текущий выигрыш',startGame:'Начать игру',profile:'Профиль',wonTotal:'выиграно за сессию',gamesPlayed:'игр сыграно',sub:'Подписка на канал',freeReady:'Фри-кейс доступен',promo:'Промокод',activate:'Активировать',promoNote:'Один промокод — один аккаунт. Лимит активаций у каждого кода свой.',claim:'Забрать',sendReq:'Отправить заявку',cancel:'Отмена',topupT:'Пополнение баланса',topupS:'Оплати звёзды менеджеру — 1 звезда = 100 баллов.',comboS:'Выгодные наборы — заявка менеджеру.',close:'Закрыть',needReg:'Нужна регистрация',needRegS:'Открой бота и отправь контакт — это нужно для заказов и игр.',openBot:'Открыть бота',notifs:'Уведомления',navShop:'Магазин',navPlay:'Плей',navProfile:'Профиль',you:'Вы',justNow:'только что',minAgo:'мин назад'},
- uz:{search:"O'yinlar va mahsulotlar qidiruvi...",railT:'Bannerlar va hablar',hero1t:"O'yinlarga donat",hero1s:"PUBG Mobile, Free Fire va boshqa o'yinlar ortiqcha qadamlarsiz",heroCta:'Katalogga',hero2t:'Keyslar va ruletka',hero2s:"CS kabi keyslar och va omad g'ildiragini aylantir",hero2cta:"O'ynash",hero3t:'Apgreyder va minalar',hero3s:"Ballarni ko'paytir yoki tavakkal qil — ongli o'yna",hero3cta:'Sinab korish',f1t:'Yulduzlar: 5–15 daqiqa',f1s:"o'yin donatlari: 24 soatgacha",f2t:'24 soat',f2s:'kafolat',f3t:'3%',f3s:'keshbek',f4t:'24/7',f4s:"qo'llab-quvvatlash",stOnline:'hozir onlayn',stWins:'bugungi yutuqlar',stCases:'keyslar ochilgan',stMax:'maks yutuq',catT:"O'yinlar va xizmatlar katalogi",combo:'Kombo-paketlar',cStars:'Yulduzlar',nothing:'Hech narsa topilmadi',jackT:'Hafta jekpoti',jackS:"ball · har o'yin bilan o'sadi",jackCta:"G'ildirakni aylantirish",feedT:'Droplar lentasi',hotT:'Hozir issiq',hot1:'Pullik keys',hot2:"Omad g'ildiragi",hot3:'Apgreyder',hot4:'Minalar',hotCta:'Keys ochish',ftPrivacy:'Maxfiylik siyosati',ftTerms:'Shartlar',ftSupport:"Qo'llab-quvvatlash",ftChannel:'Telegram-kanalimiz',points:'BALL',topup:"To'ldirish",playT:"O'ynash",gCases:'Keyslar',gCasesS:'fri 24 soatda bir · pullik 300',gWheel:'Ruletka',gWheelS:"omad g'ildiragi · 50 ball",gUp:'Apgreyder',gUpS:'zona = koeffitsient ulushi · x2 = yarim',gMines:'Minalar',gMinesS:'5×5 · portlashdan oldin ol',play:"O'ynash",playNote:"Ballar — do'konning ichki valyutasi. Ongli o'yna.",back:'Orqaga',freeCase:'FRI-keys',paidCase:'Pullik keys',openFree:'Bepul ochish',upgrade:'Apgreyd qilish',current:'Joriy yutuq',startGame:"O'yinni boshlash",profile:'Profil',wonTotal:'sessiyada yutilgan',gamesPlayed:"o'yinlar soni",sub:'Kanalga obuna',freeReady:'FRI-keys mavjud',promo:'Promokod',activate:'Faollashtirish',promoNote:"Bir promokod — bir akkaunt. Har kodning limiti o'ziga xos.",claim:'Olish',sendReq:'Ariza yuborish',cancel:'Bekor qilish',topupT:"Balansni to'ldirish",topupS:"Yulduzlarni menejerga to'la — 1 yulduz = 100 ball.",comboS:'Foydali toplanmalar — menejerga ariza.',close:'Yopish',needReg:"Ro'yxatdan o'tish kerak",needRegS:"Botni och va kontakt yubor — bu buyurtma va o'yinlar uchun kerak.",openBot:'Botni ochish',notifs:'Bildirishnomalar',navShop:"Do'kon",navPlay:"O'ynash",navProfile:'Profil',you:'Siz',justNow:'hozirgina',minAgo:'daq oldin'}
+ ru:{search:'Поиск игр и товаров...',railT:'Баннеры и хабы',hero1t:'Донат в игры',hero1s:'PUBG Mobile, Free Fire и другие игры без лишних шагов',heroCta:'В каталог',hero2t:'Кейсы и рулетка',hero2s:'Открывай кейсы как в CS и крути колесо фортуны',hero2cta:'Играть',hero3t:'Апгрейдер и мины',hero3s:'Умножай баллы или рискуй — играй осознанно',hero3cta:'Попробовать',f1t:'Звёзды: 5–15 минут',f1s:'донаты в игры: до 24 часов',f2t:'24 часа',f2s:'гарантия',f3t:'3%',f3s:'кэшбэк',f4t:'24/7',f4s:'поддержка',stOnline:'онлайн сейчас',stWins:'выигрышей сегодня',stCases:'кейсов открыто',stMax:'макс выигрыш',catT:'Каталог игр и сервисов',combo:'Комбо-пакеты',cStars:'Звёзды',nothing:'Ничего не найдено',jackT:'Джекпот недели',jackS:'баллов · растёт с каждой игрой в магазине',jackCta:'Крутить колесо',feedT:'Лента дропов',hotT:'Горячее сейчас',hot1:'Платный кейс',hot2:'Колесо фортуны',hot3:'Апгрейдер',hot4:'Мины',hotCta:'Открыть кейс',ftPrivacy:'Политика конфиденциальности',ftTerms:'Условия',ftSupport:'Поддержка',ftChannel:'Наш Telegram-канал',points:'БАЛЛОВ',topup:'Пополнить',playT:'Плей',gCases:'Кейсы',gCasesS:'фри раз в 24ч · платный 300',gWheel:'Рулетка',gWheelS:'равные сектора · дроп выше 15 = 1%',gUp:'Апгрейдер',gUpS:'зона = доля множителя · x2 = половина',gMines:'Мины',gMinesS:'5×5 · забирай до взрыва',play:'Играть',playNote:'Баллы — внутренняя валюта магазина. Играй осознанно.',back:'Назад',freeCase:'ФРИ-кейс',paidCase:'Платный кейс',openFree:'Открыть бесплатно',upgrade:'Апгрейдить',current:'Текущий выигрыш',startGame:'Начать игру',profile:'Профиль',wonTotal:'выиграно за сессию',gamesPlayed:'игр сыграно',sub:'Подписка на канал',freeReady:'Фри-кейс доступен',promo:'Промокод',activate:'Активировать',promoNote:'Один промокод — один аккаунт. Лимит активаций у каждого кода свой.',claim:'Забрать',sendReq:'Отправить заявку',cancel:'Отмена',topupT:'Пополнение баланса',topupS:'Оплати звёзды менеджеру — 1 звезда = 100 баллов.',comboS:'Выгодные наборы — заявка менеджеру.',close:'Закрыть',needReg:'Нужна регистрация',needRegS:'Открой бота и отправь контакт — это нужно для заказов и игр.',openBot:'Открыть бота',notifs:'Уведомления',navShop:'Магазин',navPlay:'Плей',navProfile:'Профиль',you:'Вы',justNow:'только что',minAgo:'мин назад',wheelWin:'Выпало',wheelBal:'Баланс'},
+ uz:{search:"O'yinlar va mahsulotlar qidiruvi...",railT:'Bannerlar va hablar',hero1t:"O'yinlarga donat",hero1s:"PUBG Mobile, Free Fire va boshqa o'yinlar ortiqcha qadamlarsiz",heroCta:'Katalogga',hero2t:'Keyslar va ruletka',hero2s:"CS kabi keyslar och va omad g'ildiragini aylantir",hero2cta:"O'ynash",hero3t:'Apgreyder va minalar',hero3s:"Ballarni ko'paytir yoki tavakkal qil — ongli o'yna",hero3cta:'Sinab korish',f1t:'Yulduzlar: 5–15 daqiqa',f1s:"o'yin donatlari: 24 soatgacha",f2t:'24 soat',f2s:'kafolat',f3t:'3%',f3s:'keshbek',f4t:'24/7',f4s:"qo'llab-quvvatlash",stOnline:'hozir onlayn',stWins:'bugungi yutuqlar',stCases:'keyslar ochilgan',stMax:'maks yutuq',catT:"O'yinlar va xizmatlar katalogi",combo:'Kombo-paketlar',cStars:'Yulduzlar',nothing:'Hech narsa topilmadi',jackT:'Hafta jekpoti',jackS:"ball · har o'yin bilan o'sadi",jackCta:"G'ildirakni aylantirish",feedT:'Droplar lentasi',hotT:'Hozir issiq',hot1:'Pullik keys',hot2:"Omad g'ildiragi",hot3:'Apgreyder',hot4:'Minalar',hotCta:'Keys ochish',ftPrivacy:'Maxfiylik siyosati',ftTerms:'Shartlar',ftSupport:"Qo'llab-quvvatlash",ftChannel:'Telegram-kanalimiz',points:'BALL',topup:"To'ldirish",playT:"O'ynash",gCases:'Keyslar',gCasesS:'fri 24 soatda bir · pullik 300',gWheel:'Ruletka',gWheelS:'teng sektorlar · 15 dan yuqori = 1%',gUp:'Apgreyder',gUpS:'zona = koeffitsient ulushi · x2 = yarim',gMines:'Minalar',gMinesS:'5×5 · portlashdan oldin ol',play:"O'ynash",playNote:"Ballar — do'konning ichki valyutasi. Ongli o'yna.",back:'Orqaga',freeCase:'FRI-keys',paidCase:'Pullik keys',openFree:'Bepul ochish',upgrade:'Apgreyd qilish',current:'Joriy yutuq',startGame:"O'yinni boshlash",profile:'Profil',wonTotal:'sessiyada yutilgan',gamesPlayed:"o'yinlar soni",sub:'Kanalga obuna',freeReady:'FRI-keys mavjud',promo:'Promokod',activate:'Faollashtirish',promoNote:"Bir promokod — bir akkaunt. Har kodning limiti o'ziga xos.",claim:'Olish',sendReq:'Ariza yuborish',cancel:'Bekor qilish',topupT:"Balansni to'ldirish",topupS:"Yulduzlarni menejerga to'la — 1 yulduz = 100 ball.",comboS:'Foydali toplanmalar — menejerga ariza.',close:'Yopish',needReg:"Ro'yxatdan o'tish kerak",needRegS:"Botni och va kontakt yubor — bu buyurtma va o'yinlar uchun kerak.",openBot:'Botni ochish',notifs:'Bildirishnomalar',navShop:"Do'kon",navPlay:"O'ynash",navProfile:'Profil',you:'Siz',justNow:'hozirgina',minAgo:'daq oldin',wheelWin:'Tushdi',wheelBal:'Balans'}
 };
 function applyLang(){const d=I18N[lang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(d[k])el.textContent=d[k]});
@@ -544,7 +544,7 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 function showHub(){$('playHub').style.display='block';['gameCases','gameWheel','gameUpgrade','gameMines'].forEach(i=>$(i).style.display='none')}
 function showGame(g){$('playHub').style.display='none';['gameCases','gameWheel','gameUpgrade','gameMines'].forEach(i=>$(i).style.display='none');
   $({cases:'gameCases',wheel:'gameWheel',upgrade:'gameUpgrade',mines:'gameMines'}[g]).style.display='block';
-  if(g==='wheel')drawWheel();if(g==='upgrade')paintUpGauge();sClick()}
+  if(g==='wheel')drawWheel(wheelHL);if(g==='upgrade')paintUpGauge();sClick()}
 document.querySelectorAll('[data-game]').forEach(c=>c.addEventListener('click',()=>showGame(c.dataset.game)));
 document.querySelectorAll('[data-hub]').forEach(b=>b.addEventListener('click',showHub));
 document.querySelectorAll('[data-go-play]').forEach(b=>b.addEventListener('click',()=>{show('play');showGame(b.dataset.goPlay)}));
@@ -562,7 +562,7 @@ const RAIL=[
  {id:'free24',title:'FREE24',badge:'24H',price:'Free 24h',go:'cases',icon:'i-gift',c:'#e8a33d'}
 ];
 const B_FALLBACK={playhub:'play.png',free24:'free.png'};
-function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=10'}
+function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=11'}
 function buildRail(){const rail=$('bannerRail');
  rail.innerHTML=RAIL.map(b=>'<div class="brc" data-id="'+b.id+'" data-go="'+b.go+'">'
   +'<div class="bfb" style="background:#1a1a1a"><svg style="color:'+b.c+'"><use href="#'+b.icon+'"/></svg></div>'
@@ -575,7 +575,7 @@ function buildRail(){const rail=$('bannerRail');
    if(g==='hub')showHub();else showGame(g);}));
  paintBannerSrcs();}
 function paintBannerSrcs(){document.querySelectorAll('img[data-b]').forEach(im=>{im.src=burl(im.dataset.b)})}
-fetch('/static/banners/manifest.json?v=10').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
+fetch('/static/banners/manifest.json?v=11').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
 const GAMES={cases:{icon:'a-case',label:{ru:'Кейс',uz:'Keys'}},wheel:{icon:'a-wheel',label:{ru:'Рулетка',uz:'Ruletka'}},upgrade:{icon:'a-up',label:{ru:'Апгрейдер',uz:'Apgreyder'}},mines:{icon:'a-mine',label:{ru:'Мины',uz:'Minalar'}}};
 const NAMES=['K1RITO','aziz_uz','Mira','tokyo','Sardor','neo','Luna','bekzod','Vortex','aylin','Ravshan','ghost','Dilnoza','samurai'];
 const AMTS={cases:[15,25,50,100,200,300,1000],wheel:[15,15,15,200,1000],upgrade:[75,150,200,500,1000,3000],mines:[121,146,183,244,366,610]};
@@ -641,30 +641,35 @@ $('btnPaid').addEventListener('click',()=>{if(busy||needReg())return;busy=true;
     if(!d.ok)return toast(lang==='ru'?'Не хватает баллов — пополни':'Ball yetmaydi — toldir');
     playReel(I18N[lang].paidCase,CFG.case_paid,d.prize,d.stars,()=>{refreshMe();pushHist('caseHist',caseHistory,d.prize>0,d.prize>0?d.prize:CFG.case_paid_cost)},'cases')}).catch(()=>{busy=false;toast('Server unavailable')})});
 function drawStar(ctx,x,y,r,col){ctx.save();ctx.translate(x,y);ctx.beginPath();for(let i=0;i<10;i++){const rr=i%2?r*.45:r;const a=-Math.PI/2+i*Math.PI/5;ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}ctx.closePath();ctx.fillStyle=col;ctx.fill();ctx.restore()}
-function drawWheel(){const cv=$('wheel'),ctx=cv.getContext('2d'),C=280;const segs=CFG.wheel;const tot=segs.reduce((a,b)=>a+Math.max(b.chance,1.2),0);
+/* wheel: EQUAL sectors visually; highlight winning sector in place (no reel modal) */
+function drawWheel(hl){const cv=$('wheel'),ctx=cv.getContext('2d'),C=280;const segs=CFG.wheel;const n=segs.length;const seg=2*Math.PI/n;
   ctx.clearRect(0,0,560,560);ctx.beginPath();ctx.arc(C,C,276,0,7);ctx.fillStyle='#141414';ctx.fill();
   for(let i=0;i<24;i++){const a=i/24*2*Math.PI;ctx.beginPath();ctx.arc(C+Math.cos(a)*262,C+Math.sin(a)*262,5,0,7);ctx.fillStyle=i%2?'#e8a33d':'#35a065';ctx.fill()}
   let a0=-Math.PI/2;const cols=[['#2e8b57','#16241c'],['#e8a33d','#2a2410'],['#8f8f8f','#242424'],['#35a065','#16241c'],['#c98a2e','#2a2410']];
-  segs.forEach((s,i)=>{const ang=Math.max(s.chance,1.2)/tot*2*Math.PI;
+  segs.forEach((s,i)=>{
     const g=ctx.createRadialGradient(C,C,50,C,C,246);g.addColorStop(0,cols[i%5][1]);g.addColorStop(1,cols[i%5][0]);
-    ctx.beginPath();ctx.moveTo(C,C);ctx.arc(C,C,246,a0,a0+ang);ctx.closePath();ctx.fillStyle=g;ctx.fill();ctx.strokeStyle='#0b0b0b';ctx.lineWidth=2;ctx.stroke();
-    ctx.save();ctx.translate(C,C);ctx.rotate(a0+ang/2);ctx.textAlign='right';ctx.fillStyle='#f2f2f2';ctx.font='bold 24px sans-serif';ctx.fillText(s.prize==='NFT'?'NFT':String(s.prize),206,8);
+    ctx.beginPath();ctx.moveTo(C,C);ctx.arc(C,C,246,a0,a0+seg);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+    ctx.strokeStyle=(i===hl)?'#f2f2f2':'#0b0b0b';ctx.lineWidth=(i===hl)?6:2;ctx.stroke();
+    ctx.save();ctx.translate(C,C);ctx.rotate(a0+seg/2);ctx.textAlign='right';ctx.fillStyle=(i===hl)?'#fff':'#f2f2f2';ctx.font='bold 24px sans-serif';ctx.fillText(s.prize==='NFT'?'NFT':String(s.prize),206,8);
     if(s.prize!=='NFT')drawStar(ctx,222,0,10,'#e8a33d');else{ctx.beginPath();ctx.moveTo(222,-10);ctx.lineTo(232,0);ctx.lineTo(222,10);ctx.lineTo(212,0);ctx.closePath();ctx.fillStyle='#4f9e9e';ctx.fill()}
-    ctx.restore();a0+=ang});
+    ctx.restore();a0+=seg});
   ctx.beginPath();ctx.arc(C,C,56,0,7);ctx.fillStyle='#1a1a1a';ctx.fill();ctx.strokeStyle='#2e2e2e';ctx.lineWidth=3;ctx.stroke();
   ctx.fillStyle='#e8a33d';ctx.beginPath();ctx.moveTo(C+8,C-28);ctx.lineTo(C-14,C+5);ctx.lineTo(C-3,C+5);ctx.lineTo(C-8,C+28);ctx.lineTo(C+14,C-5);ctx.lineTo(C+3,C-5);ctx.closePath();ctx.fill()}
 let wheelAngle=0;
-$('btnWheel').addEventListener('click',()=>{if(spinning||busy||needReg())return;spinning=true;
+$('btnWheel').addEventListener('click',()=>{if(spinning||busy||needReg())return;spinning=true;$('wheelRes').textContent='';$('wheelRes').className='upres';
   fetch('/api/shop/wheel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{
     if(!d.ok){spinning=false;return toast(lang==='ru'?'Не хватает баллов':'Ball yetmaydi')}
-    const segs=CFG.wheel;const tot=segs.reduce((a,b)=>a+Math.max(b.chance,1.2),0);
-    let idx=segs.findIndex(s=>String(s.prize)===String(d.prize));if(idx<0)idx=segs.length-1;
-    let acc=0;for(let i=0;i<idx;i++)acc+=Math.max(segs[i].chance,1.2);
-    const mid=(acc+Math.max(segs[idx].chance,1.2)/2)/tot*360;
+    const segs=CFG.wheel;const n=segs.length;const segDeg=360/n;
+    let idx=segs.findIndex(s=>String(s.prize)===String(d.prize));if(idx<0)idx=n-1;
+    const mid=idx*segDeg+segDeg/2;
     wheelAngle+=360*5+(360-mid);$('wheel').style.transform='rotate('+wheelAngle+'deg)';
     let tk=0;const iv=setInterval(()=>{sTick();if(++tk>24)clearInterval(iv)},150);
-    setTimeout(()=>{spinning=false;playReel(I18N[lang].gWheel,CFG.wheel,d.prize,d.stars,()=>{refreshMe();pushHist('wheelHist',wheelHistory,d.prize>0||d.prize==='NFT',d.prize==='NFT'?1000:(d.prize>0?d.prize:CFG.wheel_cost))},'wheel')},4300)}).catch(()=>{spinning=false;toast('Server unavailable')})});
-/* upgrader: visual zone = 1/mult of the ring (x2 = half), real win chance stays server-side small */
+    setTimeout(()=>{spinning=false;wheelHL=idx;drawWheel(idx);
+      const isNft=d.prize==='NFT';const val=isNft?1000:(d.prize>0?d.prize:0);
+      $('wheelRes').className='upres '+(val>0?'win':'lose');
+      $('wheelRes').textContent=(lang==='ru'?'Выпало: ':'Tushdi: ')+(isNft?'NFT':d.prize)+' · '+(lang==='ru'?'Баланс':'Balans')+': '+d.stars;
+      pushHist('wheelHist',wheelHistory,val>0,val>0?val:CFG.wheel_cost);
+      recordResult('wheel',val,val>0);val>0?sWin():sLose();refreshMe();},4300)}).catch(()=>{spinning=false;toast('Server unavailable')})});
 function buildMults(){const w=$('upMults');w.innerHTML='';CFG.upgrader_mults.forEach(m=>{const b=document.createElement('button');b.className='chip'+(m===upMult?' on':'');b.textContent='x'+m;
   b.addEventListener('click',()=>{upMult=m;buildMults();paintUpGauge();sClick()});w.appendChild(b)})}
 function paintUpGauge(){const circ=2*Math.PI*88;const span=360/upMult;
@@ -768,7 +773,7 @@ $('comboSend').addEventListener('click',()=>{fetch('/api/shop/order',{method:'PO
   .then(()=>{$('comboModal').classList.remove('show');toast(lang==='ru'?'Заявка отправлена':'Ariza yuborildi');sWin()})
   .catch(d=>{$('comboModal').classList.remove('show');if(d&&d.detail==='not registered')$('gateModal').classList.add('show');else toast('Error')})});
 const INFO={privacy:{t:'Политика конфиденциальности',b:'Мы храним только ваш Telegram ID, имя, юзернейм и контакт, отправленный вами при регистрации. Данные используются для оформления заказов и связи с менеджером и не передаются третьим лицам. Баллы — внутренняя валюта магазина и не являются денежным средством. Вы можете запросить удаление данных через поддержку.'},
- terms:{t:'Условия',b:'Заказы выполняются менеджером после оплаты: звёзды 5–15 минут, донаты в игры до 24 часов. Гарантия 24 часа на невыполненный заказ. Кэшбэк 3% начисляется баллами. Игры (кейсы, рулетка, апгрейдер, мины) работают на внутренних баллах. Зона апгрейдера показывает долю множителя (x2 — половина кольца). Возврат баллов за проигранную ставку не производится — играйте осознанно.'},
+ terms:{t:'Условия',b:'Заказы выполняются менеджером после оплаты: звёзды 5–15 минут, донаты в игры до 24 часов. Гарантия 24 часа на невыполненный заказ. Кэшбэк 3% начисляется баллами. Игры (кейсы, рулетка, апгрейдер, мины) работают на внутренних баллах. Сектора колеса равные по размеру, но шанс дропа выше 15 звёзд — 1% на каждый. Возврат баллов за проигранную ставку не производится — играйте осознанно.'},
  support:{t:'Поддержка',b:'Менеджер и поддержка: @logistickon в Telegram. Канал магазина: @sTONks_shopuzb. Отвечаем 24/7, среднее время ответа — до 15 минут.'}};
 document.querySelectorAll('[data-info]').forEach(b=>b.addEventListener('click',()=>{const i=INFO[b.dataset.info];$('infoTitle').textContent=i.t;$('infoBody').textContent=i.b;$('infoModal').classList.add('show');sClick()}));
 $('infoClose').addEventListener('click',()=>$('infoModal').classList.remove('show'));
@@ -782,7 +787,7 @@ $('promoBtn').addEventListener('click',()=>{const code=$('promoInput').value.tri
   fetch('/api/shop/promo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,code})}).then(r=>r.json().then(d=>({ok:r.ok,d}))).then(({ok,d})=>{const m=$('promoMsg');
     if(ok){m.style.color='var(--green)';m.textContent='+'+d.reward+' '+(lang==='ru'?'баллов зачислено!':'ball qoshildi!');$('promoInput').value='';refreshMe();sWin()}
     else{m.style.color='var(--red)';m.textContent=d.detail==='promo not found'?(lang==='ru'?'Код не найден':'Kod topilmadi'):(d.detail==='promo exhausted'?(lang==='ru'?'Лимит исчерпан':'Limit tugagan'):(d.detail==='already used'?(lang==='ru'?'Ты уже активировал этот код':'Bu kodni ishlatgansan'):(lang==='ru'?'Сначала регистрация':'Avval royxatdan ot')));sLose()}}).catch(()=>toast('Server unavailable'))});
-fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;renderPrizes();buildMults();paintUpGauge();drawWheel();refreshMe();setInterval(refreshMe,15000)}).catch(()=>toast('Server unavailable'));
+fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;renderPrizes();buildMults();paintUpGauge();drawWheel(wheelHL);refreshMe();setInterval(refreshMe,15000)}).catch(()=>toast('Server unavailable'));
 applyLang();paintSound();buildGrid();setMinesUI(false);buildRail();paintBannerSrcs();paintBal();
 if(tgW){try{tgW.ready();tgW.expand();if(tgW.requestFullscreen)tgW.requestFullscreen().catch(()=>{})}catch(e){}}
 setTimeout(()=>document.body.classList.toggle('fs',!!(tgW&&tgW.isFullscreen)),600);
