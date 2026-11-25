@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: магазин, игры (винрейт 1/6), промо, заказы, баннеры"""
+"""server.py — sTONks Shop: магазин, игры, промо, заказы, баннеры"""
 import os, re, time, random, uuid
 from pathlib import Path
 import aiohttp
@@ -17,6 +17,7 @@ FREE_CD = 24 * 3600
 POINTS_PER_STAR = 100
 HOUSE = 0.97
 WIN_ONE_IN = 6
+UP_BASE_PER = 100.0 / 18.0
 INDEX = Path("frontend/index.html")
 
 CONF = {
@@ -32,6 +33,9 @@ CONF = {
     "wheel_cost": 50,
     "upgrader_mults": [1.5, 2, 5, 10],
 }
+
+def up_chance(mult):
+    return max(1, round(UP_BASE_PER * 2.0 / mult))
 
 app = FastAPI(title="sTONks Shop")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -85,7 +89,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js?v=7"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=9"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -365,7 +369,7 @@ def promo_activate(p: PromoIn):
     u["stars"] += pr["reward"]; save_user(p.id, u)
     return {"ok": True, "reward": pr["reward"], "stars": u["stars"]}
 
-# ===== АПГРЕЙДЕР: 1 победа на 6 попыток =====
+# ===== АПГРЕЙДЕР: x1.5≈7%, x2≈6%, x5≈2%, x10≈1% (в 3 ниже прежнего, падает с множителем) =====
 @app.post("/api/shop/upgrade")
 def upgrade(u: UpIn):
     user = get_user(u.id) or dict(EMPTY)
@@ -374,11 +378,12 @@ def upgrade(u: UpIn):
     if u.stake < 10: raise HTTPException(400, "stake too small")
     if user["stars"] < u.stake: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= u.stake
-    win = random.randint(1, WIN_ONE_IN) == 1
+    chance = up_chance(u.mult)
+    win = random.randint(1, 100) <= chance
     payout = int(u.stake * u.mult) if win else 0
     user["stars"] += payout
     save_user(u.id, user)
-    return {"ok": True, "win": win, "payout": payout, "stars": user["stars"]}
+    return {"ok": True, "win": win, "chance": chance, "payout": payout, "stars": user["stars"]}
 
 # ===== МИНЫ: 1 выигрышная игра на 6 =====
 def mines_mult(mines, k):
