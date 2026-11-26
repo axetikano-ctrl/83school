@@ -224,7 +224,26 @@ async def text_reg(m: types.Message):
     flow.pop(uid, None)
     await m.answer("✅ Регистрация пройдена. Открывай магазин.")
     await welcome(m)
+@dp.message(Command("resetall"))
+async def resetall(m: types.Message):
+    role, sid = await staff_id(m)
+    if not role: return await m.answer("⛔ Только стафф")
+    parts = (m.text or "").split()
+    if len(parts) < 2 or parts[1] != 'yes':
+        return await m.answer("⚠️ Сбросить балансы ВСЕХ пользователей до 0?\nПодтверди командой: /resetall yes")
+    st, d = await api_post("/api/shop/resetall", {"confirm": True}, staff_id=sid, admin=(role == 'admin'))
+    if st == 200: await m.answer(f"✅ Балансы сброшены у {d.get('reset')} пользователей")
+    elif st == 0: await m.answer("⚠️ Сервер недоступен")
+    else: await m.answer(f"⚠️ {d}")
 
+@dp.message(Command("reset"))
+async def resetone(m: types.Message):
+    role, sid = await staff_id(m)
+    if not role: return await m.answer("⛔ Только стафф")
+    parts = (m.text or "").split()
+    if len(parts) != 2: return await m.answer("Формат: /reset <id>")
+    st, d = await api_post("/api/shop/resetone", {"id": parts[1]}, staff_id=sid, admin=(role == 'admin'))
+    await m.answer("✅ Баланс сброшен" if st == 200 else f"⚠️ {d}")
 async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     try:

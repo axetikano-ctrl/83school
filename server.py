@@ -460,7 +460,31 @@ def mines_cashout(m: MinesCash):
     g["state"] = "won"; mines_save(m.gid, g)
     u = get_user(m.id); u["stars"] += payout; save_user(m.id, u)
     return {"ok": True, "payout": payout, "mult": round(mult, 2), "mines": g["mines"], "stars": u["stars"]}
+class ResetAll(BaseModel): confirm: bool = False
 
+@app.post("/api/shop/resetall")
+def resetall(r: ResetAll, req: Request):
+    if not is_staff(req): raise HTTPException(403, "staff only")
+    if not r.confirm: raise HTTPException(400, "need confirm")
+    now = int(time.time())
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("UPDATE shop_users SET stars=0, updated=%s", (now,))
+            n = cur.rowcount
+        c.close()
+    else:
+        for u in MEM["users"].values(): u["stars"] = 0
+        n = len(MEM["users"])
+    return {"ok": True, "reset": n}
+
+@app.post("/api/shop/resetone")
+def resetone(r: IdIn, req: Request):
+    if not is_staff(req): raise HTTPException(403, "staff only")
+    u = get_user(r.id)
+    if not u: raise HTTPException(404, "user not found")
+    u["stars"] = 0; save_user(r.id, u)
+    return {"ok": True, "stars": 0}
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/{full_path:path}")
