@@ -1,5 +1,5 @@
-"""server.py — sTONks Shop: магазин, игры (дропы выше 15 = 1%), промо, заказы, баннеры"""
-import os, re, time, random, uuid
+"""server.py — sTONks Shop: магазин, игры + Ракета (crash), промо, заказы, баннеры"""
+import os, re, time, math, random, uuid
 from pathlib import Path
 import aiohttp
 from fastapi import FastAPI, Request, HTTPException
@@ -18,6 +18,8 @@ POINTS_PER_STAR = 100
 HOUSE = 0.97
 WIN_ONE_IN = 6
 UP_BASE_PER = 100.0 / 18.0
+ROCKET_RATE = 0.16
+ROCKET_CAP = 200.0
 INDEX = Path("frontend/index.html")
 
 CONF = {
@@ -37,9 +39,17 @@ CONF = {
 def up_chance(mult):
     return max(1, round(UP_BASE_PER * 2.0 / mult))
 
+def rocket_growth(t):
+    return math.exp(ROCKET_RATE * max(0.0, t))
+
+def rocket_crash_point():
+    u = random.random()
+    if u < 0.01: return 1.0
+    return round(min(0.97 / (1 - u), ROCKET_CAP), 2)
+
 app = FastAPI(title="sTONks Shop")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-MEM = {"users": {}, "meta": {}, "promos": {}, "redemptions": set(), "mines": {},
+MEM = {"users": {}, "meta": {}, "promos": {}, "redemptions": set(), "mines": {}, "rocket": {},
        "conf": {k: ([dict(x) for x in v] if isinstance(v, list) and v and isinstance(v[0], dict) else v) for k, v in CONF.items()}}
 
 def conn():
@@ -66,6 +76,9 @@ def init_db():
         cur.execute("""CREATE TABLE IF NOT EXISTS shop_mines(
             gid TEXT PRIMARY KEY, uid TEXT, bet BIGINT, mines TEXT, picks TEXT, state TEXT, created BIGINT)""")
         cur.execute("ALTER TABLE shop_mines ADD COLUMN IF NOT EXISTS win BOOLEAN DEFAULT FALSE")
+        cur.execute("""CREATE TABLE IF NOT EXISTS shop_rocket(
+            gid TEXT PRIMARY KEY, uid TEXT, bet BIGINT, crash DOUBLE PRECISION, t0 DOUBLE PRECISION,
+            state TEXT, cash_mult DOUBLE PRECISION, payout BIGINT)""")
     c.close()
 
 class IdIn(BaseModel): id: str
@@ -80,6 +93,9 @@ class UpIn(BaseModel): id: str; stake: int; mult: float
 class MinesStart(BaseModel): id: str; bet: int; mines: int
 class MinesCell(BaseModel): id: str; gid: str; cell: int
 class MinesCash(BaseModel): id: str; gid: str
+class RocketStart(BaseModel): id: str; bet: int
+class RocketCtl(BaseModel): id: str; gid: str
+class ResetAll(BaseModel): confirm: bool = False
 
 @app.on_event("startup")
 def startup():
@@ -89,7 +105,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js?v=11"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=14"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -211,6 +227,30 @@ async def order(o: OrderIn):
             d = await r.json()
     if not d.get("ok"): raise HTTPException(500, d.get("description", "send failed"))
     return {"ok": True}
+
+@app.post("/api/shop/resetall")
+def resetall(r: ResetAll, req: Request):
+    if not is_staff(req): raise HTTPException(403, "staff only")
+    if not r.confirm: raise HTTPException(400, "need confirm")
+    now = int(time.time())
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("UPDATE shop_users SET stars=0, updated=%s", (now,))
+            n = cur.rowcount
+        c.close()
+    else:
+        for u in MEM["users"].values(): u["stars"] = 0
+        n = len(MEM["users"])
+    return {"ok": True, "reset": n}
+
+@app.post("/api/shop/resetone")
+def resetone(r: IdIn, req: Request):
+    if not is_staff(req): raise HTTPException(403, "staff only")
+    u = get_user(r.id)
+    if not u: raise HTTPException(404, "user not found")
+    u["stars"] = 0; save_user(r.id, u)
+    return {"ok": True, "stars": 0}
 
 def normalize(t):
     tot = sum(x["chance"] for x in t)
@@ -460,31 +500,72 @@ def mines_cashout(m: MinesCash):
     g["state"] = "won"; mines_save(m.gid, g)
     u = get_user(m.id); u["stars"] += payout; save_user(m.id, u)
     return {"ok": True, "payout": payout, "mult": round(mult, 2), "mines": g["mines"], "stars": u["stars"]}
-class ResetAll(BaseModel): confirm: bool = False
 
-@app.post("/api/shop/resetall")
-def resetall(r: ResetAll, req: Request):
-    if not is_staff(req): raise HTTPException(403, "staff only")
-    if not r.confirm: raise HTTPException(400, "need confirm")
-    now = int(time.time())
+# ===== РАКЕТА (crash) =====
+def rocket_get(gid):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("UPDATE shop_users SET stars=0, updated=%s", (now,))
-            n = cur.rowcount
+            cur.execute("SELECT uid, bet, crash, t0, state, cash_mult, payout FROM shop_rocket WHERE gid=%s", (gid,))
+            r = cur.fetchone()
+        c.close()
+        if r: return {"uid": r[0], "bet": int(r[1]), "crash": float(r[2]), "t0": float(r[3]),
+                      "state": r[4], "cash_mult": float(r[5]) if r[5] else 0, "payout": int(r[6] or 0)}
+        return None
+    return MEM["rocket"].get(gid)
+
+def rocket_save(gid, g):
+    c = conn()
+    if c:
+        with c.cursor() as cur:
+            cur.execute("""INSERT INTO shop_rocket(gid,uid,bet,crash,t0,state,cash_mult,payout) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(gid) DO UPDATE SET state=EXCLUDED.state, cash_mult=EXCLUDED.cash_mult, payout=EXCLUDED.payout""",
+                (gid, g["uid"], g["bet"], g["crash"], g["t0"], g["state"], g.get("cash_mult", 0), g.get("payout", 0)))
         c.close()
     else:
-        for u in MEM["users"].values(): u["stars"] = 0
-        n = len(MEM["users"])
-    return {"ok": True, "reset": n}
+        MEM["rocket"][gid] = g
 
-@app.post("/api/shop/resetone")
-def resetone(r: IdIn, req: Request):
-    if not is_staff(req): raise HTTPException(403, "staff only")
-    u = get_user(r.id)
-    if not u: raise HTTPException(404, "user not found")
-    u["stars"] = 0; save_user(r.id, u)
-    return {"ok": True, "stars": 0}
+@app.post("/api/shop/rocket_start")
+def rocket_start(m: RocketStart):
+    user = get_user(m.id) or dict(EMPTY)
+    if not user.get("registered"): raise HTTPException(400, "not registered")
+    if m.bet < 10: raise HTTPException(400, "bet too small")
+    if user["stars"] < m.bet: return {"ok": False, "reason": "no_stars"}
+    user["stars"] -= m.bet; save_user(m.id, user)
+    gid = uuid.uuid4().hex[:12]
+    g = {"uid": m.id, "bet": m.bet, "crash": rocket_crash_point(), "t0": time.time(), "state": "active", "cash_mult": 0, "payout": 0}
+    rocket_save(gid, g)
+    return {"ok": True, "gid": gid, "bet": m.bet, "stars": user["stars"]}
+
+@app.post("/api/shop/rocket_state")
+def rocket_state(m: RocketCtl):
+    g = rocket_get(m.gid)
+    if not g or g["uid"] != m.id: raise HTTPException(404, "game not found")
+    if g["state"] != "active":
+        return {"flying": False, "crashed": g["state"] == "crashed", "cur": g.get("cash_mult") or g["crash"],
+                "crash": g["crash"], "payout": g.get("payout", 0)}
+    cur = rocket_growth(time.time() - g["t0"])
+    if cur >= g["crash"]:
+        g["state"] = "crashed"; rocket_save(m.gid, g)
+        return {"flying": False, "crashed": True, "cur": g["crash"], "crash": g["crash"], "payout": 0}
+    return {"flying": True, "crashed": False, "cur": round(cur, 2)}
+
+@app.post("/api/shop/rocket_cash")
+def rocket_cash(m: RocketCtl):
+    g = rocket_get(m.gid)
+    if not g or g["uid"] != m.id: raise HTTPException(404, "game not found")
+    if g["state"] != "active": raise HTTPException(400, "round over")
+    cur = rocket_growth(time.time() - g["t0"])
+    user = get_user(m.id) or dict(EMPTY)
+    if cur >= g["crash"]:
+        g["state"] = "crashed"; rocket_save(m.gid, g)
+        return {"ok": True, "crashed": True, "mult": g["crash"], "payout": 0, "stars": user["stars"]}
+    payout = int(g["bet"] * cur)
+    g["state"] = "won"; g["cash_mult"] = round(cur, 2); g["payout"] = payout
+    rocket_save(m.gid, g)
+    user["stars"] += payout; save_user(m.id, user)
+    return {"ok": True, "crashed": False, "mult": round(cur, 2), "payout": payout, "stars": user["stars"]}
+
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/{full_path:path}")
