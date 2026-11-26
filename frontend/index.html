@@ -149,6 +149,7 @@ body.fs header{top:calc(56px + env(safe-area-inset-top))}
 .sidecard .row b{color:var(--text)}
 .sidecard .cta{margin-top:auto;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:10px;font-weight:700;font-size:12.5px;color:var(--green)}
 .playgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pg-wide{grid-column:1/-1;min-height:150px}
 .pgame{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);cursor:pointer;min-height:168px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;transition:border-color .2s}
 .pgame:hover{border-color:var(--line2)}
 .pgame .bg{position:absolute;inset:0}
@@ -203,14 +204,22 @@ body.fs header{top:calc(56px + env(safe-area-inset-top))}
 .wheelbox{position:relative;width:min(280px,78vw);height:min(280px,78vw)}
 .wheelbox .ptr{position:absolute;top:-3px;left:50%;transform:translateX(-50%);z-index:5;color:var(--amber)}
 #wheel{width:100%;height:100%;border-radius:50%}
-/* rocket stage */
-.rstage{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#0a1016;margin:10px 0}
+.rstage{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#070d13;margin:10px 0}
 .rstage canvas{display:block;width:100%;height:auto}
 .rstage.shake{animation:shake .45s}
-.rmult{position:absolute;left:0;right:0;top:14px;text-align:center;font-size:40px;font-weight:900;letter-spacing:1px;color:var(--text);text-shadow:0 2px 18px rgba(0,0,0,.6);pointer-events:none}
+.rmult{position:absolute;left:0;right:0;top:12px;text-align:center;font-size:44px;font-weight:900;letter-spacing:1px;color:var(--text);text-shadow:0 2px 22px rgba(0,0,0,.7);pointer-events:none}
 .rmult.hot{color:var(--amber)}
 .rmult.dead{color:var(--red);animation:flick .5s 3}
 .rstatus{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:12px;font-weight:700;color:var(--muted);pointer-events:none}
+.rwinners{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.rwinners .t{font-size:13px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.rwrow{display:flex;align-items:center;gap:9px;padding:7px 4px;border-bottom:1px solid var(--line);animation:feedin .35s}
+.rwrow:last-child{border-bottom:none}
+.rwrow .av{width:26px;height:26px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue);flex-shrink:0}
+.rwrow .nm{font-size:12.5px;font-weight:700}
+.rwrow .bt{font-size:10.5px;color:var(--muted)}
+.rwrow .mu{margin-left:auto;font-size:12px;font-weight:800;color:var(--amber)}
+.rwrow .pw{font-size:12.5px;font-weight:800;color:var(--green);min-width:70px;text-align:right}
 .uprow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
 .chip{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;color:var(--muted)}
 .chip.on{background:var(--green2);color:#fff;border-color:var(--green2)}
@@ -345,7 +354,7 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
   <div class="hero"><div class="slides" id="slides">
     <div class="slide s1"><img class="himg" data-b="stars" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="t" data-i18n="hero1t">Донат в игры</div><div class="s" data-i18n="hero1s">PUBG Mobile, Free Fire и другие игры без лишних шагов</div><button class="cta" data-go-cat data-i18n="heroCta">В каталог</button></div>
     <div class="slide s2"><img class="himg" data-b="cases" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="t" data-i18n="hero2t">Кейсы и рулетка</div><div class="s" data-i18n="hero2s">Открывай кейсы как в CS и крути колесо фортуны</div><button class="cta" data-go-play="cases" data-i18n="hero2cta">Играть</button></div>
-    <div class="slide s3"><img class="himg" data-b="up" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="t" data-i18n="hero3t">Ракета и мины</div><div class="s" data-i18n="hero3s">Успей забрать до взрыва — играй осознанно</div><button class="cta" data-go-play="rocket" data-i18n="hero3cta">Попробовать</button></div>
+    <div class="slide s3"><img class="himg" data-b="raketa" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="t" data-i18n="hero3t">Ракета и мины</div><div class="s" data-i18n="hero3s">Успей забрать до взрыва — играй осознанно</div><button class="cta" data-go-play="rocket" data-i18n="hero3cta">Попробовать</button></div>
   </div><div class="dots" id="dots"></div></div>
 
   <div class="sec"><span class="t"><span class="livedot"></span><span data-i18n="railT">Баннеры и хабы</span></span></div>
@@ -399,7 +408,7 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
       <div class="t"><svg class="ic" style="color:var(--amber)"><use href="#i-fire"/></svg><span data-i18n="hotT">Горячее сейчас</span></div>
       <div class="row"><span data-i18n="hot1">Платный кейс</span><b id="hotPaid">300</b></div>
       <div class="row"><span data-i18n="hot2">Колесо фортуны</span><b id="hotWheel">50</b></div>
-      <div class="row"><span data-i18n="hot5">Ракета</span><b data-i18n="hot5v">crash x200</b></div>
+      <div class="row"><span data-i18n="hot5">Ракета</span><b data-i18n="hot5v">краш до x1.5 · редкий x2</b></div>
       <div class="row"><span data-i18n="hot4">Мины</span><b>5×5</b></div>
       <button class="cta" data-go-play="cases" data-i18n="hotCta">Открыть кейс</button>
     </div>
@@ -417,9 +426,9 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
   <div id="playHub">
     <div class="sec"><span class="t" data-i18n="playT">Плей</span></div>
     <div class="playgrid">
+      <div class="pgame pg5 pg-wide" data-search="ракета rocket crash" data-game="rocket"><div class="bg"></div><img class="pimg" data-b="raketa" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-rocket"/></svg><div class="nm" data-i18n="gRocket">Ракета</div><div class="sb" data-i18n="gRocketS">деп от 100 · успей забрать до взрыва</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg1" data-search="кейсы cases" data-game="cases"><div class="bg"></div><img class="pimg" data-b="cases" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-case"/></svg><div class="nm" data-i18n="gCases">Кейсы</div><div class="sb" data-i18n="gCasesS">фри раз в 24ч · платный 300</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg2" data-search="рулетка колесо wheel" data-game="wheel"><div class="bg"></div><img class="pimg" data-b="wheel" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-wheel"/></svg><div class="nm" data-i18n="gWheel">Рулетка</div><div class="sb" data-i18n="gWheelS">равные сектора · дроп выше 15 = 1%</div><div class="go" data-i18n="play">Играть</div></div>
-      <div class="pgame pg5" data-search="ракета rocket crash" data-game="rocket"><div class="bg"></div><div class="shade"></div><svg class="art"><use href="#a-rocket"/></svg><div class="nm" data-i18n="gRocket">Ракета</div><div class="sb" data-i18n="gRocketS">успей забрать до взрыва</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg3" data-search="апгрейдер upgrade" data-game="upgrade"><div class="bg"></div><img class="pimg" data-b="up" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-up"/></svg><div class="nm" data-i18n="gUp">Апгрейдер</div><div class="sb" data-i18n="gUpS">зона = доля множителя · x2 = половина</div><div class="go" data-i18n="play">Играть</div></div>
       <div class="pgame pg4" data-search="мины mines" data-game="mines"><div class="bg"></div><img class="pimg" data-b="mines" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"><div class="shade"></div><svg class="art"><use href="#a-mine"/></svg><div class="nm" data-i18n="gMines">Мины</div><div class="sb" data-i18n="gMinesS">5×5 · забирай до взрыва</div><div class="go" data-i18n="play">Играть</div></div>
     </div>
@@ -452,14 +461,18 @@ h1{font-size:21px;font-weight:800;margin:12px 0 10px}
     <button class="gback" data-hub><svg class="ic" style="width:16px;height:16px"><use href="#i-back"/></svg><span data-i18n="back">Назад</span></button>
     <div class="gpanel">
       <div class="t"><svg class="gi"><use href="#a-rocket"/></svg><span data-i18n="gRocket">Ракета</span></div>
-      <div class="uprow"><input class="upinput" id="rBet" inputmode="numeric" value="100"><button class="chip" data-rbet="50">50</button><button class="chip" data-rbet="100">100</button><button class="chip" data-rbet="300">300</button><button class="chip" data-rbet="1000">1000</button></div>
-      <div class="rstage" id="rStage"><canvas id="rocketCv" width="640" height="360"></canvas>
+      <div class="uprow"><input class="upinput" id="rBet" inputmode="numeric" value="100"><button class="chip" data-rbet="100">100</button><button class="chip" data-rbet="300">300</button><button class="chip" data-rbet="1000">1000</button><button class="chip" data-rbet="5000">5000</button></div>
+      <div class="rstage" id="rStage"><canvas id="rocketCv" width="720" height="400"></canvas>
         <div class="rmult" id="rMult">x1.00</div>
         <div class="rstatus" id="rStatus"></div></div>
       <button class="bigbtn" id="btnRStart"><svg class="ic"><use href="#i-rocket"/></svg><span data-i18n="rStart">Запуск</span></button>
       <button class="bigbtn gold" id="btnRCash" style="display:none"><svg class="ic"><use href="#i-star"/></svg><span id="rCashTxt">Забрать</span></button>
       <div class="upres" id="rRes"></div>
       <div class="hist" id="rocketHist"></div>
+      <div class="rwinners">
+        <div class="t"><span class="livedot"></span><span data-i18n="rwT">Лента выигрышей</span></div>
+        <div id="rwList"></div>
+      </div>
     </div>
   </div>
 
@@ -544,7 +557,10 @@ let AC=null;
 function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 function beep(f,d,t,g){if(!soundOn)return;const c=ac();if(!c)return;const o=c.createOscillator(),v=c.createGain();o.type=t||'sine';o.frequency.value=f;v.gain.value=g||.07;o.connect(v);v.connect(c.destination);o.start();v.gain.exponentialRampToValueAtTime(.0001,c.currentTime+d);o.stop(c.currentTime+d)}
 const sClick=()=>beep(520,.06,'triangle',.04),sTick=()=>beep(900,.03,'square',.025),sWin=()=>{beep(660,.12,'sine',.08);setTimeout(()=>beep(880,.14,'sine',.08),110);setTimeout(()=>beep(1320,.2,'sine',.08),230)},sLose=()=>beep(160,.3,'sawtooth',.06),sBoom=()=>{beep(90,.4,'sawtooth',.1);setTimeout(()=>beep(60,.4,'square',.08),80)};
-function paintSound(){$('soundIcon').innerHTML='<use href="#i-'+(soundOn?'sound':'mute')+'"/>'}
+let engineOsc=null,engineGain=null;
+function engineStart(){if(!soundOn)return;const c=ac();if(!c||engineOsc)return;engineOsc=c.createOscillator();engineGain=c.createGain();engineOsc.type='sawtooth';engineOsc.frequency.value=55;engineGain.gain.value=.025;engineOsc.connect(engineGain);engineGain.connect(c.destination);engineOsc.start()}
+function engineStop(){if(engineOsc){try{engineGain.gain.exponentialRampToValueAtTime(.0001,ac().currentTime+.2);engineOsc.stop(ac().currentTime+.25)}catch(e){}engineOsc=null;engineGain=null}}
+function paintSound(){$('soundIcon').innerHTML='<use href="#i-'+(soundOn?'sound':'mute')+'"/>';if(!soundOn)engineStop()}
 $('soundBtn').addEventListener('click',()=>{soundOn=!soundOn;localStorage.setItem('stonks_sound',soundOn?'1':'0');paintSound();if(soundOn)sClick()});
 document.addEventListener('pointerdown',()=>ac(),{once:true});
 let splashDone=false;
@@ -553,8 +569,8 @@ setTimeout(()=>{beep(520,.1,'sine',.05);setTimeout(()=>beep(780,.14,'sine',.05),
 setTimeout(hideSplash,2150);
 $('splash').addEventListener('click',hideSplash);
 const I18N={
- ru:{search:'Поиск игр и товаров...',railT:'Баннеры и хабы',hero1t:'Донат в игры',hero1s:'PUBG Mobile, Free Fire и другие игры без лишних шагов',heroCta:'В каталог',hero2t:'Кейсы и рулетка',hero2s:'Открывай кейсы как в CS и крути колесо фортуны',hero2cta:'Играть',hero3t:'Ракета и мины',hero3s:'Успей забрать до взрыва — играй осознанно',hero3cta:'Попробовать',f1t:'Звёзды: 5–15 минут',f1s:'донаты в игры: до 24 часов',f2t:'24 часа',f2s:'гарантия',f3t:'3%',f3s:'кэшбэк',f4t:'24/7',f4s:'поддержка',stOnline:'онлайн сейчас',stWins:'выигрышей сегодня',stCases:'кейсов открыто',stMax:'макс выигрыш',catT:'Каталог игр и сервисов',combo:'Комбо-пакеты',cStars:'Звёзды',nothing:'Ничего не найдено',jackT:'Джекпот недели',jackS:'баллов · растёт с каждой игрой в магазине',jackCta:'Крутить колесо',jackCta2:'Запустить ракету',feedT:'Лента дропов',hotT:'Горячее сейчас',hot1:'Платный кейс',hot2:'Колесо фортуны',hot3:'Апгрейдер',hot4:'Мины',hot5:'Ракета',hot5v:'crash x200',hotCta:'Открыть кейс',ftPrivacy:'Политика конфиденциальности',ftTerms:'Условия',ftSupport:'Поддержка',ftChannel:'Наш Telegram-канал',points:'БАЛЛОВ',topup:'Пополнить',playT:'Плей',gCases:'Кейсы',gCasesS:'фри раз в 24ч · платный 300',gWheel:'Рулетка',gWheelS:'равные сектора · дроп выше 15 = 1%',gUp:'Апгрейдер',gUpS:'зона = доля множителя · x2 = половина',gMines:'Мины',gMinesS:'5×5 · забирай до взрыва',gRocket:'Ракета',gRocketS:'успей забрать до взрыва',rStart:'Запуск',rCash:'Забрать',rIdle:'Платформа готова · множитель растёт, пока ракета летит',rFlying:'Летим... жми «Забрать» до взрыва',rCrash:'ВЗРЫВ на',rWon:'Забрал на',play:'Играть',playNote:'Баллы — внутренняя валюта магазина. Играй осознанно.',back:'Назад',freeCase:'ФРИ-кейс',paidCase:'Платный кейс',openFree:'Открыть бесплатно',upgrade:'Апгрейдить',current:'Текущий выигрыш',startGame:'Начать игру',profile:'Профиль',wonTotal:'выиграно за сессию',gamesPlayed:'игр сыграно',sub:'Подписка на канал',freeReady:'Фри-кейс доступен',promo:'Промокод',activate:'Активировать',promoNote:'Один промокод — один аккаунт. Лимит активаций у каждого кода свой.',claim:'Забрать',sendReq:'Отправить заявку',cancel:'Отмена',topupT:'Пополнение баланса',topupS:'Оплати звёзды менеджеру — 1 звезда = 100 баллов.',comboS:'Выгодные наборы — заявка менеджеру.',close:'Закрыть',needReg:'Нужна регистрация',needRegS:'Открой бота и отправь контакт — это нужно для заказов и игр.',openBot:'Открыть бота',notifs:'Уведомления',navShop:'Магазин',navPlay:'Плей',navProfile:'Профиль',you:'Вы',justNow:'только что',minAgo:'мин назад',wheelLand:'Выпало',wheelBal:'Баланс'},
- uz:{search:"O'yinlar va mahsulotlar qidiruvi...",railT:'Bannerlar va hablar',hero1t:"O'yinlarga donat",hero1s:"PUBG Mobile, Free Fire va boshqa o'yinlar ortiqcha qadamlarsiz",heroCta:'Katalogga',hero2t:'Keyslar va ruletka',hero2s:"CS kabi keyslar och va omad g'ildiragini aylantir",hero2cta:"O'ynash",hero3t:'Raketa va minalar',hero3s:"Portlashdan oldin ol — ongli o'yna",hero3cta:'Sinab korish',f1t:'Yulduzlar: 5–15 daqiqa',f1s:"o'yin donatlari: 24 soatgacha",f2t:'24 soat',f2s:'kafolat',f3t:'3%',f3s:'keshbek',f4t:'24/7',f4s:"qo'llab-quvvatlash",stOnline:'hozir onlayn',stWins:'bugungi yutuqlar',stCases:'keyslar ochilgan',stMax:'maks yutuq',catT:"O'yinlar va xizmatlar katalogi",combo:'Kombo-paketlar',cStars:'Yulduzlar',nothing:'Hech narsa topilmadi',jackT:'Hafta jekpoti',jackS:"ball · har o'yin bilan o'sadi",jackCta:"G'ildirakni aylantirish",jackCta2:'Raketani uchirish',feedT:'Droplar lentasi',hotT:'Hozir issiq',hot1:'Pullik keys',hot2:"Omad g'ildiragi",hot3:'Apgreyder',hot4:'Minalar',hot5:'Raketa',hot5v:'crash x200',hotCta:'Keys ochish',ftPrivacy:'Maxfiylik siyosati',ftTerms:'Shartlar',ftSupport:"Qo'llab-quvvatlash",ftChannel:'Telegram-kanalimiz',points:'BALL',topup:"To'ldirish",playT:"O'ynash",gCases:'Keyslar',gCasesS:'fri 24 soatda bir · pullik 300',gWheel:'Ruletka',gWheelS:'teng sektorlar · 15 dan yuqori = 1%',gUp:'Apgreyder',gUpS:'zona = koeffitsient ulushi · x2 = yarim',gMines:'Minalar',gMinesS:'5×5 · portlashdan oldin ol',gRocket:'Raketa',gRocketS:'portlashdan oldin ol',rStart:'Uchirish',rCash:'Olish',rIdle:'Platforma tayyor · koeffitsient parvozda o‘sadi',rFlying:'Uchmoqdamiz... portlashdan oldin «Olish» bosing',rCrash:'PORTLASH',rWon:'Oldi',play:"O'ynash",playNote:"Ballar — do'konning ichki valyutasi. Ongli o'yna.",back:'Orqaga',freeCase:'FRI-keys',paidCase:'Pullik keys',openFree:'Bepul ochish',upgrade:'Apgreyd qilish',current:'Joriy yutuq',startGame:"O'yinni boshlash",profile:'Profil',wonTotal:'sessiyada yutilgan',gamesPlayed:"o'yinlar soni",sub:'Kanalga obuna',freeReady:'FRI-keys mavjud',promo:'Promokod',activate:'Faollashtirish',promoNote:"Bir promokod — bir akkaunt. Har kodning limiti o'ziga xos.",claim:'Olish',sendReq:'Ariza yuborish',cancel:'Bekor qilish',topupT:"Balansni to'ldirish",topupS:"Yulduzlarni menejerga to'la — 1 yulduz = 100 ball.",comboS:'Foydali toplanmalar — menejerga ariza.',close:'Yopish',needReg:"Ro'yxatdan o'tish kerak",needRegS:"Botni och va kontakt yubor — bu buyurtma va o'yinlar uchun kerak.",openBot:'Botni ochish',notifs:'Bildirishnomalar',navShop:"Do'kon",navPlay:"O'ynash",navProfile:'Profil',you:'Siz',justNow:'hozirgina',minAgo:'daq oldin',wheelLand:'Tushdi',wheelBal:'Balans'}
+ ru:{search:'Поиск игр и товаров...',railT:'Баннеры и хабы',hero1t:'Донат в игры',hero1s:'PUBG Mobile, Free Fire и другие игры без лишних шагов',heroCta:'В каталог',hero2t:'Кейсы и рулетка',hero2s:'Открывай кейсы как в CS и крути колесо фортуны',hero2cta:'Играть',hero3t:'Ракета и мины',hero3s:'Успей забрать до взрыва — играй осознанно',hero3cta:'Попробовать',f1t:'Звёзды: 5–15 минут',f1s:'донаты в игры: до 24 часов',f2t:'24 часа',f2s:'гарантия',f3t:'3%',f3s:'кэшбэк',f4t:'24/7',f4s:'поддержка',stOnline:'онлайн сейчас',stWins:'выигрышей сегодня',stCases:'кейсов открыто',stMax:'макс выигрыш',catT:'Каталог игр и сервисов',combo:'Комбо-пакеты',cStars:'Звёзды',nothing:'Ничего не найдено',jackT:'Джекпот недели',jackS:'баллов · растёт с каждой игрой в магазине',jackCta:'Крутить колесо',jackCta2:'Запустить ракету',feedT:'Лента дропов',hotT:'Горячее сейчас',hot1:'Платный кейс',hot2:'Колесо фортуны',hot3:'Апгрейдер',hot4:'Мины',hot5:'Ракета',hot5v:'краш до x1.5 · редкий x2',hotCta:'Открыть кейс',ftPrivacy:'Политика конфиденциальности',ftTerms:'Условия',ftSupport:'Поддержка',ftChannel:'Наш Telegram-канал',points:'БАЛЛОВ',topup:'Пополнить',playT:'Плей',gCases:'Кейсы',gCasesS:'фри раз в 24ч · платный 300',gWheel:'Рулетка',gWheelS:'равные сектора · дроп выше 15 = 1%',gUp:'Апгрейдер',gUpS:'зона = доля множителя · x2 = половина',gMines:'Мины',gMinesS:'5×5 · забирай до взрыва',gRocket:'Ракета',gRocketS:'деп от 100 · успей забрать до взрыва',rStart:'Запуск',rCash:'Забрать',rIdle:'Платформа готова · деп от 100',rFlying:'Летим... жми «Забрать» до взрыва',rCrash:'ВЗРЫВ на',rWon:'Забрал на',rwT:'Лента выигрышей',rwBet:'ставка',play:'Играть',playNote:'Баллы — внутренняя валюта магазина. Играй осознанно.',back:'Назад',freeCase:'ФРИ-кейс',paidCase:'Платный кейс',openFree:'Открыть бесплатно',upgrade:'Апгрейдить',current:'Текущий выигрыш',startGame:'Начать игру',profile:'Профиль',wonTotal:'выиграно за сессию',gamesPlayed:'игр сыграно',sub:'Подписка на канал',freeReady:'Фри-кейс доступен',promo:'Промокод',activate:'Активировать',promoNote:'Один промокод — один аккаунт. Лимит активаций у каждого кода свой.',claim:'Забрать',sendReq:'Отправить заявку',cancel:'Отмена',topupT:'Пополнение баланса',topupS:'Оплати звёзды менеджеру — 1 звезда = 100 баллов.',comboS:'Выгодные наборы — заявка менеджеру.',close:'Закрыть',needReg:'Нужна регистрация',needRegS:'Открой бота и отправь контакт — это нужно для заказов и игр.',openBot:'Открыть бота',notifs:'Уведомления',navShop:'Магазин',navPlay:'Плей',navProfile:'Профиль',you:'Вы',justNow:'только что',minAgo:'мин назад',wheelLand:'Выпало',wheelBal:'Баланс'},
+ uz:{search:"O'yinlar va mahsulotlar qidiruvi...",railT:'Bannerlar va hablar',hero1t:"O'yinlarga donat",hero1s:"PUBG Mobile, Free Fire va boshqa o'yinlar ortiqcha qadamlarsiz",heroCta:'Katalogga',hero2t:'Keyslar va ruletka',hero2s:"CS kabi keyslar och va omad g'ildiragini aylantir",hero2cta:"O'ynash",hero3t:'Raketa va minalar',hero3s:"Portlashdan oldin ol — ongli o'yna",hero3cta:'Sinab korish',f1t:'Yulduzlar: 5–15 daqiqa',f1s:"o'yin donatlari: 24 soatgacha",f2t:'24 soat',f2s:'kafolat',f3t:'3%',f3s:'keshbek',f4t:'24/7',f4s:"qo'llab-quvvatlash",stOnline:'hozir onlayn',stWins:'bugungi yutuqlar',stCases:'keyslar ochilgan',stMax:'maks yutuq',catT:"O'yinlar va xizmatlar katalogi",combo:'Kombo-paketlar',cStars:'Yulduzlar',nothing:'Hech narsa topilmadi',jackT:'Hafta jekpoti',jackS:"ball · har o'yin bilan o'sadi",jackCta:"G'ildirakni aylantirish",jackCta2:'Raketani uchirish',feedT:'Droplar lentasi',hotT:'Hozir issiq',hot1:'Pullik keys',hot2:"Omad g'ildiragi",hot3:'Apgreyder',hot4:'Minalar',hot5:'Raketa',hot5v:'crash x1.5 · kamdan x2',hotCta:'Keys ochish',ftPrivacy:'Maxfiylik siyosati',ftTerms:'Shartlar',ftSupport:"Qo'llab-quvvatlash",ftChannel:'Telegram-kanalimiz',points:'BALL',topup:"To'ldirish",playT:"O'ynash",gCases:'Keyslar',gCasesS:'fri 24 soatda bir · pullik 300',gWheel:'Ruletka',gWheelS:'teng sektorlar · 15 dan yuqori = 1%',gUp:'Apgreyder',gUpS:'zona = koeffitsient ulushi · x2 = yarim',gMines:'Minalar',gMinesS:'5×5 · portlashdan oldin ol',gRocket:'Raketa',gRocketS:'dep 100 dan · portlashdan oldin ol',rStart:'Uchirish',rCash:'Olish',rIdle:'Platforma tayyor · dep 100 dan',rFlying:'Uchmoqdamiz... portlashdan oldin «Olish» bosing',rCrash:'PORTLASH',rWon:'Oldi',rwT:'Yutuqlar lentasi',rwBet:'stavka',play:"O'ynash",playNote:"Ballar — do'konning ichki valyutasi. Ongli o'yna.",back:'Orqaga',freeCase:'FRI-keys',paidCase:'Pullik keys',openFree:'Bepul ochish',upgrade:'Apgreyd qilish',current:'Joriy yutuq',startGame:"O'yinni boshlash",profile:'Profil',wonTotal:'sessiyada yutilgan',gamesPlayed:"o'yinlar soni",sub:'Kanalga obuna',freeReady:'FRI-keys mavjud',promo:'Promokod',activate:'Faollashtirish',promoNote:"Bir promokod — bir akkaunt. Har kodning limiti o'ziga xos.",claim:'Olish',sendReq:'Ariza yuborish',cancel:'Bekor qilish',topupT:"Balansni to'ldirish",topupS:"Yulduzlarni menejerga to'la — 1 yulduz = 100 ball.",comboS:'Foydali toplanmalar — menejerga ariza.',close:'Yopish',needReg:"Ro'yxatdan o'tish kerak",needRegS:"Botni och va kontakt yubor — bu buyurtma va o'yinlar uchun kerak.",openBot:'Botni ochish',notifs:'Bildirishnomalar',navShop:"Do'kon",navPlay:"O'ynash",navProfile:'Profil',you:'Siz',justNow:'hozirgina',minAgo:'daq oldin',wheelLand:'Tushdi',wheelBal:'Balans'}
 };
 function applyLang(){const d=I18N[lang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(d[k])el.textContent=d[k]});
@@ -594,8 +610,8 @@ const RAIL=[
  {id:'playhub',title:'PLAY HUB',badge:'',price:'5 GAMES',go:'hub',icon:'i-play',c:'#4f9e9e'},
  {id:'free24',title:'FREE24',badge:'24H',price:'Free 24h',go:'cases',icon:'i-gift',c:'#e8a33d'}
 ];
-const B_FALLBACK={playhub:'play.png',free24:'free.png'};
-function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=14'}
+const B_FALLBACK={playhub:'play.png',free24:'free.png',raketa:'raketa.png'};
+function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=15'}
 function buildRail(){const rail=$('bannerRail');
  rail.innerHTML=RAIL.map(b=>'<div class="brc" data-id="'+b.id+'" data-go="'+b.go+'">'
   +'<div class="bfb" style="background:#1a1a1a"><svg style="color:'+b.c+'"><use href="#'+b.icon+'"/></svg></div>'
@@ -608,7 +624,7 @@ function buildRail(){const rail=$('bannerRail');
    if(g==='hub')showHub();else showGame(g);}));
  paintBannerSrcs();}
 function paintBannerSrcs(){document.querySelectorAll('img[data-b]').forEach(im=>{im.src=burl(im.dataset.b)})}
-fetch('/static/banners/manifest.json?v=14').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
+fetch('/static/banners/manifest.json?v=15').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
 const GAMES={cases:{icon:'a-case',label:{ru:'Кейс',uz:'Keys'}},wheel:{icon:'a-wheel',label:{ru:'Рулетка',uz:'Ruletka'}},upgrade:{icon:'a-up',label:{ru:'Апгрейдер',uz:'Apgreyder'}},mines:{icon:'a-mine',label:{ru:'Мины',uz:'Minalar'}},rocket:{icon:'a-rocket',label:{ru:'Ракета',uz:'Raketa'}}};
 const NAMES=['K1RITO','aziz_uz','Mira','tokyo','Sardor','neo','Luna','bekzod','Vortex','aylin','Ravshan','ghost','Dilnoza','samurai'];
 const AMTS={cases:[15,25,50,100,200,300,1000],wheel:[15,15,15,200,1000],upgrade:[75,150,200,500,1000,3000],mines:[121,146,183,244,366,610],rocket:[140,220,360,610,1200,2400]};
@@ -666,7 +682,7 @@ function playReel(title,table,prize,stars,done,gameKey){const m=$('caseModal'),r
     if(done)done()},5450)}
 $('caseOk').addEventListener('click',()=>$('caseModal').classList.remove('show'));
 function pushHist(id,arr,win,val,cls){arr.unshift({w:win,v:val,c:cls||''});if(arr.length>10)arr.pop();
-  $(id).innerHTML=arr.map(h=>'<span class="'+(h.c||(h.w?'w':'l'))+'">'+(h.c?'x':'')+(h.c?h.v.toFixed(2).replace(/\.?0+$/,''):(h.w?'+':'−')+h.v)+'</span>').join('')}
+  $(id).innerHTML=arr.map(h=>'<span class="'+(h.c||(h.w?'w':'l'))+'">'+(h.c?'x'+h.v.toFixed(2).replace(/\.?0+$/,''):(h.w?'+':'−')+h.v)+'</span>').join('')}
 $('btnFree').addEventListener('click',()=>{if(busy||needReg())return;busy=true;
   fetch('/api/shop/case_free',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID})}).then(r=>r.json()).then(d=>{busy=false;
     if(!d.ok){if(d.reason==='not_subscribed'){toast(lang==='ru'?'Подпишись на канал':'Kanalga obuna bol');location.href=CHANNEL}else toast(lang==='ru'?'Фри-кейс ещё не готов':'FRI-keys hali tayyor emas');refreshMe();return}
@@ -723,110 +739,170 @@ $('btnWheel').addEventListener('click',()=>{if(spinning||busy||needReg())return;
       },520);
     },4200);
   }).catch(()=>{spinning=false;toast('Server unavailable')})});
-/* ===== РАКЕТА (crash) ===== */
-const RC={cv:null,ctx:null,W:640,H:360,state:'idle',gid:null,bet:0,t0:0,cur:1,parts:[],stars:[],clouds:[],expl:[],shakeT:0,lastTick:0,poll:null,raf:null,visible:true,maxSeen:1.2};
+/* ===== РАКЕТА: мега-детализированная сцена ===== */
+const RC={cv:null,ctx:null,W:720,H:400,state:'idle',gid:null,bet:0,t0:0,cur:1,parts:[],smoke:[],stars:[],clouds:[],expl:[],ring:0,flash:0,boost:0,lastTick:0,poll:null,raf:null,visible:true,maxSeen:1.2,planetX:560};
 function rocketInit(){RC.cv=$('rocketCv');RC.ctx=RC.cv.getContext('2d');
-  RC.stars=[];for(let i=0;i<70;i++)RC.stars.push({x:Math.random()*RC.W,y:Math.random()*RC.H,r:Math.random()*1.6+.4,l:Math.floor(Math.random()*3)});
-  RC.clouds=[];for(let i=0;i<4;i++)RC.clouds.push({x:Math.random()*RC.W,y:40+Math.random()*140,w:60+Math.random()*70,s:.2+Math.random()*.4});
+  RC.stars=[];for(let i=0;i<90;i++)RC.stars.push({x:Math.random()*RC.W,y:Math.random()*RC.H,r:Math.random()*1.8+.4,l:Math.floor(Math.random()*3),tw:Math.random()*6.28});
+  RC.clouds=[];for(let i=0;i<5;i++)RC.clouds.push({x:Math.random()*RC.W,y:30+Math.random()*160,w:70+Math.random()*90,s:.2+Math.random()*.5,l:i%3});
   if(!RC.raf)rocketLoop();}
 function rocketGrowth(t){return Math.exp(0.16*Math.max(0,t))}
 function rocketResume(){RC.visible=true;if(!RC.cv)rocketInit();if(RC.state==='idle')$('rStatus').textContent=I18N[lang].rIdle}
-function rocketPause(){RC.visible=false}
+function rocketPause(){RC.visible=false;engineStop()}
 function rocketLoop(){RC.raf=requestAnimationFrame(rocketLoop);if(!RC.visible||!RC.ctx)return;rocketDraw(performance.now())}
+function rPX(t){return 50+(1-Math.exp(-t/9))*(RC.W-140)}
+function rPY(m){return RC.H-46-(Math.log(Math.max(1,m))/Math.log(Math.max(RC.maxSeen,2)))*(RC.H-130)}
 function rocketDraw(now){const ctx=RC.ctx,W=RC.W,H=RC.H;
-  let t=0;
-  if(RC.state==='flying')t=(Date.now()-RC.t0)/1000;
+  let t=0;if(RC.state==='flying')t=(Date.now()-RC.t0)/1000;
   const cur=RC.state==='flying'?rocketGrowth(t):RC.cur;
   if(RC.state==='flying'){RC.cur=cur;RC.maxSeen=Math.max(RC.maxSeen,cur);
-    $('rMult').textContent='x'+cur.toFixed(2);$('rMult').className='rmult'+(cur>3?' hot':'');
+    $('rMult').textContent='x'+cur.toFixed(2);$('rMult').className='rmult'+(cur>1.3?' hot':'');
     $('rCashTxt').textContent=(lang==='ru'?'Забрать ':'Olish ')+Math.floor(RC.bet*cur);
-    const stepN=Math.floor(cur*2);if(stepN!==RC.lastTick){RC.lastTick=stepN;beep(Math.min(1400,300+cur*60),.03,'square',.02)}}
-  const heat=Math.min(1,Math.log(Math.max(1,cur))/Math.log(40));
+    const stepN=Math.floor(cur*4);if(stepN!==RC.lastTick){RC.lastTick=stepN;beep(Math.min(1500,280+cur*180),.03,'square',.02)}
+    if(engineOsc)engineOsc.frequency.value=55+cur*30;}
+  const heat=Math.min(1,Math.log(Math.max(1,cur))/Math.log(2.2));
   const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'rgb('+Math.round(10+heat*30)+','+Math.round(16-heat*4)+','+Math.round(22+heat*6)+')');
-  g.addColorStop(1,'#0a1016');
+  g.addColorStop(0,'rgb('+Math.round(7+heat*26)+','+Math.round(13-heat*3)+','+Math.round(19+heat*4)+')');
+  g.addColorStop(.6,'#0a1016');g.addColorStop(1,'#070d13');
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  RC.stars.forEach(s=>{const sp=(s.l+1)*.15*(RC.state==='flying'?1+heat*3:.3);s.x-=sp;if(s.x<0)s.x=W;
-    ctx.fillStyle='rgba(242,255,242,'+(0.25+s.l*0.2)+')';ctx.fillRect(s.x,s.y,s.r,s.r)});
-  RC.clouds.forEach(c=>{c.x-=c.s*(RC.state==='flying'?2+heat*4:1);if(c.x<-c.w)c.x=W+c.w;
-    ctx.fillStyle='rgba(111,155,216,.08)';ctx.beginPath();ctx.ellipse(c.x,c.y,c.w/2,c.w/5,0,0,7);ctx.fill()});
-  ctx.strokeStyle='rgba(53,160,101,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,H-30);ctx.lineTo(W-20,H-30);ctx.stroke();
-  ctx.fillStyle='#16242e';ctx.fillRect(30,H-30,26,14);
+  const neb=ctx.createRadialGradient(W*.75,H*.2,10,W*.75,H*.2,220);
+  neb.addColorStop(0,'rgba(111,155,216,'+(0.05+heat*0.08)+')');neb.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=neb;ctx.fillRect(0,0,W,H);
+  const neb2=ctx.createRadialGradient(W*.2,H*.7,10,W*.2,H*.7,180);
+  neb2.addColorStop(0,'rgba(53,160,101,'+(0.04+heat*0.05)+')');neb2.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=neb2;ctx.fillRect(0,0,W,H);
+  RC.planetX-= .05+(RC.state==='flying'?heat*.6:0);if(RC.planetX<-60)RC.planetX=W+60;
+  ctx.save();ctx.translate(RC.planetX,H*.22);
+  ctx.fillStyle='rgba(79,158,158,.16)';ctx.beginPath();ctx.arc(0,0,26,0,7);ctx.fill();
+  ctx.strokeStyle='rgba(79,158,158,.25)';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(0,0,40,10,-.3,0,7);ctx.stroke();ctx.restore();
+  RC.stars.forEach(s=>{const sp=(s.l+1)*.18*(RC.state==='flying'?1+heat*4:.3);s.x-=sp;if(s.x<0)s.x=W;
+    const tw=.5+.5*Math.sin(now*.002+s.tw);
+    ctx.fillStyle='rgba(242,255,242,'+((0.18+s.l*0.18)*tw)+')';ctx.fillRect(s.x,s.y,s.r,s.r)});
+  RC.clouds.forEach(c=>{c.x-=c.s*(RC.state==='flying'?2+heat*5:1);if(c.x<-c.w)c.x=W+c.w;
+    ctx.fillStyle='rgba(111,155,216,'+(0.05+c.l*0.02)+')';ctx.beginPath();ctx.ellipse(c.x,c.y,c.w/2,c.w/5,0,0,7);ctx.fill()});
+  ctx.strokeStyle='rgba(53,160,101,.14)';ctx.lineWidth=1;ctx.setLineDash([4,6]);
+  [1.2,1.5,2].forEach(m=>{const y=rPY(m);if(y>20&&y<H-40){ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(W-20,y);ctx.stroke();
+    ctx.fillStyle='rgba(143,143,143,.6)';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText('x'+m.toFixed(1),8,y+3)}});
+  ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(53,160,101,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(40,H-34);ctx.lineTo(W-20,H-34);ctx.stroke();
+  ctx.fillStyle='#16242e';ctx.fillRect(34,H-34,30,16);
+  ctx.fillStyle='#1a1a1a';ctx.fillRect(30,H-70,6,36);ctx.fillRect(30,H-70,20,4);ctx.fillRect(30,H-52,16,3);
+  const beacon=Math.sin(now*.006)>0;ctx.fillStyle=beacon?'#cf6b6b':'#3a2020';ctx.beginPath();ctx.arc(33,H-74,3,0,7);ctx.fill();
   if(RC.state==='flying'||RC.state==='crashed'||RC.state==='won'){
-    const px=x=>40+(1-Math.exp(-x/9))*(W-120);
-    const py=m=>H-40-(Math.log(m)/Math.log(Math.max(RC.maxSeen,2)))*(H-110);
-    ctx.strokeStyle=RC.state==='crashed'?'rgba(207,107,107,.8)':'rgba(232,163,61,.85)';ctx.lineWidth=3;ctx.beginPath();
-    for(let x=0;x<=t;x+=0.05){const m=rocketGrowth(x);const X=px(x),Y=py(m);if(x===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y)}
-    ctx.stroke();
-    const rx=px(t),ry=py(cur);
-    if(RC.state==='flying'){
-      for(let i=0;i<3;i++)RC.parts.push({x:rx-8+Math.random()*6,y:ry+8+Math.random()*6,vx:-1-Math.random()*2,vy:1+Math.random()*2,life:1,c:Math.random()<.5?'232,163,61':'242,255,242'});
-      ctx.save();ctx.translate(rx,ry);ctx.rotate(-0.5);
-      ctx.fillStyle='#f2f2f2';ctx.beginPath();ctx.moveTo(14,0);ctx.lineTo(-8,-8);ctx.lineTo(-4,0);ctx.lineTo(-8,8);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#6f9bd8';ctx.beginPath();ctx.arc(4,0,3.4,0,7);ctx.fill();
-      ctx.fillStyle='#cf6b6b';ctx.beginPath();ctx.moveTo(-6,-7);ctx.lineTo(-14,-12);ctx.lineTo(-8,-3);ctx.closePath();ctx.fill();
-      ctx.beginPath();ctx.moveTo(-6,7);ctx.lineTo(-14,12);ctx.lineTo(-8,3);ctx.closePath();ctx.fill();
+    ctx.save();ctx.shadowColor=RC.state==='crashed'?'rgba(207,107,107,.8)':'rgba(232,163,61,.7)';ctx.shadowBlur=12;
+    ctx.strokeStyle=RC.state==='crashed'?'rgba(207,107,107,.85)':'rgba(232,163,61,.9)';ctx.lineWidth=3;ctx.beginPath();
+    for(let x=0;x<=t;x+=0.04){const m=rocketGrowth(x);const X=rPX(x),Y=rPY(m);if(x===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y)}
+    ctx.stroke();ctx.restore();
+    let rx=rPX(t),ry=rPY(cur);
+    if(RC.state==='won'){RC.boost+=2.2;ry-=RC.boost;rx+=RC.boost*.3}
+    if(RC.state==='flying'||RC.state==='won'){
+      for(let i=0;i<3;i++)RC.parts.push({x:rx-10+Math.random()*6,y:ry+10+Math.random()*6,vx:-1.5-Math.random()*2.5,vy:1.5+Math.random()*2.5,life:1,c:Math.random()<.5?'232,163,61':'242,255,242'});
+      if(Math.random()<.5)RC.smoke.push({x:rx-14,y:ry+14,r:3+Math.random()*3,life:1,vx:-.6,vy:.4});
+      if(heat>.35){ctx.strokeStyle='rgba(242,255,242,'+(heat*.25)+')';ctx.lineWidth=1;
+        for(let i=0;i<5;i++){const sy=Math.random()*H;const sx=Math.random()*W;ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(sx-30-heat*40,sy);ctx.stroke()}}
+      ctx.save();ctx.translate(rx,ry);ctx.rotate(-0.5+(RC.state==='won'?-.4:0));
+      const fl=6+Math.random()*6+heat*8;
+      ctx.fillStyle='rgba(232,163,61,.9)';ctx.beginPath();ctx.moveTo(-8,-4);ctx.lineTo(-8-fl,0);ctx.lineTo(-8,4);ctx.closePath();ctx.fill();
+      ctx.fillStyle='rgba(242,255,242,.9)';ctx.beginPath();ctx.moveTo(-8,-2);ctx.lineTo(-8-fl*.55,0);ctx.lineTo(-8,2);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#f2f2f2';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-8,-9);ctx.lineTo(-4,0);ctx.lineTo(-8,9);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#cf6b6b';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(8,-5);ctx.lineTo(8,5);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#6f9bd8';ctx.beginPath();ctx.arc(4,0,3.6,0,7);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(3,-1,1.2,0,7);ctx.fill();
+      ctx.fillStyle='#cf6b6b';ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-15,-13);ctx.lineTo(-8,-3);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(-6,8);ctx.lineTo(-15,13);ctx.lineTo(-8,3);ctx.closePath();ctx.fill();
       ctx.restore();
     }
   }
+  RC.smoke=RC.smoke.filter(p=>p.life>0);
+  RC.smoke.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=.25;p.life-=.015;
+    ctx.fillStyle='rgba(143,143,143,'+Math.max(0,p.life)*.25+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill()});
   RC.parts=RC.parts.filter(p=>p.life>0);
   RC.parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=.03;
     ctx.fillStyle='rgba('+p.c+','+Math.max(0,p.life)*.8+')';ctx.beginPath();ctx.arc(p.x,p.y,2.4*p.life+0.6,0,7);ctx.fill()});
-  if(RC.shakeT>0){RC.shakeT--;const s=RC.shakeT/14;ctx.save();ctx.translate((Math.random()-.5)*10*s,(Math.random()-.5)*10*s);ctx.restore()}
+  if(RC.ring>0){RC.ring+=6;ctx.strokeStyle='rgba(242,255,242,'+Math.max(0,1-RC.ring/160)+')';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(RC.explX||W/2,RC.explY||H/2,RC.ring,0,7);ctx.stroke();if(RC.ring>160)RC.ring=0}
+  if(RC.flash>0){ctx.fillStyle='rgba(242,255,242,'+RC.flash+')';ctx.fillRect(0,0,W,H);RC.flash-=.06}
   RC.expl=RC.expl.filter(p=>p.life>0);
-  RC.expl.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life-=.02;
-    ctx.fillStyle='rgba('+p.c+','+Math.max(0,p.life)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,7);ctx.fill()});
+  RC.expl.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life-=.02;p.rot+=p.vr;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.fillStyle='rgba('+p.c+','+Math.max(0,p.life)+')';
+    if(p.tri){ctx.beginPath();ctx.moveTo(0,-p.r);ctx.lineTo(p.r,p.r);ctx.lineTo(-p.r,p.r);ctx.closePath();ctx.fill()}
+    else{ctx.beginPath();ctx.arc(0,0,p.r*p.life,0,7);ctx.fill()}
+    ctx.restore()});
   if(RC.state==='idle'){
-    ctx.save();ctx.translate(70,H-52);
+    ctx.save();ctx.translate(78,H-56+Math.sin(now*.003)*1.5);
     ctx.fillStyle='#f2f2f2';ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(-8,-9);ctx.lineTo(-4,0);ctx.lineTo(-8,9);ctx.closePath();ctx.fill();
     ctx.fillStyle='#6f9bd8';ctx.beginPath();ctx.arc(5,0,3.6,0,7);ctx.fill();
+    ctx.fillStyle='#cf6b6b';ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-14,-12);ctx.lineTo(-8,-3);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(-6,8);ctx.lineTo(-14,12);ctx.lineTo(-8,3);ctx.closePath();ctx.fill();
     ctx.restore();
+    if(Math.random()<.06)RC.smoke.push({x:70,y:H-44,r:2+Math.random()*2,life:.7,vx:-.4,vy:-.3});
   }
+  const vig=ctx.createRadialGradient(W/2,H/2,H*.4,W/2,H/2,H*.95);
+  vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.45)');
+  ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
 }
-function rocketExplode(x,y){for(let i=0;i<60;i++){const a=Math.random()*6.28,sp=1+Math.random()*5;
-  RC.expl.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,r:2+Math.random()*4,c:['232,163,61','207,107,107','242,255,242'][i%3]})}
-  RC.shakeT=14;$('rStage').classList.add('shake');setTimeout(()=>$('rStage').classList.remove('shake'),450)}
+function rocketExplode(x,y){RC.explX=x;RC.explY=y;RC.ring=1;RC.flash=.5;
+  for(let i=0;i<70;i++){const a=Math.random()*6.28,sp=1+Math.random()*6;
+    RC.expl.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,r:2+Math.random()*4,rot:0,vr:(Math.random()-.5)*.4,tri:i%3===0,c:['232,163,61','207,107,107','242,255,242','143,143,143'][i%4]})}
+  $('rStage').classList.add('shake');setTimeout(()=>$('rStage').classList.remove('shake'),450)}
 document.querySelectorAll('[data-rbet]').forEach(b=>b.addEventListener('click',()=>{$('rBet').value=b.dataset.rbet;sClick()}));
 $('btnRStart').addEventListener('click',()=>{if(RC.state==='flying'||needReg())return;const bet=parseInt($('rBet').value)||0;
-  if(bet<10)return toast(lang==='ru'?'Ставка от 10':'Stavka 10 dan');
+  if(bet<100)return toast(lang==='ru'?'Деп от 100':'Dep 100 dan');
   fetch('/api/shop/rocket_start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,bet})}).then(r=>r.json()).then(d=>{
     if(!d.ok)return toast(lang==='ru'?'Не хватает баллов':'Ball yetmaydi');
-    RC.gid=d.gid;RC.bet=d.bet;RC.t0=Date.now();RC.state='flying';RC.cur=1;RC.maxSeen=1.2;RC.lastTick=0;RC.parts=[];RC.expl=[];
+    RC.gid=d.gid;RC.bet=d.bet;RC.t0=Date.now();RC.state='flying';RC.cur=1;RC.maxSeen=1.2;RC.lastTick=0;RC.parts=[];RC.smoke=[];RC.expl=[];RC.boost=0;RC.ring=0;RC.flash=0;
     $('btnRStart').style.display='none';$('btnRCash').style.display='flex';
     $('rRes').textContent='';$('rRes').className='upres';
     $('rStatus').textContent=I18N[lang].rFlying;
-    refreshMe();sClick();
+    engineStart();beep(200,.3,'sawtooth',.06);
+    refreshMe();
     RC.poll=setInterval(()=>{
       fetch('/api/shop/rocket_state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,gid:RC.gid})}).then(r=>r.json()).then(s=>{
         if(!s.flying&&s.crashed&&RC.state==='flying')rocketCrash(s.cur);
       }).catch(()=>{});
-    },350);
+    },300);
   }).catch(()=>toast('Server unavailable'))});
 $('btnRCash').addEventListener('click',()=>{if(RC.state!=='flying')return;
   fetch('/api/shop/rocket_cash',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,gid:RC.gid})}).then(r=>r.json()).then(d=>{
-    clearInterval(RC.poll);
+    clearInterval(RC.poll);engineStop();
     if(d.crashed){rocketCrash(d.mult);return}
-    RC.state='won';RC.cur=d.mult;
+    RC.state='won';RC.cur=d.mult;RC.boost=0;
     $('btnRCash').style.display='none';$('btnRStart').style.display='flex';
     $('rMult').className='rmult hot';$('rMult').textContent='x'+d.mult.toFixed(2);
-    $('rStatus').textContent=(lang==='ru'?'Забрал на ':'Olib qoldi ')+ 'x'+d.mult.toFixed(2);
+    $('rStatus').textContent=(lang==='ru'?'Забрал на ':'Olib qoldi ')+'x'+d.mult.toFixed(2);
     $('rRes').className='upres pop win';$('rRes').textContent=(lang==='ru'?'Успех! +':'Muvaffaqiyat! +')+d.payout;
     confetti($('rStage'));pushHist('rocketHist',rocketHistory,true,d.mult,'r-high');
+    rwPush(true,d.mult,d.payout);
     recordResult('rocket',d.payout,true);sWin();refreshMe();
+    setTimeout(()=>{RC.state='idle';RC.cur=1;$('rMult').className='rmult';$('rMult').textContent='x1.00';$('rStatus').textContent=I18N[lang].rIdle},2200);
   }).catch(()=>toast('Server unavailable'))});
 function rocketCrash(mult){if(RC.state!=='flying')return;RC.state='crashed';RC.cur=mult;
-  clearInterval(RC.poll);
+  clearInterval(RC.poll);engineStop();
   const t=(Date.now()-RC.t0)/1000;
-  const px=40+(1-Math.exp(-t/9))*(RC.W-120);
-  const py=RC.H-40-(Math.log(Math.max(1,mult))/Math.log(Math.max(RC.maxSeen,2)))*(RC.H-110);
-  rocketExplode(px,py);
+  rocketExplode(rPX(t),rPY(Math.max(1,mult)));
   $('btnRCash').style.display='none';$('btnRStart').style.display='flex';
   $('rMult').className='rmult dead';$('rMult').textContent='x'+mult.toFixed(2);
   $('rStatus').textContent=(lang==='ru'?'ВЗРЫВ на x':'PORTLASH x')+mult.toFixed(2);
   $('rRes').className='upres pop lose';$('rRes').textContent=(lang==='ru'?'Ракета взорвалась. −':'Raketa portladi. −')+RC.bet;
-  pushHist('rocketHist',rocketHistory,false,mult,mult<2?'r-low':(mult<10?'r-mid':'r-high'));
+  pushHist('rocketHist',rocketHistory,false,mult,mult<1.2?'r-low':(mult<1.6?'r-mid':'r-high'));
+  rwPush(false,mult,0);
   recordResult('rocket',0,false);sBoom();refreshMe();
   setTimeout(()=>{RC.state='idle';RC.cur=1;$('rMult').className='rmult';$('rMult').textContent='x1.00';$('rStatus').textContent=I18N[lang].rIdle},2600)}
+/* лента выигрышей (симуляция) */
+let rwList=[];
+function rwPush(me,mult,payout){
+  const name=me?I18N[lang].you:rnd(NAMES);
+  const bet=me?RC.bet:rnd([100,300,500,1000,2000]);
+  rwList.unshift({name,mult,payout:me?payout:Math.floor(bet*mult),bet,me});
+  if(rwList.length>7)rwList.pop();renderRW()}
+function renderRW(){$('rwList').innerHTML=rwList.map(r=>'<div class="rwrow'+(r.me?' me':'')+'"><span class="av">'+r.name.slice(0,2).toUpperCase()+'</span><div><div class="nm">'+r.name+'</div><div class="bt">'+I18N[lang].rwBet+' '+r.bet+'</div></div><span class="mu">x'+r.mult.toFixed(2)+'</span><span class="pw">'+(r.payout>0?'+'+r.payout.toLocaleString('ru-RU'):'0')+'</span></div>').join('')}
+setInterval(()=>{if(document.hidden)return;
+  const u=Math.random();let mult;
+  if(u<.02)mult=1.0;else if(u<.92){const v=Math.random();mult=1+0.5*v*v}else mult=1.5+0.5*Math.random();
+  mult=Math.round(mult*100)/100;
+  const win=mult>1.02&&Math.random()<.55;
+  rwPush(false,mult,win?Math.floor(rnd([100,300,500,1000])*mult):0);
+},3500);
 function buildMults(){const w=$('upMults');w.innerHTML='';CFG.upgrader_mults.forEach(m=>{const b=document.createElement('button');b.className='chip'+(m===upMult?' on':'');b.textContent='x'+m;
   b.addEventListener('click',()=>{upMult=m;buildMults();paintUpGauge();sClick()});w.appendChild(b)})}
 function paintUpGauge(){const circ=2*Math.PI*88;const span=360/upMult;
@@ -930,7 +1006,7 @@ $('comboSend').addEventListener('click',()=>{fetch('/api/shop/order',{method:'PO
   .then(()=>{$('comboModal').classList.remove('show');toast(lang==='ru'?'Заявка отправлена':'Ariza yuborildi');sWin()})
   .catch(d=>{$('comboModal').classList.remove('show');if(d&&d.detail==='not registered')$('gateModal').classList.add('show');else toast('Error')})});
 const INFO={privacy:{t:'Политика конфиденциальности',b:'Мы храним только ваш Telegram ID, имя, юзернейм и контакт, отправленный вами при регистрации. Данные используются для оформления заказов и связи с менеджером и не передаются третьим лицам. Баллы — внутренняя валюта магазина и не являются денежным средством. Вы можете запросить удаление данных через поддержку.'},
- terms:{t:'Условия',b:'Заказы выполняются менеджером после оплаты: звёзды 5–15 минут, донаты в игры до 24 часов. Гарантия 24 часа на невыполненный заказ. Кэшбэк 3% начисляется баллами. Игры (кейсы, рулетка, апгрейдер, мины, ракета) работают на внутренних баллах. В «Ракете» множитель растёт до случайной точки краха — успей забрать до взрыва. Возврат баллов за проигранную ставку не производится — играйте осознанно.'},
+ terms:{t:'Условия',b:'Заказы выполняются менеджером после оплаты: звёзды 5–15 минут, донаты в игры до 24 часов. Гарантия 24 часа на невыполненный заказ. Кэшбэк 3% начисляется баллами. Игры (кейсы, рулетка, апгрейдер, мины, ракета) работают на внутренних баллах. В «Ракете» деп от 100 баллов, краш обычно до x1.5, редко до x2; каждая вторая игра — мгновенный краш. Лента выигрышей — демонстрационная симуляция. Возврат баллов за проигранную ставку не производится — играйте осознанно.'},
  support:{t:'Поддержка',b:'Менеджер и поддержка: @logistickon в Telegram. Канал магазина: @sTONks_shopuzb. Отвечаем 24/7, среднее время ответа — до 15 минут.'}};
 document.querySelectorAll('[data-info]').forEach(b=>b.addEventListener('click',()=>{const i=INFO[b.dataset.info];$('infoTitle').textContent=i.t;$('infoBody').textContent=i.b;$('infoModal').classList.add('show');sClick()}));
 $('infoClose').addEventListener('click',()=>$('infoModal').classList.remove('show'));
@@ -945,7 +1021,7 @@ $('promoBtn').addEventListener('click',()=>{const code=$('promoInput').value.tri
     if(ok){m.style.color='var(--green)';m.textContent='+'+d.reward+' '+(lang==='ru'?'баллов зачислено!':'ball qoshildi!');$('promoInput').value='';refreshMe();sWin()}
     else{m.style.color='var(--red)';m.textContent=d.detail==='promo not found'?(lang==='ru'?'Код не найден':'Kod topilmadi'):(d.detail==='promo exhausted'?(lang==='ru'?'Лимит исчерпан':'Limit tugagan'):(d.detail==='already used'?(lang==='ru'?'Ты уже активировал этот код':'Bu kodni ishlatgansan'):(lang==='ru'?'Сначала регистрация':'Avval royxatdan ot')));sLose()}}).catch(()=>toast('Server unavailable'))});
 fetch('/api/shop/config').then(r=>r.json()).then(c=>{CFG=c;renderPrizes();buildMults();paintUpGauge();drawWheel(wheelHL);rocketInit();refreshMe();setInterval(refreshMe,15000)}).catch(()=>toast('Server unavailable'));
-applyLang();paintSound();buildGrid();setMinesUI(false);buildRail();paintBannerSrcs();paintBal();
+applyLang();paintSound();buildGrid();setMinesUI(false);buildRail();paintBannerSrcs();paintBal();renderRW();
 if(tgW){try{tgW.ready();tgW.expand();if(tgW.requestFullscreen)tgW.requestFullscreen().catch(()=>{})}catch(e){}}
 setTimeout(()=>document.body.classList.toggle('fs',!!(tgW&&tgW.isFullscreen)),600);
 </script>

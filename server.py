@@ -1,4 +1,4 @@
-"""server.py — sTONks Shop: магазин, игры + Ракета (crash), промо, заказы, баннеры"""
+"""server.py — sTONks Shop: магазин, игры + Ракета (кап 1.5/2, каждая 2-я = краш), промо, заказы"""
 import os, re, time, math, random, uuid
 from pathlib import Path
 import aiohttp
@@ -19,7 +19,7 @@ HOUSE = 0.97
 WIN_ONE_IN = 6
 UP_BASE_PER = 100.0 / 18.0
 ROCKET_RATE = 0.16
-ROCKET_CAP = 200.0
+ROCKET_MIN_BET = 100
 INDEX = Path("frontend/index.html")
 
 CONF = {
@@ -42,10 +42,14 @@ def up_chance(mult):
 def rocket_growth(t):
     return math.exp(ROCKET_RATE * max(0.0, t))
 
-def rocket_crash_point():
+def rocket_crash_point(play_n):
+    if play_n % 2 == 0: return 1.0
     u = random.random()
-    if u < 0.01: return 1.0
-    return round(min(0.97 / (1 - u), ROCKET_CAP), 2)
+    if u < 0.02: return 1.0
+    if u < 0.92:
+        v = random.random()
+        return round(1.0 + 0.5 * v * v, 2)
+    return round(1.5 + 0.5 * random.random(), 2)
 
 app = FastAPI(title="sTONks Shop")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -68,7 +72,7 @@ def init_db():
             id TEXT PRIMARY KEY, name TEXT, phone TEXT, username TEXT,
             registered BOOLEAN DEFAULT FALSE,
             stars BIGINT DEFAULT 0, free_ready_at BIGINT DEFAULT 0, updated BIGINT)""")
-        for col in ("name TEXT", "phone TEXT", "username TEXT", "registered BOOLEAN DEFAULT FALSE"):
+        for col in ("name TEXT", "phone TEXT", "username TEXT", "registered BOOLEAN DEFAULT FALSE", "rocket_n BIGINT DEFAULT 0"):
             cur.execute(f"ALTER TABLE shop_users ADD COLUMN IF NOT EXISTS {col}")
         cur.execute("CREATE TABLE IF NOT EXISTS shop_meta(key TEXT PRIMARY KEY, value TEXT)")
         cur.execute("CREATE TABLE IF NOT EXISTS shop_promos(code TEXT PRIMARY KEY, reward BIGINT, max_uses INT, uses INT DEFAULT 0)")
@@ -105,7 +109,7 @@ def startup():
 def serve_index():
     html = INDEX.read_text(encoding="utf-8")
     if "banners.js" not in html:
-        html = html.replace("</body>", '<script src="/static/banners.js?v=14"></script></body>')
+        html = html.replace("</body>", '<script src="/static/banners.js?v=15"></script></body>')
     return HTMLResponse(html)
 
 @app.get("/")
@@ -119,6 +123,7 @@ def config():
     c = MEM["conf"]
     return {"case_free": c["case_free"], "case_paid": c["case_paid"], "case_paid_cost": c["case_paid_cost"],
             "wheel": c["wheel"], "wheel_cost": c["wheel_cost"], "upgrader_mults": c["upgrader_mults"],
+            "rocket_min_bet": ROCKET_MIN_BET,
             "channel": CHANNEL, "free_cd": FREE_CD, "points_per_star": POINTS_PER_STAR}
 
 def get_meta(key):
@@ -158,17 +163,17 @@ async def check_sub(uid: str):
     except Exception:
         return {"subscribed": False, "status": "?"}
 
-EMPTY = {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": ""}
+EMPTY = {"stars": 0, "free_ready_at": 0, "registered": False, "phone": "", "username": "", "name": "", "rocket_n": 0}
 
 def get_user(uid):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("SELECT stars, free_ready_at, registered, phone, username, name FROM shop_users WHERE id=%s", (uid,))
+            cur.execute("SELECT stars, free_ready_at, registered, phone, username, name, rocket_n FROM shop_users WHERE id=%s", (uid,))
             r = cur.fetchone()
         c.close()
         if r: return {"stars": int(r[0] or 0), "free_ready_at": int(r[1] or 0), "registered": bool(r[2]),
-                      "phone": r[3] or "", "username": r[4] or "", "name": r[5] or ""}
+                      "phone": r[3] or "", "username": r[4] or "", "name": r[5] or "", "rocket_n": int(r[6] or 0)}
         return None
     return MEM["users"].get(uid)
 
@@ -177,11 +182,13 @@ def save_user(uid, u):
     c = conn()
     if c:
         with c.cursor() as cur:
-            cur.execute("""INSERT INTO shop_users(id,name,phone,username,registered,stars,free_ready_at,updated)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s)
+            cur.execute("""INSERT INTO shop_users(id,name,phone,username,registered,stars,free_ready_at,updated,rocket_n)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT(id) DO UPDATE SET name=EXCLUDED.name, phone=EXCLUDED.phone, username=EXCLUDED.username,
-                registered=EXCLUDED.registered, stars=EXCLUDED.stars, free_ready_at=EXCLUDED.free_ready_at, updated=EXCLUDED.updated""",
-                (uid, u.get("name",""), u.get("phone",""), u.get("username",""), u.get("registered",False), u["stars"], u["free_ready_at"], now))
+                registered=EXCLUDED.registered, stars=EXCLUDED.stars, free_ready_at=EXCLUDED.free_ready_at,
+                updated=EXCLUDED.updated, rocket_n=EXCLUDED.rocket_n""",
+                (uid, u.get("name",""), u.get("phone",""), u.get("username",""), u.get("registered",False),
+                 u["stars"], u["free_ready_at"], now, u.get("rocket_n",0)))
         c.close()
     else:
         MEM["users"][uid] = u
@@ -501,7 +508,7 @@ def mines_cashout(m: MinesCash):
     u = get_user(m.id); u["stars"] += payout; save_user(m.id, u)
     return {"ok": True, "payout": payout, "mult": round(mult, 2), "mines": g["mines"], "stars": u["stars"]}
 
-# ===== РАКЕТА (crash) =====
+# ===== РАКЕТА =====
 def rocket_get(gid):
     c = conn()
     if c:
@@ -529,11 +536,14 @@ def rocket_save(gid, g):
 def rocket_start(m: RocketStart):
     user = get_user(m.id) or dict(EMPTY)
     if not user.get("registered"): raise HTTPException(400, "not registered")
-    if m.bet < 10: raise HTTPException(400, "bet too small")
+    if m.bet < ROCKET_MIN_BET: raise HTTPException(400, "bet too small")
     if user["stars"] < m.bet: return {"ok": False, "reason": "no_stars"}
-    user["stars"] -= m.bet; save_user(m.id, user)
+    user["stars"] -= m.bet
+    user["rocket_n"] = user.get("rocket_n", 0) + 1
+    save_user(m.id, user)
     gid = uuid.uuid4().hex[:12]
-    g = {"uid": m.id, "bet": m.bet, "crash": rocket_crash_point(), "t0": time.time(), "state": "active", "cash_mult": 0, "payout": 0}
+    g = {"uid": m.id, "bet": m.bet, "crash": rocket_crash_point(user["rocket_n"]), "t0": time.time(),
+         "state": "active", "cash_mult": 0, "payout": 0}
     rocket_save(gid, g)
     return {"ok": True, "gid": gid, "bet": m.bet, "stars": user["stars"]}
 
