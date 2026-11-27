@@ -215,6 +215,7 @@ body.fs header{top:calc(56px + env(safe-area-inset-top))}
 .rwinners .t{font-size:13px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:7px;margin-bottom:8px}
 .rwrow{display:flex;align-items:center;gap:9px;padding:7px 4px;border-bottom:1px solid var(--line);animation:feedin .35s}
 .rwrow:last-child{border-bottom:none}
+.rwrow.me{background:var(--greenD);border-radius:8px}
 .rwrow .av{width:26px;height:26px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue);flex-shrink:0}
 .rwrow .nm{font-size:12.5px;font-weight:700}
 .rwrow .bt{font-size:10.5px;color:var(--muted)}
@@ -611,7 +612,7 @@ const RAIL=[
  {id:'free24',title:'FREE24',badge:'24H',price:'Free 24h',go:'cases',icon:'i-gift',c:'#e8a33d'}
 ];
 const B_FALLBACK={playhub:'play.png',free24:'free.png',raketa:'raketa.png'};
-function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=15'}
+function burl(id){return '/static/banners/'+(MAN[id]||B_FALLBACK[id]||id+'.png')+'?v=16'}
 function buildRail(){const rail=$('bannerRail');
  rail.innerHTML=RAIL.map(b=>'<div class="brc" data-id="'+b.id+'" data-go="'+b.go+'">'
   +'<div class="bfb" style="background:#1a1a1a"><svg style="color:'+b.c+'"><use href="#'+b.icon+'"/></svg></div>'
@@ -624,7 +625,7 @@ function buildRail(){const rail=$('bannerRail');
    if(g==='hub')showHub();else showGame(g);}));
  paintBannerSrcs();}
 function paintBannerSrcs(){document.querySelectorAll('img[data-b]').forEach(im=>{im.src=burl(im.dataset.b)})}
-fetch('/static/banners/manifest.json?v=15').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
+fetch('/static/banners/manifest.json?v=16').then(r=>r.ok?r.json():{}).then(j=>{MAN=j||{};paintBannerSrcs()}).catch(()=>{});
 const GAMES={cases:{icon:'a-case',label:{ru:'Кейс',uz:'Keys'}},wheel:{icon:'a-wheel',label:{ru:'Рулетка',uz:'Ruletka'}},upgrade:{icon:'a-up',label:{ru:'Апгрейдер',uz:'Apgreyder'}},mines:{icon:'a-mine',label:{ru:'Мины',uz:'Minalar'}},rocket:{icon:'a-rocket',label:{ru:'Ракета',uz:'Raketa'}}};
 const NAMES=['K1RITO','aziz_uz','Mira','tokyo','Sardor','neo','Luna','bekzod','Vortex','aylin','Ravshan','ghost','Dilnoza','samurai'];
 const AMTS={cases:[15,25,50,100,200,300,1000],wheel:[15,15,15,200,1000],upgrade:[75,150,200,500,1000,3000],mines:[121,146,183,244,366,610],rocket:[140,220,360,610,1200,2400]};
@@ -739,8 +740,8 @@ $('btnWheel').addEventListener('click',()=>{if(spinning||busy||needReg())return;
       },520);
     },4200);
   }).catch(()=>{spinning=false;toast('Server unavailable')})});
-/* ===== РАКЕТА: мега-детализированная сцена ===== */
-const RC={cv:null,ctx:null,W:720,H:400,state:'idle',gid:null,bet:0,t0:0,cur:1,parts:[],smoke:[],stars:[],clouds:[],expl:[],ring:0,flash:0,boost:0,lastTick:0,poll:null,raf:null,visible:true,maxSeen:1.2,planetX:560};
+/* ===== РАКЕТА ===== */
+const RC={cv:null,ctx:null,W:720,H:400,state:'idle',gid:null,bet:0,t0:0,tFrozen:0,cur:1,parts:[],smoke:[],stars:[],clouds:[],expl:[],ring:0,flash:0,boost:0,lastTick:0,poll:null,raf:null,idleTimer:null,visible:true,maxSeen:1.2,planetX:560,explX:360,explY:200};
 function rocketInit(){RC.cv=$('rocketCv');RC.ctx=RC.cv.getContext('2d');
   RC.stars=[];for(let i=0;i<90;i++)RC.stars.push({x:Math.random()*RC.W,y:Math.random()*RC.H,r:Math.random()*1.8+.4,l:Math.floor(Math.random()*3),tw:Math.random()*6.28});
   RC.clouds=[];for(let i=0;i<5;i++)RC.clouds.push({x:Math.random()*RC.W,y:30+Math.random()*160,w:70+Math.random()*90,s:.2+Math.random()*.5,l:i%3});
@@ -751,8 +752,10 @@ function rocketPause(){RC.visible=false;engineStop()}
 function rocketLoop(){RC.raf=requestAnimationFrame(rocketLoop);if(!RC.visible||!RC.ctx)return;rocketDraw(performance.now())}
 function rPX(t){return 50+(1-Math.exp(-t/9))*(RC.W-140)}
 function rPY(m){return RC.H-46-(Math.log(Math.max(1,m))/Math.log(Math.max(RC.maxSeen,2)))*(RC.H-130)}
+function rocketResetIdle(){RC.state='idle';RC.cur=1;RC.tFrozen=0;RC.boost=0;RC.parts=[];RC.smoke=[];RC.expl=[];RC.ring=0;RC.flash=0;
+  $('rMult').className='rmult';$('rMult').textContent='x1.00';$('rStatus').textContent=I18N[lang].rIdle}
 function rocketDraw(now){const ctx=RC.ctx,W=RC.W,H=RC.H;
-  let t=0;if(RC.state==='flying')t=(Date.now()-RC.t0)/1000;
+  const t=RC.state==='flying'?(Date.now()-RC.t0)/1000:RC.tFrozen;
   const cur=RC.state==='flying'?rocketGrowth(t):RC.cur;
   if(RC.state==='flying'){RC.cur=cur;RC.maxSeen=Math.max(RC.maxSeen,cur);
     $('rMult').textContent='x'+cur.toFixed(2);$('rMult').className='rmult'+(cur>1.3?' hot':'');
@@ -819,7 +822,7 @@ function rocketDraw(now){const ctx=RC.ctx,W=RC.W,H=RC.H;
   RC.parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=.03;
     ctx.fillStyle='rgba('+p.c+','+Math.max(0,p.life)*.8+')';ctx.beginPath();ctx.arc(p.x,p.y,2.4*p.life+0.6,0,7);ctx.fill()});
   if(RC.ring>0){RC.ring+=6;ctx.strokeStyle='rgba(242,255,242,'+Math.max(0,1-RC.ring/160)+')';ctx.lineWidth=3;
-    ctx.beginPath();ctx.arc(RC.explX||W/2,RC.explY||H/2,RC.ring,0,7);ctx.stroke();if(RC.ring>160)RC.ring=0}
+    ctx.beginPath();ctx.arc(RC.explX,RC.explY,RC.ring,0,7);ctx.stroke();if(RC.ring>160)RC.ring=0}
   if(RC.flash>0){ctx.fillStyle='rgba(242,255,242,'+RC.flash+')';ctx.fillRect(0,0,W,H);RC.flash-=.06}
   RC.expl=RC.expl.filter(p=>p.life>0);
   RC.expl.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life-=.02;p.rot+=p.vr;
@@ -846,11 +849,13 @@ function rocketExplode(x,y){RC.explX=x;RC.explY=y;RC.ring=1;RC.flash=.5;
     RC.expl.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,r:2+Math.random()*4,rot:0,vr:(Math.random()-.5)*.4,tri:i%3===0,c:['232,163,61','207,107,107','242,255,242','143,143,143'][i%4]})}
   $('rStage').classList.add('shake');setTimeout(()=>$('rStage').classList.remove('shake'),450)}
 document.querySelectorAll('[data-rbet]').forEach(b=>b.addEventListener('click',()=>{$('rBet').value=b.dataset.rbet;sClick()}));
-$('btnRStart').addEventListener('click',()=>{if(RC.state==='flying'||needReg())return;const bet=parseInt($('rBet').value)||0;
+$('btnRStart').addEventListener('click',()=>{if(RC.state!=='idle'||needReg())return;const bet=parseInt($('rBet').value)||0;
   if(bet<100)return toast(lang==='ru'?'Деп от 100':'Dep 100 dan');
+  clearInterval(RC.poll);clearTimeout(RC.idleTimer);
   fetch('/api/shop/rocket_start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,bet})}).then(r=>r.json()).then(d=>{
     if(!d.ok)return toast(lang==='ru'?'Не хватает баллов':'Ball yetmaydi');
-    RC.gid=d.gid;RC.bet=d.bet;RC.t0=Date.now();RC.state='flying';RC.cur=1;RC.maxSeen=1.2;RC.lastTick=0;RC.parts=[];RC.smoke=[];RC.expl=[];RC.boost=0;RC.ring=0;RC.flash=0;
+    RC.gid=d.gid;RC.bet=d.bet;RC.t0=Date.now();RC.tFrozen=0;RC.state='flying';RC.cur=1;RC.maxSeen=1.2;RC.lastTick=0;
+    RC.parts=[];RC.smoke=[];RC.expl=[];RC.boost=0;RC.ring=0;RC.flash=0;
     $('btnRStart').style.display='none';$('btnRCash').style.display='flex';
     $('rRes').textContent='';$('rRes').className='upres';
     $('rStatus').textContent=I18N[lang].rFlying;
@@ -866,6 +871,7 @@ $('btnRCash').addEventListener('click',()=>{if(RC.state!=='flying')return;
   fetch('/api/shop/rocket_cash',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:UID,gid:RC.gid})}).then(r=>r.json()).then(d=>{
     clearInterval(RC.poll);engineStop();
     if(d.crashed){rocketCrash(d.mult);return}
+    RC.tFrozen=(Date.now()-RC.t0)/1000;
     RC.state='won';RC.cur=d.mult;RC.boost=0;
     $('btnRCash').style.display='none';$('btnRStart').style.display='flex';
     $('rMult').className='rmult hot';$('rMult').textContent='x'+d.mult.toFixed(2);
@@ -874,12 +880,13 @@ $('btnRCash').addEventListener('click',()=>{if(RC.state!=='flying')return;
     confetti($('rStage'));pushHist('rocketHist',rocketHistory,true,d.mult,'r-high');
     rwPush(true,d.mult,d.payout);
     recordResult('rocket',d.payout,true);sWin();refreshMe();
-    setTimeout(()=>{RC.state='idle';RC.cur=1;$('rMult').className='rmult';$('rMult').textContent='x1.00';$('rStatus').textContent=I18N[lang].rIdle},2200);
+    clearTimeout(RC.idleTimer);RC.idleTimer=setTimeout(rocketResetIdle,2200);
   }).catch(()=>toast('Server unavailable'))});
-function rocketCrash(mult){if(RC.state!=='flying')return;RC.state='crashed';RC.cur=mult;
+function rocketCrash(mult){if(RC.state!=='flying')return;
+  RC.tFrozen=(Date.now()-RC.t0)/1000;
+  RC.state='crashed';RC.cur=mult;
   clearInterval(RC.poll);engineStop();
-  const t=(Date.now()-RC.t0)/1000;
-  rocketExplode(rPX(t),rPY(Math.max(1,mult)));
+  rocketExplode(rPX(RC.tFrozen),rPY(Math.max(1,mult)));
   $('btnRCash').style.display='none';$('btnRStart').style.display='flex';
   $('rMult').className='rmult dead';$('rMult').textContent='x'+mult.toFixed(2);
   $('rStatus').textContent=(lang==='ru'?'ВЗРЫВ на x':'PORTLASH x')+mult.toFixed(2);
@@ -887,8 +894,7 @@ function rocketCrash(mult){if(RC.state!=='flying')return;RC.state='crashed';RC.c
   pushHist('rocketHist',rocketHistory,false,mult,mult<1.2?'r-low':(mult<1.6?'r-mid':'r-high'));
   rwPush(false,mult,0);
   recordResult('rocket',0,false);sBoom();refreshMe();
-  setTimeout(()=>{RC.state='idle';RC.cur=1;$('rMult').className='rmult';$('rMult').textContent='x1.00';$('rStatus').textContent=I18N[lang].rIdle},2600)}
-/* лента выигрышей (симуляция) */
+  clearTimeout(RC.idleTimer);RC.idleTimer=setTimeout(rocketResetIdle,2600)}
 let rwList=[];
 function rwPush(me,mult,payout){
   const name=me?I18N[lang].you:rnd(NAMES);
